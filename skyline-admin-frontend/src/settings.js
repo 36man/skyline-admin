@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'Vue Admin Template',
+  title: 'skyline-admin',
 
   /**
    * @type {boolean} true | false

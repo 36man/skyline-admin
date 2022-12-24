@@ -1,0 +1,25 @@
+#thymeleaf配置
+spring:
+  servlet:
+    multipart:
+      enabled: false
+      location: F:\temp\tomcat\upload
+  #  main:
+#    allow-bean-definition-overriding: true
+  #数据库配置
+  datasource:
+    url: jdbc:mysql://localhost:3306/skyline-admin?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  mapper-locations: classpath*:/mapper/**/*.xml
+debug: true
+
+
+admin:
+    oss:
+      storeType: LOCAL

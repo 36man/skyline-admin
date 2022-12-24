@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.skyline</groupId>
+        <artifactId>skyline-admin</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>skyline-admin-server</artifactId>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.bravo</groupId>
+            <artifactId>gaia-mybatis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bravo</groupId>
+            <artifactId>gaia-log</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.skyline</groupId>
+            <artifactId>skyline-admin-commons</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>${aws.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <version>2.0.16</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bravo</groupId>
+            <artifactId>gaia-id</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>

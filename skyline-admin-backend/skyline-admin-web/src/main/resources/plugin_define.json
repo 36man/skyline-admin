@@ -1,0 +1,11 @@
+{
+    "pluginName": "authFilter",
+    "maintainer": "test",
+    "keywords":["认证","授权"],
+    "overview":"xxx",
+    "defineClass":"",
+    "definePage": "xxx.html",
+    "ver": "1.0",
+    "features": ["features1","features2"],
+    "verTags":["tag1","tag2"]
+}

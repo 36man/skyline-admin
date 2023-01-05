@@ -1,5 +1,6 @@
 package org.apache.skyline.admin.server.service;
 
+import org.apache.skyline.admin.server.model.query.PluginVersionQuery;
 import org.apache.skyline.admin.server.model.vo.PluginVersionVO;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
  */
 public interface PluginVersionService {
 
-    List<PluginVersionVO> queryForList(Long pluginId);
+    List<PluginVersionVO> queryForList(PluginVersionQuery pluginVersionQuery);
 
     boolean deleted(Long id);
 

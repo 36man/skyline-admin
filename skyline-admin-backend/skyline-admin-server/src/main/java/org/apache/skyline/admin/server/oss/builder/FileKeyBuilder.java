@@ -47,4 +47,9 @@ public class FileKeyBuilder {
 
         return path + fileName;
     }
+
+    public static void main(String[] args) {
+        String content = "abcdd////";
+        System.out.println(content.replaceAll(SLASH, "\\"));
+    }
 }

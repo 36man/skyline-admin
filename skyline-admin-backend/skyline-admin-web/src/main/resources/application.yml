@@ -4,8 +4,10 @@ spring:
     multipart:
       enabled: false
       location: F:\temp\tomcat\upload
-  #  main:
-#    allow-bean-definition-overriding: true
+  jackson:
+    date-format: "yyyy-MM-dd HH:mm:ss"
+    time-zone: GMT+8
+
   #数据库配置
   datasource:
     url: jdbc:mysql://localhost:3306/skyline-admin?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false

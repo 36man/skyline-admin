@@ -6,13 +6,17 @@ import java.util.Date;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.skyline.admin.server.domain.request.GenerateSkylinePluginDomainRequest;
 import org.apache.skyline.admin.server.domain.service.SkylinePluginDomainService;
+import org.apache.skyline.admin.server.model.query.SkylinePluginQuery;
 import org.apache.skyline.admin.server.model.request.GenerateSkylinePluginRequest;
+import org.apache.skyline.admin.server.model.vo.SkylinePluginVO;
 import org.apache.skyline.admin.server.oss.request.UploadMultipleFileRequest;
 import org.apache.skyline.admin.server.oss.response.UploadMultipleFileResponse;
 import org.apache.skyline.admin.server.oss.service.OssService;
 import org.apache.skyline.admin.server.service.SkylinePluginService;
 import org.apache.skyline.admin.server.support.parse.PluginDefine;
 import org.apache.skyline.admin.server.support.parse.PluginDefineParser;
+import org.bravo.gaia.commons.base.PageBean;
+import org.bravo.gaia.commons.base.PageCondition;
 import org.bravo.gaia.commons.util.DigestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,6 +52,26 @@ public class SkylinePluginServiceImpl implements SkylinePluginService {
         skylinePluginDomainService.createPlugin(pluginDomainRequest);
 
         return true;
+    }
+
+    @Override
+    public PageBean<SkylinePluginVO> pageList(PageCondition<SkylinePluginQuery> condition) {
+        return null;
+    }
+
+    @Override
+    public Boolean deleted(Long id) {
+        return null;
+    }
+
+    @Override
+    public Boolean actived(Long id) {
+        return null;
+    }
+
+    @Override
+    public Boolean disabled(Long id) {
+        return null;
     }
 
 

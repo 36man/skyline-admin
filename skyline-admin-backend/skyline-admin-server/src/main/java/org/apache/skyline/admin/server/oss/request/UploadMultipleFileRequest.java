@@ -8,7 +8,6 @@ import lombok.Data;
  */
 @Data
 public class UploadMultipleFileRequest {
-    private String group;
     private String fileName;
     private byte[] bytes;
 

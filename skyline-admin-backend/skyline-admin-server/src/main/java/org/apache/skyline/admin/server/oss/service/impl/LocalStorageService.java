@@ -35,7 +35,7 @@ public class LocalStorageService extends AbstractOssService implements Initializ
 
     @Override
     protected UploadMultipleFileResponse doUpload(UploadMultipleFileRequest request) throws Exception {
-        FileKeyBuilder keyBuilder = FileKeyBuilder.newBuilder(request.getGroup(), request.getFileName());
+        FileKeyBuilder keyBuilder = FileKeyBuilder.newBuilder(ossProperties.getGroup(), request.getFileName());
 
         String fileKey = keyBuilder.build();
 

@@ -9,6 +9,7 @@ import org.apache.skyline.admin.server.domain.service.SkylinePluginDomainService
 import org.apache.skyline.admin.server.model.query.SkylinePluginQuery;
 import org.apache.skyline.admin.server.model.request.GenerateSkylinePluginRequest;
 import org.apache.skyline.admin.server.model.vo.SkylinePluginVO;
+import org.apache.skyline.admin.server.oss.builder.FileKeyBuilder;
 import org.apache.skyline.admin.server.oss.request.UploadMultipleFileRequest;
 import org.apache.skyline.admin.server.oss.response.UploadMultipleFileResponse;
 import org.apache.skyline.admin.server.oss.service.OssService;
@@ -82,9 +83,8 @@ public class SkylinePluginServiceImpl implements SkylinePluginService {
 
         uploadObjectRequest.setBytes(pluginRequest.getBytes());
         uploadObjectRequest.setContentType(pluginRequest.getContentType());
-        uploadObjectRequest.setFileName(fileKey);
+        uploadObjectRequest.setFileName(FileKeyBuilder.newBuilder(pluginDefine.getPluginName(),fileKey).build());
         uploadObjectRequest.setSize(pluginRequest.getSize());
-        uploadObjectRequest.setGroup(pluginDefine.getPluginName());
 
         return ossService.upload(uploadObjectRequest);
     }

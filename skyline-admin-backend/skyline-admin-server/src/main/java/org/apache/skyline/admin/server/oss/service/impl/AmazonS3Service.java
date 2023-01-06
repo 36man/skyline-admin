@@ -39,11 +39,6 @@ public class AmazonS3Service extends AbstractOssService implements InitializingB
     }
 
     @Override
-    public UploadMultipleFileResponse upload(UploadMultipleFileRequest request) {
-        return null;
-    }
-
-    @Override
     protected byte[] doGetObject(String fileKey) throws Exception {
         S3Object object = ossClient.getObject(bucketName, fileKey);
 
@@ -55,7 +50,7 @@ public class AmazonS3Service extends AbstractOssService implements InitializingB
 
     @Override
     protected UploadMultipleFileResponse doUpload(UploadMultipleFileRequest request) throws Exception {
-        String fileKey = FileKeyBuilder.newBuilder(request.getFileName(), request.getFileName()).build();
+        String fileKey = FileKeyBuilder.newBuilder(ossProperties.getGroup(), request.getFileName()).build();
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(request.getSize());

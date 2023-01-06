@@ -20,6 +20,8 @@ public class OssProperties {
     private String accessKey;
     private String secretKey;
 
+    private String group = "default";
+
     private String region;
 
     /**

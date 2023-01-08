@@ -1,11 +1,13 @@
 package org.apache.skyline.admin.server.dal.dataobject;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
  * @author hejianbing
  * @version @Id: PluginVersionDO.java, v 0.1 2022年12月23日 10:57 hejianbing Exp $
  */
+@TableName("plugin_version")
 @Data
 public class PluginVersionDO extends BaseDO {
 

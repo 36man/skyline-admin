@@ -15,19 +15,21 @@ import org.bravo.gaia.commons.util.AssertUtil;
 @Data
 public class PluginDefine {
 
-    private String pluginName;
+    private String       pluginName;
 
-    private String maintainer;
+    private String       maintainer;
 
     private List<String> keywords;
 
-    private String overview;
+    private String       overview;
 
-    private String defineClass;
+    private String       defineClass;
 
-    private String definePage;
+    private String       definePage;
 
-    private String ver;
+    private String       pageContent;
+
+    private String       ver;
 
     private List<String> features;
 
@@ -35,17 +37,18 @@ public class PluginDefine {
 
     public String getPluginName() {
         if (StringUtils.isBlank(this.pluginName)) {
-            return this.defineClass.substring(this.defineClass.lastIndexOf(SymbolKind.DOT.getSymbol()) + 1);
+            return this.defineClass
+                .substring(this.defineClass.lastIndexOf(SymbolKind.DOT.getSymbol()) + 1);
         }
         return this.pluginName;
     }
 
     public void checkNotNull() {
-        AssertUtil.isNotBlank(maintainer, "maintainer is null");
-        AssertUtil.notEmpty(keywords, "keywords is empty");
-        AssertUtil.isNotBlank(defineClass, "defineClass is empty");
-        AssertUtil.isNotBlank(definePage, "definePage is empty");
-        AssertUtil.isNotBlank(ver, "ver is empty");
+        AssertUtil.isNotBlank(maintainer, "plugin! maintainer is null");
+        AssertUtil.notEmpty(keywords, "plugin! keywords is empty");
+        AssertUtil.isNotBlank(defineClass, "plugin! defineClass is null");
+        AssertUtil.isNotBlank(definePage, "plugin! definePage is null");
+        AssertUtil.isNotBlank(ver, "ver is null");
     }
 
 }

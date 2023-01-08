@@ -8,7 +8,7 @@ import lombok.Data;
  * @version @Id: SkylinePluginDO.java, v 0.1 2022年12月23日 10:46 hejianbing Exp $
  */
 @Data
-@TableName("skyline_plugin")
+@TableName("plugin")
 public class SkylinePluginDO extends BaseDO {
 
     private Long   id;

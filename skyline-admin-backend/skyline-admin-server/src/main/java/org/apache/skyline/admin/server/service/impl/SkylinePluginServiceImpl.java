@@ -2,8 +2,12 @@ package org.apache.skyline.admin.server.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.skyline.admin.server.domain.entities.SkylinePluginDomain;
+import org.apache.skyline.admin.server.domain.repository.SkylinePluginRepository;
 import org.apache.skyline.admin.server.domain.request.GenerateSkylinePluginDomainRequest;
 import org.apache.skyline.admin.server.domain.service.SkylinePluginDomainService;
 import org.apache.skyline.admin.server.model.query.SkylinePluginQuery;
@@ -16,9 +20,11 @@ import org.apache.skyline.admin.server.oss.service.OssService;
 import org.apache.skyline.admin.server.service.SkylinePluginService;
 import org.apache.skyline.admin.server.support.parse.PluginDefine;
 import org.apache.skyline.admin.server.support.parse.PluginDefineParser;
+import org.apache.skyline.admin.server.utils.PageCommonUtils;
 import org.bravo.gaia.commons.base.PageBean;
 import org.bravo.gaia.commons.base.PageCondition;
 import org.bravo.gaia.commons.util.DigestUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +40,9 @@ public class SkylinePluginServiceImpl implements SkylinePluginService {
 
     @Autowired
     private SkylinePluginDomainService skylinePluginDomainService;
+
+    @Autowired
+    private SkylinePluginRepository skylinePluginRepository;
 
     @Override
     public Boolean uploadPlugin(GenerateSkylinePluginRequest pluginRequest) {
@@ -57,7 +66,9 @@ public class SkylinePluginServiceImpl implements SkylinePluginService {
 
     @Override
     public PageBean<SkylinePluginVO> pageList(PageCondition<SkylinePluginQuery> condition) {
-        return null;
+        PageBean<SkylinePluginDomain> pageBean = skylinePluginRepository.pageList(condition);
+
+        return PageCommonUtils.convert(pageBean,this::convertList);
     }
 
     @Override
@@ -92,6 +103,16 @@ public class SkylinePluginServiceImpl implements SkylinePluginService {
     private static String genFileKey() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.format(new Date()).concat("_").concat(RandomStringUtils.randomNumeric(30)).concat(".jar");
+    }
+
+    private List<SkylinePluginVO> convertList(List<SkylinePluginDomain> items) {
+        return items.stream()
+                .map(item->{
+                    SkylinePluginVO vo = new SkylinePluginVO();
+                    BeanUtils.copyProperties(item,vo);
+                    return vo;
+                }).collect(Collectors.toList());
+
     }
 }
 

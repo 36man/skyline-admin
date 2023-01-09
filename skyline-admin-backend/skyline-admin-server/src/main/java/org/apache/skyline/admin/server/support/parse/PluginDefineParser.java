@@ -1,72 +1,53 @@
 package org.apache.skyline.admin.server.support.parse;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.function.Predicate;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.RandomStringUtils;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.skyline.admin.commons.exception.SkylineAdminErrorCode;
 import org.bravo.gaia.commons.exception.PlatformException;
 import org.bravo.gaia.log.GaiaLogger;
-import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.boot.context.properties.source.ConfigurationPropertySource;
-import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
-import org.springframework.util.AntPathMatcher;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.util.PathMatcher;
+import org.springframework.boot.env.YamlPropertySourceLoader;
+import org.springframework.core.env.PropertySource;
+import org.springframework.core.env.StandardEnvironment;
+import org.springframework.core.io.ByteArrayResource;
 
-import com.alibaba.fastjson2.JSON;
 import com.google.common.base.Preconditions;
 
 /**
  * @author hejianbing
  * @version @Id: PluginDefineParser.java, v 0.1 2022年12月24日 18:35 hejianbing Exp $
  */
+@Slf4j
 public class PluginDefineParser {
 
-    private static PathMatcher  pathMatcher         = new AntPathMatcher();
+    private PluginDefine                          pluginDefine = new PluginDefine();
+    private static final YamlPropertySourceLoader LOADER       = new YamlPropertySourceLoader();
 
-    private static final String PLUGIN_NAME_PATTERN = "**.plugin_define.json";
-
-    private File                jarPath;
+    private final PluginScanner pluginScanner;
 
     public PluginDefineParser(byte[] bytes) {
-        init(bytes);
-    }
-
-    private void init(byte[] bytes) {
-        try{
-            jarPath = File.createTempFile(RandomStringUtils.randomNumeric(30), ".jar");
-            FileCopyUtils.copy(bytes, jarPath);
-        }catch(Exception ex){
-            throw new PlatformException(SkylineAdminErrorCode.PLUGIN_PARSE_ERROR.getCode());
-        }
+        pluginScanner = new PluginScanner(bytes);
     }
 
     public PluginDefine parse() {
         try{
+            this.parsePluginDefine();
 
-            PluginDefine pluginDefine = getPluginDefine();
-
-            this.parsePluginPage(pluginDefine);
+            this.parsePluginPage();
 
             return pluginDefine;
 
         }finally {
-            jarPath.delete();
+            pluginScanner.destroy();
         }
     }
 
-    private void parsePluginPage(PluginDefine pluginDefine) {
-        String content = scanJarContent(jarEntry -> !jarEntry.isDirectory() && jarEntry.getName().endsWith(pluginDefine.getDefinePage()));
+    private void parsePluginPage() {
+        String content = pluginScanner.getContent(name -> name.endsWith(pluginDefine.getDefinePage()));
 
         Preconditions.checkArgument(StringUtils.isNotBlank(content), "plugin definePage is not found");
 
@@ -74,39 +55,27 @@ public class PluginDefineParser {
 
     }
 
-    private PluginDefine getPluginDefine() {
-        String pluginDefineContent = scanJarContent(jarEntry-> !jarEntry.isDirectory() && pathMatcher.match(PLUGIN_NAME_PATTERN,jarEntry.getName()));
+    private void parsePluginDefine() {
+        String pluginDefineContent = pluginScanner.getContent(name -> name.endsWith("skyline.yml")|| name.endsWith("skyline.yaml"));
+        try{
+            Preconditions.checkArgument(StringUtils.isNotBlank(pluginDefineContent), "plugin define not found");
 
-        Preconditions.checkArgument(StringUtils.isNotBlank(pluginDefineContent), "plugin define not found");
+            List<PropertySource<?>> propertySources = LOADER.load("pluginDefine", new ByteArrayResource(pluginDefineContent.getBytes()));
 
-        ConfigurationPropertySource sources = new MapConfigurationPropertySource(JSON.parseObject(pluginDefineContent, Map.class));
+            StandardEnvironment environment = new StandardEnvironment();
 
-        Binder binder = new Binder(sources);
+            propertySources.forEach(propertySource -> {
+                environment.getPropertySources().addFirst(propertySource);
+            });
+            this.pluginDefine = Binder.get(environment).bind("skyline", PluginDefine.class).get();
 
-        PluginDefine pluginDefine = binder.bind("", Bindable.of(PluginDefine.class)).get();
+            pluginDefine.checkNotNull();
 
-        pluginDefine.checkNotNull();
-
-        return pluginDefine;
-
-    }
-
-    public String scanJarContent(Predicate<JarEntry> filter) {
-        try {
-            JarFile jarFile = new JarFile(jarPath);
-            for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements(); ) {
-                JarEntry jarEntry = entries.nextElement();
-                if (filter.test(jarEntry)) {
-                    InputStream inputStream = jarFile.getInputStream(jarEntry);
-                    return IOUtils.toString(inputStream);
-                }
-            }
-        } catch (Exception exception) {
-            GaiaLogger.getGlobalErrorLogger().error("plugin jarEntry forEach error {}", ExceptionUtils.getRootCauseMessage(exception));
+        }catch(Exception ex){
+            GaiaLogger.getGlobalErrorLogger().error("plugin! parse pluginDefine content error {}",
+                    ExceptionUtils.getRootCauseMessage(ex));
 
             throw new PlatformException(SkylineAdminErrorCode.PLUGIN_PARSE_ERROR.getCode());
         }
-        return null;
     }
-
 }

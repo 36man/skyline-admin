@@ -1,6 +1,9 @@
 package org.apache.skyline.admin.server.domain.repository;
 
 import org.apache.skyline.admin.server.domain.entities.SkylinePluginDomain;
+import org.apache.skyline.admin.server.model.query.SkylinePluginQuery;
+import org.bravo.gaia.commons.base.PageBean;
+import org.bravo.gaia.commons.base.PageCondition;
 
 /**
  * @author hejianbing
@@ -15,4 +18,5 @@ public interface SkylinePluginRepository {
 
     SkylinePluginDomain findByClassDefine(String classDefine);
 
+    PageBean<SkylinePluginDomain> pageList(PageCondition<SkylinePluginQuery> condition);
 }

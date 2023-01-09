@@ -2,6 +2,9 @@ package org.apache.skyline.admin.commons.exception;
 
 import lombok.Getter;
 
+import org.bravo.gaia.commons.constant.SystemConstant;
+import org.bravo.gaia.commons.enums.BizDomainName;
+import org.bravo.gaia.commons.enums.BizUnitName;
 import org.bravo.gaia.commons.errorcode.ErrorCode;
 import org.bravo.gaia.commons.errorcode.ErrorCodeType;
 import org.bravo.gaia.commons.errorcode.IErrorCode;
@@ -13,16 +16,16 @@ import org.bravo.gaia.commons.errorcode.IErrorCode;
 
 public enum SkylineAdminErrorCode implements IErrorCode {
 
-    OSS_ERROR("SKYLINE_ADMIN", "SKYLINE_ADMIN", "OSS_OBJECT",
+    OSS_ERROR(BizUnitName.GENERIC.getCode(), BizDomainName.GENERIC.getCode(), SystemConstant.GENERIC_MODULE_NAME,
             "0001", ErrorCodeType.SYS_ERROR, "OSS错误"),
 
-    OSS_OBJECT_NOT_FOUND("SKYLINE", "SKYLINE_ADMIN", "OSS_OBJECT",
+    OSS_OBJECT_NOT_FOUND(BizUnitName.GENERIC.getCode(), BizDomainName.GENERIC.getCode(), SystemConstant.GENERIC_MODULE_NAME,
             "0002", ErrorCodeType.SYS_ERROR, "OSS资源不存在"),
 
-    PLUGIN_PARSE_ERROR("SKYLINE", "SKYLINE_ADMIN", "OSS_OBJECT",
+    PLUGIN_PARSE_ERROR(BizUnitName.GENERIC.getCode(), BizDomainName.GENERIC.getCode(), SystemConstant.GENERIC_MODULE_NAME,
             "0003", ErrorCodeType.SYS_ERROR, "插件解析异常"),
 
-    PLUGIN_UPLOAD_ERROR("SKYLINE", "SKYLINE_ADMIN", "PLUGIN",
+    PLUGIN_UPLOAD_ERROR(BizUnitName.GENERIC.getCode(), BizDomainName.GENERIC.getCode(), SystemConstant.GENERIC_MODULE_NAME,
             "0004", ErrorCodeType.SYS_ERROR, "插件上传异常");
     private String        bizUnitCode;
 

@@ -1,0 +1,16 @@
+skyline:
+    plugin: org.apache.skyline.test.plugin.TestPlugin
+    maintainer: test
+    keywords:
+        - test
+        - test2
+    overview: xxx
+    defineClass: org.apache.skyline.test.plugin.TestPlugin
+    definePage: skyline-plugin.vue
+    ver: 1.0.0-SNAPSHOT
+    features:
+        - test
+        - xxx
+    verTags:
+        - v1
+        - v2

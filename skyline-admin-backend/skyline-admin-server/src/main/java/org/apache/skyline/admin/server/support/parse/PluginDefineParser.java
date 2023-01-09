@@ -25,29 +25,30 @@ import com.google.common.base.Preconditions;
 public class PluginDefineParser {
 
     private PluginDefine                          pluginDefine = new PluginDefine();
-    private static final YamlPropertySourceLoader LOADER       = new YamlPropertySourceLoader();
+    private static final YamlPropertySourceLoader YAML_LOADER  = new YamlPropertySourceLoader();
 
-    private final PluginScanner pluginScanner;
+    private final ByteJarFileLoader jarFileLoader;
 
     public PluginDefineParser(byte[] bytes) {
-        pluginScanner = new PluginScanner(bytes);
+        jarFileLoader = new ByteJarFileLoader(bytes);
     }
 
+
     public PluginDefine parse() {
-        try{
+        try {
             this.parsePluginDefine();
 
             this.parsePluginPage();
 
             return pluginDefine;
 
-        }finally {
-            pluginScanner.destroy();
+        } finally {
+            jarFileLoader.close();
         }
     }
 
     private void parsePluginPage() {
-        String content = pluginScanner.getContent(name -> name.endsWith(pluginDefine.getDefinePage()));
+        String content = jarFileLoader.getContent(pluginDefine.getDefinePage());
 
         Preconditions.checkArgument(StringUtils.isNotBlank(content), "plugin definePage is not found");
 
@@ -56,11 +57,15 @@ public class PluginDefineParser {
     }
 
     private void parsePluginDefine() {
-        String pluginDefineContent = pluginScanner.getContent(name -> name.endsWith("skyline.yml")|| name.endsWith("skyline.yaml"));
-        try{
-            Preconditions.checkArgument(StringUtils.isNotBlank(pluginDefineContent), "plugin define not found");
+        String pluginDefineContent = jarFileLoader.getContent("skyline.yml");
 
-            List<PropertySource<?>> propertySources = LOADER.load("pluginDefine", new ByteArrayResource(pluginDefineContent.getBytes()));
+        if (StringUtils.isBlank(pluginDefineContent)) {
+            pluginDefineContent = jarFileLoader.getContent("skyline.yaml");
+        }
+        Preconditions.checkArgument(StringUtils.isNotBlank(pluginDefineContent), "plugin define not found");
+
+        try{
+            List<PropertySource<?>> propertySources = YAML_LOADER.load("pluginDefine", new ByteArrayResource(pluginDefineContent.getBytes()));
 
             StandardEnvironment environment = new StandardEnvironment();
 

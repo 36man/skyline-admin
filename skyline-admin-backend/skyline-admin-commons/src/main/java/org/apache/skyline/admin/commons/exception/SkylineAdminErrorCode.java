@@ -25,14 +25,17 @@ public enum SkylineAdminErrorCode implements IErrorCode {
     PLUGIN_PARSE_ERROR(BizUnitName.GENERIC.getCode(), BizDomainName.GENERIC.getCode(), SystemConstant.GENERIC_MODULE_NAME,
             "0003", ErrorCodeType.SYS_ERROR, "插件解析异常"),
 
-    PLUGIN_UPLOAD_ERROR(BizUnitName.GENERIC.getCode(), BizDomainName.GENERIC.getCode(), SystemConstant.GENERIC_MODULE_NAME,
-            "0004", ErrorCodeType.SYS_ERROR, "插件上传异常"),
+    JAR_LOAD_ERROR(BizUnitName.GENERIC.getCode(), BizDomainName.GENERIC.getCode(), SystemConstant.GENERIC_MODULE_NAME,
+            "0004", ErrorCodeType.SYS_ERROR, "jar加载异常"),
 
-    NOT_FOUND_ERROR(BizUnitName.GENERIC.getCode(), BizDomainName.GENERIC.getCode(), SystemConstant.GENERIC_MODULE_NAME,
+    PLUGIN_UPLOAD_ERROR(BizUnitName.GENERIC.getCode(), BizDomainName.GENERIC.getCode(), SystemConstant.GENERIC_MODULE_NAME,
             "0005", ErrorCodeType.SYS_ERROR, "插件上传异常"),
 
+    NOT_FOUND_ERROR(BizUnitName.GENERIC.getCode(), BizDomainName.GENERIC.getCode(), SystemConstant.GENERIC_MODULE_NAME,
+            "0006", ErrorCodeType.SYS_ERROR, "访问资源不存在"),
+
     UNIQUE_INDEX_CONFLICT_ERROR(BizUnitName.GENERIC.getCode(), BizDomainName.GENERIC.getCode(), SystemConstant.GENERIC_MODULE_NAME,
-            "0006", ErrorCodeType.SYS_ERROR, "唯一索引异常");
+            "0007", ErrorCodeType.SYS_ERROR, "唯一索引异常");
 
     private String        bizUnitCode;
 

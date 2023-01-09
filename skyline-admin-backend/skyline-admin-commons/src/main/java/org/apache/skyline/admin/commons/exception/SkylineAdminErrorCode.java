@@ -26,7 +26,14 @@ public enum SkylineAdminErrorCode implements IErrorCode {
             "0003", ErrorCodeType.SYS_ERROR, "插件解析异常"),
 
     PLUGIN_UPLOAD_ERROR(BizUnitName.GENERIC.getCode(), BizDomainName.GENERIC.getCode(), SystemConstant.GENERIC_MODULE_NAME,
-            "0004", ErrorCodeType.SYS_ERROR, "插件上传异常");
+            "0004", ErrorCodeType.SYS_ERROR, "插件上传异常"),
+
+    NOT_FOUND_ERROR(BizUnitName.GENERIC.getCode(), BizDomainName.GENERIC.getCode(), SystemConstant.GENERIC_MODULE_NAME,
+            "0005", ErrorCodeType.SYS_ERROR, "插件上传异常"),
+
+    UNIQUE_INDEX_CONFLICT_ERROR(BizUnitName.GENERIC.getCode(), BizDomainName.GENERIC.getCode(), SystemConstant.GENERIC_MODULE_NAME,
+            "0006", ErrorCodeType.SYS_ERROR, "唯一索引异常");
+
     private String        bizUnitCode;
 
     /** 错误码类型 */

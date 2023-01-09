@@ -1,4 +1,4 @@
-package org.apache.skyline.admin.web.mvc.method.annotation;
+package org.apache.skyline.admin.web.config.mvc.method.annotation;
 
 import org.bravo.gaia.commons.base.HttpResult;
 import org.springframework.core.MethodParameter;

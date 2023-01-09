@@ -1,4 +1,4 @@
-package org.apache.skyline.admin.web.mvc.servlet;
+package org.apache.skyline.admin.web.config.mvc.servlet;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.Servlet;

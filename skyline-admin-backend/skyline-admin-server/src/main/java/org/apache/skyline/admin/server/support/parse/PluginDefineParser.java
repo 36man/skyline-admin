@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.collections4.PredicateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.skyline.admin.commons.exception.SkylineAdminErrorCode;
@@ -48,7 +49,7 @@ public class PluginDefineParser {
     }
 
     private void parsePluginPage() {
-        String content = jarFileLoader.getContent(pluginDefine.getDefinePage());
+        String content = jarFileLoader.getContent(name -> name.endsWith(pluginDefine.getDefinePage()));
 
         Preconditions.checkArgument(StringUtils.isNotBlank(content), "plugin definePage is not found");
 
@@ -57,11 +58,9 @@ public class PluginDefineParser {
     }
 
     private void parsePluginDefine() {
-        String pluginDefineContent = jarFileLoader.getContent("skyline.yml");
+        String pluginDefineContent = jarFileLoader.getContent(PredicateUtils.anyPredicate(
+            name -> name.endsWith("skyline.yaml"), name -> name.endsWith("skyline.yml")));
 
-        if (StringUtils.isBlank(pluginDefineContent)) {
-            pluginDefineContent = jarFileLoader.getContent("skyline.yaml");
-        }
         Preconditions.checkArgument(StringUtils.isNotBlank(pluginDefineContent), "plugin define not found");
 
         try{

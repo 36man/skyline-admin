@@ -2,9 +2,11 @@ package org.apache.skyline.admin.server.support.parse;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
 
+import org.apache.commons.collections4.Predicate;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -43,17 +45,18 @@ public class ByteJarFileLoader implements AutoCloseable{
     }
 
 
-    public String getContent(String name) {
+    public String getContent(Predicate<String> predicate) {
         try{
-            ZipEntry entry = jarFile.getEntry(name);
 
-            if (entry == null) {
-                return null;
+            for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
+                JarEntry jarEntry = entries.nextElement();
+                if (!jarEntry.isDirectory() && predicate.evaluate(jarEntry.getName())) {
+                    InputStream inputStream = jarFile.getInputStream(jarEntry);
+                    return IOUtils.toString(inputStream);
+                }
             }
-            InputStream inputStream = jarFile.getInputStream(entry);
 
-            return IOUtils.toString(inputStream);
-
+            return null;
         }catch(Exception ex){
             GaiaLogger.getGlobalErrorLogger().error("plugin!  get content jar error {}", ExceptionUtils.getRootCauseMessage(ex));
 

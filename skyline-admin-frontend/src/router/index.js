@@ -76,14 +76,26 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/demo',
+    component: Layout,
+    children: [
+      {
+        path: 'display.vue',
+        name: 'Form',
+        component: () => import('@/views/demo/index'),
+        meta: { title: '自定义表单1', icon: 'form' }
+      }
+    ]
+  },
+  {
     path: '/demo2',
     component: Layout,
     children: [
       {
-        path: 'index',
+        path: 'display.vue',
         name: 'Form',
-        component: () => import('@/views/demo/demo'),
-        meta: { title: '自定义表单', icon: 'form' }
+        component: () => import('@/views/demo2/index'),
+        meta: { title: '自定义表单2', icon: 'form' }
       }
     ]
   },
@@ -92,7 +104,7 @@ export const constantRoutes = [
     component: Layout,
     children: [
       {
-        path: 'index',
+        path: 'display.vue',
         name: 'Form',
         component: () => import('@/views/form/index'),
         meta: { title: 'Form', icon: 'form' }

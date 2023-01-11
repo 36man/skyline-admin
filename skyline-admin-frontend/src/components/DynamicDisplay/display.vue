@@ -79,9 +79,7 @@
           const Component = Vue.extend( parseStrToFunc );
           this.component = new Component().$mount();
           this.$refs.display.appendChild(this.component.$el);
-        }
 
-        if (this.html !== '' && this.js !== '') {
           if (this.css !== '') {
             const style = document.createElement('style');
             style.lang = 'scss';

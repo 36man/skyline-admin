@@ -140,7 +140,7 @@ const data = Mock.mock({
 })
 module.exports = [
   {
-    url: '/vue-admin-template/demo/vueFile',
+    url: '/demo/vueFile',
     type: 'get',
     response: config => {
       return {

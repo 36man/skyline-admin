@@ -1,8 +1,8 @@
 {
-  "name": "vue-admin-template",
-  "version": "4.4.0",
-  "description": "A vue admin template with Element UI & axios & iconfont & permission control & lint",
-  "author": "Pan <panfree23@gmail.com>",
+  "name": "skyline-admin",
+  "version": "1.0.0",
+  "description": "skyline admin frontend",
+  "author": "org.bravo",
   "scripts": {
     "dev": "vue-cli-service serve",
     "build:prod": "vue-cli-service build",

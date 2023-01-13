@@ -21,7 +21,7 @@
         highlight-current-row
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="40">
+        <el-table-column type="selection" width="50" align="center">
         </el-table-column>
         <el-table-column align="center" label="序号" width="55">
           <template slot-scope="scope">

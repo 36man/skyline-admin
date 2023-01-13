@@ -4,6 +4,7 @@
 <script>
   import Vue from 'vue';
   export default {
+    name: 'DynamicDisplay',
     props: {
       code: {
         type: String,

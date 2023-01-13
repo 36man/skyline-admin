@@ -1,12 +1,12 @@
 <template>
-    <div>
+  <div class="app-container">
       api page
-    </div>
+  </div>
 </template>
 
 <script>
 	export default {
-		name: "index"
+		name: "ApiManage"
 	}
 </script>
 

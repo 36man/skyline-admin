@@ -1,10 +1,10 @@
 <template>
-  <div class="login-container">
-  <display :code="code" ref="display"></display>
-  <div>
-    <el-button type="primary" @click="onSubmit">获取数据</el-button>
-    <el-button @click="add">增加内容</el-button>
-  </div>
+  <div class="app-container">
+    <display :code="code" ref="display"></display>
+    <div>
+      <el-button type="primary" @click="onSubmit">获取数据</el-button>
+      <el-button @click="add">增加内容</el-button>
+    </div>
   </div>
 </template>
 <script>
@@ -12,6 +12,7 @@
   import {getConfig} from "@/api/demo";
 
   export default {
+    name: 'Demo',
     components: {Display},
     data() {
       return {

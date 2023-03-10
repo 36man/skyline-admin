@@ -8,12 +8,14 @@ import javax.validation.ValidatorFactory;
 import org.hibernate.validator.HibernateValidator;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.beanvalidation.SpringConstraintValidatorFactory;
 
 /**
  * @author hejianbing
  * @version @Id: ValidatorBeanConfiguration.java, v 0.1 2023年01月09日 11:51 hejianbing Exp $
  */
+@Configuration
 public class ValidatorBeanConfiguration {
 
     @Bean

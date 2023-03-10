@@ -1,7 +1,7 @@
 package org.apache.skyline.admin.server.service;
 
-import org.apache.skyline.admin.server.model.query.PluginVersionQuery;
-import org.apache.skyline.admin.server.model.vo.PluginVersionVO;
+import org.apache.skyline.admin.commons.model.query.PluginVersionQuery;
+import org.apache.skyline.admin.commons.model.vo.PluginVersionVO;
 
 import java.util.List;
 

@@ -1,24 +1,23 @@
 package org.apache.skyline.admin.server.oss.service.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Date;
-
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.skyline.admin.commons.enums.SymbolKind;
 import org.apache.skyline.admin.server.oss.builder.FileKeyBuilder;
 import org.apache.skyline.admin.server.oss.config.OssProperties;
-import org.apache.skyline.admin.server.oss.request.UploadMultipleFileRequest;
-import org.apache.skyline.admin.server.oss.response.UploadMultipleFileResponse;
+import org.apache.skyline.admin.server.oss.request.ObjectStoreRequest;
+import org.apache.skyline.admin.server.oss.response.ObjectStoreResponse;
 import org.apache.skyline.admin.server.oss.service.AbstractOssService;
 import org.springframework.beans.factory.InitializingBean;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.S3Object;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Date;
 
 /**
  * support Aliyun Huawei jd Tencent Minio
@@ -49,7 +48,7 @@ public class AmazonS3Service extends AbstractOssService implements InitializingB
 
 
     @Override
-    protected UploadMultipleFileResponse doUpload(UploadMultipleFileRequest request) throws Exception {
+    protected ObjectStoreResponse doUpload(ObjectStoreRequest request) throws Exception {
         String fileKey = FileKeyBuilder.newBuilder(ossProperties.getGroup(), request.getFileName()).build();
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
@@ -61,7 +60,7 @@ public class AmazonS3Service extends AbstractOssService implements InitializingB
 
         ossClient.putObject(putObjectRequest);
 
-        UploadMultipleFileResponse result = new UploadMultipleFileResponse();
+        ObjectStoreResponse result = new ObjectStoreResponse();
         result.setFileKey(fileKey);
         result.setBucketName(ossProperties.getBucketName());
 

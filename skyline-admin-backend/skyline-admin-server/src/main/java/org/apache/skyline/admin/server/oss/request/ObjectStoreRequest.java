@@ -7,7 +7,7 @@ import lombok.Data;
  * @version @Id: UploadMultipleFileRequest.java, v 0.1 2022年12月22日 00:23 jojocodex Exp $
  */
 @Data
-public class UploadMultipleFileRequest {
+public class ObjectStoreRequest {
     private String fileName;
     private byte[] bytes;
 

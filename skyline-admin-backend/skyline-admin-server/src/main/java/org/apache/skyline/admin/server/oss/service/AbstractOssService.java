@@ -3,8 +3,8 @@ package org.apache.skyline.admin.server.oss.service;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.skyline.admin.commons.exception.SkylineAdminErrorCode;
-import org.apache.skyline.admin.server.oss.request.UploadMultipleFileRequest;
-import org.apache.skyline.admin.server.oss.response.UploadMultipleFileResponse;
+import org.apache.skyline.admin.server.oss.request.ObjectStoreRequest;
+import org.apache.skyline.admin.server.oss.response.ObjectStoreResponse;
 import org.bravo.gaia.commons.exception.PlatformException;
 import org.bravo.gaia.commons.util.AssertUtil;
 
@@ -21,7 +21,7 @@ public abstract class AbstractOssService implements OssService{
     }
 
     @Override
-    public UploadMultipleFileResponse upload(UploadMultipleFileRequest request) {
+    public ObjectStoreResponse store(ObjectStoreRequest request) {
         AssertUtil.notNull(request, "UploadMultipleFileRequest is null");
 
         AssertUtil.isNotBlank(request.getFileName(),
@@ -46,7 +46,7 @@ public abstract class AbstractOssService implements OssService{
 
     protected abstract byte[] doGetObject(String fileKey) throws Exception;
 
-    protected abstract UploadMultipleFileResponse doUpload(UploadMultipleFileRequest request) throws Exception;
+    protected abstract ObjectStoreResponse doUpload(ObjectStoreRequest request) throws Exception;
 
     protected abstract void doDelete(String fileKey) throws Exception;
 

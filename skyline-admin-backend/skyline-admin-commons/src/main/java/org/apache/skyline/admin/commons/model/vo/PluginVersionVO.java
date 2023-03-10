@@ -1,9 +1,9 @@
-package org.apache.skyline.admin.server.model.vo;
+package org.apache.skyline.admin.commons.model.vo;
+
+import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
-
-import lombok.Data;
 
 /**
  * @author hejianbing
@@ -18,7 +18,7 @@ public class PluginVersionVO {
 
     private List<String>    features;
 
-    private SkylinePluginVO skylinePluginVO;
+    private PluginVO skylinePluginVO;
 
     private String          pageContent;
 

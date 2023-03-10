@@ -1,32 +1,31 @@
 package org.apache.skyline.admin.server.service.impl;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.skyline.admin.commons.model.query.PluginQuery;
+import org.apache.skyline.admin.commons.model.request.GeneratePluginRequest;
+import org.apache.skyline.admin.commons.model.request.PageRequest;
+import org.apache.skyline.admin.commons.model.vo.PluginVO;
 import org.apache.skyline.admin.server.domain.entities.SkylinePluginDomain;
 import org.apache.skyline.admin.server.domain.repository.SkylinePluginRepository;
 import org.apache.skyline.admin.server.domain.request.GenerateSkylinePluginDomainRequest;
 import org.apache.skyline.admin.server.domain.service.SkylinePluginDomainService;
-import org.apache.skyline.admin.server.model.query.SkylinePluginQuery;
-import org.apache.skyline.admin.server.model.request.GenerateSkylinePluginRequest;
-import org.apache.skyline.admin.server.model.vo.SkylinePluginVO;
 import org.apache.skyline.admin.server.oss.builder.FileKeyBuilder;
-import org.apache.skyline.admin.server.oss.request.UploadMultipleFileRequest;
-import org.apache.skyline.admin.server.oss.response.UploadMultipleFileResponse;
+import org.apache.skyline.admin.server.oss.request.ObjectStoreRequest;
+import org.apache.skyline.admin.server.oss.response.ObjectStoreResponse;
 import org.apache.skyline.admin.server.oss.service.OssService;
 import org.apache.skyline.admin.server.service.SkylinePluginService;
 import org.apache.skyline.admin.server.support.parse.PluginDefine;
 import org.apache.skyline.admin.server.support.parse.PluginDefineParser;
-import org.apache.skyline.admin.server.utils.PageCommonUtils;
 import org.bravo.gaia.commons.base.PageBean;
-import org.bravo.gaia.commons.base.PageCondition;
 import org.bravo.gaia.commons.util.DigestUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author hejianbing
@@ -45,12 +44,12 @@ public class SkylinePluginServiceImpl implements SkylinePluginService {
     private SkylinePluginRepository skylinePluginRepository;
 
     @Override
-    public Boolean uploadPlugin(GenerateSkylinePluginRequest pluginRequest) {
+    public Boolean uploadPlugin(GeneratePluginRequest pluginRequest) {
         PluginDefineParser pluginDefineParser = new PluginDefineParser(pluginRequest.getBytes());
 
         PluginDefine pluginDefine = pluginDefineParser.parse();
 
-        UploadMultipleFileResponse uploadMultipleFileResponse = this.storeToOss(pluginDefine, pluginRequest);
+        ObjectStoreResponse uploadMultipleFileResponse = this.storeToOss(pluginDefine, pluginRequest);
 
         GenerateSkylinePluginDomainRequest pluginDomainRequest = GenerateSkylinePluginDomainRequest.builder()
                 .fileKey(uploadMultipleFileResponse.getFileKey())
@@ -65,10 +64,12 @@ public class SkylinePluginServiceImpl implements SkylinePluginService {
     }
 
     @Override
-    public PageBean<SkylinePluginVO> pageList(PageCondition<SkylinePluginQuery> condition) {
-        PageBean<SkylinePluginDomain> pageBean = skylinePluginRepository.pageList(condition);
+    public PageBean<PluginVO> pageList(PageRequest<PluginQuery> condition) {
+        //PageBean<SkylinePluginDomain> pageBean = skylinePluginRepository.pageList(condition);
 
-        return PageCommonUtils.convert(pageBean,this::convertList);
+        //return PageCommonUtils.convert(pageBean,this::convertList);
+
+        return null;
     }
 
     @Override
@@ -87,17 +88,17 @@ public class SkylinePluginServiceImpl implements SkylinePluginService {
     }
 
 
-    private UploadMultipleFileResponse storeToOss(PluginDefine pluginDefine, GenerateSkylinePluginRequest pluginRequest) {
+    private ObjectStoreResponse storeToOss(PluginDefine pluginDefine, GeneratePluginRequest pluginRequest) {
         String fileKey = genFileKey();
 
-        UploadMultipleFileRequest uploadObjectRequest = new UploadMultipleFileRequest();
+        ObjectStoreRequest uploadObjectRequest = new ObjectStoreRequest();
 
         uploadObjectRequest.setBytes(pluginRequest.getBytes());
         uploadObjectRequest.setContentType(pluginRequest.getContentType());
         uploadObjectRequest.setFileName(FileKeyBuilder.newBuilder(pluginDefine.getPluginName(),fileKey).build());
         uploadObjectRequest.setSize(pluginRequest.getSize());
 
-        return ossService.upload(uploadObjectRequest);
+        return ossService.store(uploadObjectRequest);
     }
 
     private static String genFileKey() {
@@ -105,10 +106,10 @@ public class SkylinePluginServiceImpl implements SkylinePluginService {
         return sdf.format(new Date()).concat("_").concat(RandomStringUtils.randomNumeric(30)).concat(".jar");
     }
 
-    private List<SkylinePluginVO> convertList(List<SkylinePluginDomain> items) {
+    private List<PluginVO> convertList(List<SkylinePluginDomain> items) {
         return items.stream()
                 .map(item->{
-                    SkylinePluginVO vo = new SkylinePluginVO();
+                    PluginVO vo = new PluginVO();
                     BeanUtils.copyProperties(item,vo);
                     return vo;
                 }).collect(Collectors.toList());

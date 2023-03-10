@@ -1,7 +1,7 @@
 package org.apache.skyline.admin.server.oss.service;
 
-import org.apache.skyline.admin.server.oss.request.UploadMultipleFileRequest;
-import org.apache.skyline.admin.server.oss.response.UploadMultipleFileResponse;
+import org.apache.skyline.admin.server.oss.request.ObjectStoreRequest;
+import org.apache.skyline.admin.server.oss.response.ObjectStoreResponse;
 
 /**
  * @author hejianbing
@@ -9,7 +9,7 @@ import org.apache.skyline.admin.server.oss.response.UploadMultipleFileResponse;
  */
 public interface OssService {
 
-    UploadMultipleFileResponse upload(UploadMultipleFileRequest request);
+    ObjectStoreResponse store(ObjectStoreRequest request);
 
     byte[] getObject(String fileKey);
 

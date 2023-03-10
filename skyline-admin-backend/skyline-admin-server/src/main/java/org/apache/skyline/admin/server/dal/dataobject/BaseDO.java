@@ -14,4 +14,6 @@ public class BaseDO {
     private Date updateTime;
 
     private Date createTime;
+
+    private Boolean deleted;
 }

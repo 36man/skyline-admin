@@ -1,4 +1,4 @@
-package org.apache.skyline.admin.server.model.query;
+package org.apache.skyline.admin.commons.model.query;
 
 import lombok.Data;
 

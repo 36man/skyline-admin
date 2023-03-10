@@ -1,20 +1,20 @@
 package org.apache.skyline.admin.server.oss.service.impl;
 
-import java.io.File;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.skyline.admin.commons.exception.SkylineAdminErrorCode;
 import org.apache.skyline.admin.server.oss.builder.FileKeyBuilder;
 import org.apache.skyline.admin.server.oss.config.OssProperties;
-import org.apache.skyline.admin.server.oss.request.UploadMultipleFileRequest;
-import org.apache.skyline.admin.server.oss.response.UploadMultipleFileResponse;
+import org.apache.skyline.admin.server.oss.request.ObjectStoreRequest;
+import org.apache.skyline.admin.server.oss.response.ObjectStoreResponse;
 import org.apache.skyline.admin.server.oss.service.AbstractOssService;
 import org.aspectj.util.FileUtil;
 import org.bravo.gaia.commons.exception.PlatformException;
 import org.bravo.gaia.commons.util.AssertUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.FileCopyUtils;
+
+import java.io.File;
 
 /**
  * @author hejianbing
@@ -34,7 +34,7 @@ public class LocalStorageService extends AbstractOssService implements Initializ
     }
 
     @Override
-    protected UploadMultipleFileResponse doUpload(UploadMultipleFileRequest request) throws Exception {
+    protected ObjectStoreResponse doUpload(ObjectStoreRequest request) throws Exception {
         FileKeyBuilder keyBuilder = FileKeyBuilder.newBuilder(ossProperties.getGroup(), request.getFileName());
 
         String fileKey = keyBuilder.build();
@@ -48,7 +48,7 @@ public class LocalStorageService extends AbstractOssService implements Initializ
 
         String accessUrl = ossProperties.getEndpoint()+fileKey;
 
-        UploadMultipleFileResponse result = new UploadMultipleFileResponse();
+        ObjectStoreResponse result = new ObjectStoreResponse();
 
         result.setFileKey(fileKey);
         result.setResourceUrl(accessUrl);

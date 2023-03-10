@@ -2,7 +2,7 @@ package org.apache.skyline.admin.web.controller;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.skyline.admin.commons.exception.SkylineAdminErrorCode;
-import org.apache.skyline.admin.server.model.request.GenerateSkylinePluginRequest;
+import org.apache.skyline.admin.commons.model.request.GeneratePluginRequest;
 import org.apache.skyline.admin.server.service.SkylinePluginService;
 import org.bravo.gaia.commons.exception.PlatformException;
 import org.bravo.gaia.log.GaiaLogger;
@@ -27,7 +27,7 @@ public class SkylinePluginController {
     @PostMapping
     public boolean upload(@RequestParam("file") CommonsMultipartFile multipartFile){
         try{
-            GenerateSkylinePluginRequest pluginRequest = new GenerateSkylinePluginRequest();
+            GeneratePluginRequest pluginRequest = new GeneratePluginRequest();
             pluginRequest.setFileName(multipartFile.getOriginalFilename());
             pluginRequest.setContentType(multipartFile.getContentType());
             pluginRequest.setSize(multipartFile.getSize());

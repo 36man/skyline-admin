@@ -1,4 +1,4 @@
-package org.apache.skyline.admin.server.model.vo;
+package org.apache.skyline.admin.commons.model.vo;
 
 import lombok.Data;
 
@@ -6,10 +6,10 @@ import java.util.Date;
 
 /**
  * @author hejianbing
- * @version @Id: SkylinePluginVO.java, v 0.1 2022年12月27日 10:40 hejianbing Exp $
+ * @version @Id: PluginVO.java, v 0.1 2022年12月27日 10:40 hejianbing Exp $
  */
 @Data
-public class SkylinePluginVO {
+public class PluginVO {
 
     private Long   id;
 

@@ -23,7 +23,7 @@ import org.apache.skyline.admin.commons.model.request.PageRequest;
 import org.apache.skyline.admin.commons.model.vo.ClusterVO;
 import org.apache.skyline.admin.server.domain.entities.ClusterDomain;
 import org.apache.skyline.admin.server.domain.repository.ClusterRepository;
-import org.apache.skyline.admin.server.model.query.ClusterQueryCondition;
+import org.apache.skyline.admin.server.model.query.ClusterConditionQuery;
 import org.apache.skyline.admin.server.service.ClusterService;
 import org.apache.skyline.admin.server.utils.PageCommonUtils;
 import org.bravo.gaia.commons.base.PageBean;
@@ -46,14 +46,14 @@ public class ClusterServiceImpl implements ClusterService {
     public boolean create(ClusterRequest request){
         ClusterDomain clusterDomain = this.convert(request);
 
-        this.throwIfExists(ClusterQueryCondition.builder().domain(request.getDomain()).build(), "domain is exists");
+        this.throwIfExists(ClusterConditionQuery.builder().domain(request.getClusterName()).build(), "domain is exists");
 
         return clusterRepository.save(clusterDomain);
     }
 
     @Override
     public boolean update(Long id, ClusterRequest request) {
-        ClusterQueryCondition queryCluster = ClusterQueryCondition.builder()
+        ClusterConditionQuery queryCluster = ClusterConditionQuery.builder()
                 .id(id)
                 .build();
 
@@ -75,7 +75,7 @@ public class ClusterServiceImpl implements ClusterService {
     public PageBean<ClusterVO> pageList(PageRequest<ClusterQuery> pageRequest) {
         ClusterQuery condition = pageRequest.getCondition();
 
-        ClusterQueryCondition queryCondition = ClusterQueryCondition.builder()
+        ClusterConditionQuery queryCondition = ClusterConditionQuery.builder()
                 .domain(condition.getDomain())
                 .clusterName(condition.getClusterName())
                 .businessName(condition.getBusinessName())
@@ -99,7 +99,7 @@ public class ClusterServiceImpl implements ClusterService {
         return clusterDomain;
     }
 
-    private void throwIfExists(ClusterQueryCondition queryClusterCondition, String message) {
+    private void throwIfExists(ClusterConditionQuery queryClusterCondition, String message) {
         boolean isExists = clusterRepository.isExists(queryClusterCondition);
         AssertUtil.isTrue(isExists, message);
 

@@ -27,7 +27,7 @@ import org.springframework.boot.context.properties.PropertyMapper;
 @Data
 @Accessors(chain = true)
 @Builder
-public class ClusterQueryCondition {
+public class ClusterConditionQuery {
 
     private Long id;
 
@@ -47,7 +47,6 @@ public class ClusterQueryCondition {
         propertyMapper.from(this.getDomain()).whenHasText().to(domain-> condition.eq(ClusterDO::getDomain,domain));
         propertyMapper.from(this.getClusterName()).whenHasText().to(clusterName-> condition.eq(ClusterDO::getClusterName,clusterName));
         propertyMapper.from(this.getBusinessName()).whenHasText().to(businessName-> condition.like(ClusterDO::getBusinessName,businessName));
-
 
         return condition;
     }

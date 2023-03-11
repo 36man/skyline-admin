@@ -18,25 +18,25 @@
 package org.apache.skyline.admin.server.domain.repository;
 
 import org.apache.skyline.admin.server.domain.entities.ClusterDomain;
-import org.apache.skyline.admin.server.model.query.ClusterQueryCondition;
+import org.apache.skyline.admin.server.model.query.ClusterConditionQuery;
 import org.bravo.gaia.commons.base.PageBean;
 
 import java.util.List;
 
 public interface ClusterRepository {
-    boolean isExists(ClusterQueryCondition queryCondition);
+    boolean isExists(ClusterConditionQuery conditionQuery);
 
     boolean save(ClusterDomain clusterDO);
 
-    ClusterDomain findOne(ClusterQueryCondition queryCondition);
+    ClusterDomain findOne(ClusterConditionQuery conditionQuery);
 
-    ClusterDomain findOneIfExists(ClusterQueryCondition queryCondition);
+    ClusterDomain findOneIfExists(ClusterConditionQuery conditionQuery);
 
-    List<ClusterDomain> findList(ClusterQueryCondition queryCondition);
+    List<ClusterDomain> findList(ClusterConditionQuery conditionQuery);
 
-    boolean update(ClusterQueryCondition queryCondition, ClusterDomain clusterDomain);
+    boolean update(ClusterConditionQuery conditionQuery, ClusterDomain clusterDomain);
 
     boolean deleteById(Long id);
 
-    PageBean<ClusterDomain> pageQuery(ClusterQueryCondition queryCondition, Integer pageNo, Integer pageSize);
+    PageBean<ClusterDomain> pageQuery(ClusterConditionQuery conditionQuery, Integer pageNo, Integer pageSize);
 }

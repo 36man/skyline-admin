@@ -24,7 +24,7 @@ import org.apache.skyline.admin.server.dal.dao.ClusterDao;
 import org.apache.skyline.admin.server.dal.dataobject.ClusterDO;
 import org.apache.skyline.admin.server.domain.entities.ClusterDomain;
 import org.apache.skyline.admin.server.domain.repository.ClusterRepository;
-import org.apache.skyline.admin.server.model.query.ClusterQueryCondition;
+import org.apache.skyline.admin.server.model.query.ClusterConditionQuery;
 import org.apache.skyline.admin.server.utils.PageCommonUtils;
 import org.bravo.gaia.commons.base.PageBean;
 import org.bravo.gaia.commons.util.AssertUtil;
@@ -45,8 +45,8 @@ public class ClusterRepositoryImpl implements ClusterRepository {
     private ClusterDao clusterDao;
 
     @Override
-    public boolean isExists(ClusterQueryCondition queryCondition) {
-        return CollectionUtils.isNotEmpty(selectList(queryCondition));
+    public boolean isExists(ClusterConditionQuery conditionQuery) {
+        return CollectionUtils.isNotEmpty(selectList(conditionQuery));
     }
 
     @Override
@@ -55,13 +55,13 @@ public class ClusterRepositoryImpl implements ClusterRepository {
     }
 
     @Override
-    public ClusterDomain findOne(ClusterQueryCondition queryCondition) {
-        return selectList(queryCondition).get(0);
+    public ClusterDomain findOne(ClusterConditionQuery conditionQuery) {
+        return selectList(conditionQuery).get(0);
     }
 
     @Override
-    public ClusterDomain findOneIfExists(ClusterQueryCondition queryCondition) {
-        List<ClusterDomain> result = selectList(queryCondition);
+    public ClusterDomain findOneIfExists(ClusterConditionQuery conditionQuery) {
+        List<ClusterDomain> result = selectList(conditionQuery);
 
         AssertUtil.notEmpty(result, "illegal Argument");
 
@@ -69,12 +69,12 @@ public class ClusterRepositoryImpl implements ClusterRepository {
     }
 
     @Override
-    public List<ClusterDomain> findList(ClusterQueryCondition queryCondition) {
-        return selectList(queryCondition);
+    public List<ClusterDomain> findList(ClusterConditionQuery conditionQuery) {
+        return selectList(conditionQuery);
     }
 
     @Override
-    public boolean update(ClusterQueryCondition queryCluster, ClusterDomain clusterDomain) {
+    public boolean update(ClusterConditionQuery queryCluster, ClusterDomain clusterDomain) {
         return doExecute(clusterDomain, item -> clusterDao.update(item, queryCluster.buildQuery()) > 0);
     }
 
@@ -84,17 +84,17 @@ public class ClusterRepositoryImpl implements ClusterRepository {
     }
 
     @Override
-    public PageBean<ClusterDomain> pageQuery(ClusterQueryCondition queryCondition, Integer pageNo, Integer pageSize) {
+    public PageBean<ClusterDomain> pageQuery(ClusterConditionQuery conditionQuery, Integer pageNo, Integer pageSize) {
         Page<ClusterDO> page = new Page<>();
         page.setCurrent(pageNo);
         page.setSize(pageSize);
 
-        Page<ClusterDO> result = clusterDao.selectPage(page, queryCondition.buildQuery());
+        Page<ClusterDO> result = clusterDao.selectPage(page, conditionQuery.buildQuery());
 
         return PageCommonUtils.convert(result, items -> convert(items));
     }
 
-    public List<ClusterDomain> selectList(ClusterQueryCondition queryCluster) {
+    public List<ClusterDomain> selectList(ClusterConditionQuery queryCluster) {
         LambdaQueryWrapper<ClusterDO> condition = queryCluster.buildQuery();
         List<ClusterDO> cluserList = clusterDao.selectList(condition);
 
@@ -104,6 +104,8 @@ public class ClusterRepositoryImpl implements ClusterRepository {
                 .map(this::convert)
                 .collect(Collectors.toList());
     }
+
+
 
     private ClusterDomain convert(ClusterDO clusterDO){
         if (null == clusterDO) {
@@ -136,7 +138,6 @@ public class ClusterRepositoryImpl implements ClusterRepository {
 
     private <T> T doExecute(ClusterDomain clusterDomain, Function<ClusterDO, T> handle) {
         AssertUtil.notNull(clusterDomain, "clusterDomain is null");
-
 
         ClusterDO clusterDO = convert(clusterDomain);
 

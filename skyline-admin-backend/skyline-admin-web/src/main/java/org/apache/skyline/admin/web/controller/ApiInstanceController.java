@@ -15,36 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.server.domain.entities;
+package org.apache.skyline.admin.web.controller;
 
-import lombok.Data;
-
-@Data
-public class ClusterDomain {
-
-    private Long id;
-
-    private String clusterName;
-
-    private String domain;
-
-    private String businessName;
-
-    private Integer instanceCount;
-
-    private String configShare;
-
-    private String configUrl;
-
-    private String configUser;
-
-    private String configSecret;
-
-    private String useQuota;
-
-    private String configPassword;
-
-    private String meno;
-
-
+public class ApiInstanceController {
 }

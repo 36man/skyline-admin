@@ -7,7 +7,7 @@ import org.apache.skyline.admin.commons.model.query.PluginQuery;
 import org.apache.skyline.admin.commons.model.request.PageRequest;
 import org.apache.skyline.admin.server.dal.dao.SkylinePluginDao;
 import org.apache.skyline.admin.server.dal.dataobject.PluginDO;
-import org.apache.skyline.admin.server.domain.entities.SkylinePluginDomain;
+import org.apache.skyline.admin.server.domain.model.PluginDomain;
 import org.apache.skyline.admin.server.domain.repository.SkylinePluginRepository;
 import org.apache.skyline.admin.server.utils.PageCommonUtils;
 import org.bravo.gaia.commons.base.PageBean;
@@ -34,7 +34,7 @@ public class SkylinePluginRepositoryImpl implements SkylinePluginRepository {
     private IdGenerator<Long> idGenerator;
 
     @Override
-    public Long create(SkylinePluginDomain skylinePluginDomain) {
+    public Long create(PluginDomain skylinePluginDomain) {
         PluginDO pluginDO = this.convertDO(skylinePluginDomain);
 
         pluginDO.setId(idGenerator.generate());
@@ -45,7 +45,7 @@ public class SkylinePluginRepositoryImpl implements SkylinePluginRepository {
     }
 
     @Override
-    public boolean updateById(SkylinePluginDomain skylinePluginDomain) {
+    public boolean updateById(PluginDomain skylinePluginDomain) {
 
         PluginDO pluginDO = convertDO(skylinePluginDomain);
 
@@ -57,7 +57,7 @@ public class SkylinePluginRepositoryImpl implements SkylinePluginRepository {
     }
 
     @Override
-    public SkylinePluginDomain findByClassDefine(String classDefine) {
+    public PluginDomain findByClassDefine(String classDefine) {
         LambdaQueryWrapper<PluginDO> condition = new LambdaQueryWrapper<>();
         condition.eq(PluginDO::getClassDefine, classDefine);
 
@@ -67,7 +67,7 @@ public class SkylinePluginRepositoryImpl implements SkylinePluginRepository {
     }
 
     @Override
-    public PageBean<SkylinePluginDomain> pageList(PageRequest<PluginQuery> condition) {
+    public PageBean<PluginDomain> pageList(PageRequest<PluginQuery> condition) {
         Page<PluginDO> page = new Page<>();
         page.setCurrent(condition.getPageNo());
         page.setSize(condition.getPageSize());
@@ -82,7 +82,7 @@ public class SkylinePluginRepositoryImpl implements SkylinePluginRepository {
         return PageCommonUtils.convert(result,this::convertDomain);
     }
 
-    private PluginDO convertDO(SkylinePluginDomain skylinePluginDomain) {
+    private PluginDO convertDO(PluginDomain skylinePluginDomain) {
         PluginDO pluginDO = new PluginDO();
         pluginDO.setMaintainer(skylinePluginDomain.getMaintainer());
         pluginDO.setClassDefine(skylinePluginDomain.getDefineClass());
@@ -91,7 +91,7 @@ public class SkylinePluginRepositoryImpl implements SkylinePluginRepository {
         return pluginDO;
     }
 
-    private  List<SkylinePluginDomain> convertDomain(List<PluginDO> items) {
+    private  List<PluginDomain> convertDomain(List<PluginDO> items) {
         if (items == null) {
             return null;
         }
@@ -99,12 +99,12 @@ public class SkylinePluginRepositoryImpl implements SkylinePluginRepository {
 
     }
 
-    private static SkylinePluginDomain convertDomain(PluginDO item) {
+    private static PluginDomain convertDomain(PluginDO item) {
         if (item == null) {
             return null;
         }
 
-        SkylinePluginDomain skylinePluginDomain = new SkylinePluginDomain();
+        PluginDomain skylinePluginDomain = new PluginDomain();
 
         BeanUtils.copyProperties(item, skylinePluginDomain);
 

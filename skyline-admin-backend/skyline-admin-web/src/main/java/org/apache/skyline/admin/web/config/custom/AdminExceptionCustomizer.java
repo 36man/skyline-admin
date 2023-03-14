@@ -1,11 +1,6 @@
-package org.apache.skyline.admin.web.config.mvc.method.annotation;
+package org.apache.skyline.admin.web.config.custom;
 
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.validation.ConstraintViolationException;
-
-import org.apache.skyline.admin.commons.exception.SkylineAdminErrorCode;
+import org.apache.skyline.admin.commons.exception.AdminErrorCode;
 import org.bravo.gaia.commons.base.HttpResult;
 import org.bravo.gaia.commons.enums.SystemErrorCodeEnum;
 import org.bravo.gaia.commons.errorcode.ErrorCode;
@@ -18,14 +13,18 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.validation.ConstraintViolationException;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 /**
  * @author hejianbing
- * @version @Id: SkylineAdminExceptionHandler.java, v 0.1 2023年01月09日 10:56 hejianbing Exp $
+ * @version @Id: AdminExceptionCustomizer.java, v 0.1 2023年01月09日 10:56 hejianbing Exp $
  */
 
 @ResponseBody
 @ControllerAdvice
-public class SkylineAdminExceptionHandler {
+public class AdminExceptionCustomizer {
 
 
     @ExceptionHandler({
@@ -34,7 +33,8 @@ public class SkylineAdminExceptionHandler {
             DuplicateKeyException.class,
             MethodArgumentNotValidException.class,
             ConstraintViolationException.class,
-            PlatformException.class
+            PlatformException.class,
+            Exception.class
     })
     protected HttpResult handleException(final Exception exception) {
         GaiaLogger.getGlobalErrorLogger().error(exception.getMessage());
@@ -44,11 +44,11 @@ public class SkylineAdminExceptionHandler {
         }
 
         if (exception instanceof NullPointerException) {
-            return HttpResult.fail(SystemErrorCodeEnum.SYSTEM_404.getCode(),exception.getMessage());
+            return HttpResult.fail(SystemErrorCodeEnum.PARAM_ILLEGAL.getCode(),exception.getMessage());
         }
 
         if (exception instanceof DuplicateKeyException) {
-            return HttpResult.fail(SkylineAdminErrorCode.UNIQUE_INDEX_CONFLICT_ERROR.getCode(),exception.getMessage());
+            return HttpResult.fail(AdminErrorCode.UNIQUE_INDEX_CONFLICT_ERROR.getCode(),exception.getMessage());
         }
 
         if (exception instanceof MethodArgumentNotValidException) {
@@ -72,11 +72,14 @@ public class SkylineAdminExceptionHandler {
             return HttpResult.fail(SystemErrorCodeEnum.PARAM_ILLEGAL.getCode(),message);
         }
 
-        PlatformException ex = (PlatformException) exception;
+        if (exception instanceof PlatformException) {
+            PlatformException ex = (PlatformException) exception;
 
-        ErrorCode errorCode = ex.getErrorContext().getCurrentErrorCode();
+            ErrorCode errorCode = ex.getErrorContext().getCurrentErrorCode();
 
-        return HttpResult.fail(errorCode,ex.getMessage());
+            return HttpResult.fail(errorCode,ex.getMessage());
+        }
+        return HttpResult.fail(SystemErrorCodeEnum.SYSTEM_ERROR.getCode(),exception.getMessage());
 
 
     }

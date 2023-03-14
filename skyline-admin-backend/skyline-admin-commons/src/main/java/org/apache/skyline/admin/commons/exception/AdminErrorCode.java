@@ -11,10 +11,10 @@ import org.bravo.gaia.commons.errorcode.IErrorCode;
 
 /**
  * @author jojocodex
- * @version @Id: SkylineAdminErrorCode.java, v 0.1 2022年12月22日 09:59 jojocodex Exp $
+ * @version @Id: AdminErrorCode.java, v 0.1 2022年12月22日 09:59 jojocodex Exp $
  */
 
-public enum SkylineAdminErrorCode implements IErrorCode {
+public enum AdminErrorCode implements IErrorCode {
 
     OSS_ERROR(BizUnitName.GENERIC.getCode(), BizDomainName.GENERIC.getCode(), SystemConstant.GENERIC_MODULE_NAME,
             "0001", ErrorCodeType.SYS_ERROR, "OSS错误"),
@@ -37,6 +37,7 @@ public enum SkylineAdminErrorCode implements IErrorCode {
     UNIQUE_INDEX_CONFLICT_ERROR(BizUnitName.GENERIC.getCode(), BizDomainName.GENERIC.getCode(), SystemConstant.GENERIC_MODULE_NAME,
             "0007", ErrorCodeType.SYS_ERROR, "唯一索引异常");
 
+
     private String        bizUnitCode;
 
     /** 错误码类型 */
@@ -56,9 +57,9 @@ public enum SkylineAdminErrorCode implements IErrorCode {
     /** 错误描述 */
     private String        errorDesc;
 
-    SkylineAdminErrorCode(String bizUnitCode, String bizDomainCode,
-                        String bizModuleCode, String codeSequence,
-                        ErrorCodeType codeType, String errorDesc) {
+    AdminErrorCode(String bizUnitCode, String bizDomainCode,
+                   String bizModuleCode, String codeSequence,
+                   ErrorCodeType codeType, String errorDesc) {
         this.bizUnitCode = bizUnitCode;
         this.bizDomainCode = bizDomainCode;
         this.bizModuleCode = bizModuleCode;

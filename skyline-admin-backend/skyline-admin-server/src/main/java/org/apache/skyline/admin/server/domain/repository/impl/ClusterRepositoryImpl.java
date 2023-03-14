@@ -22,9 +22,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.skyline.admin.server.dal.dao.ClusterDao;
 import org.apache.skyline.admin.server.dal.dataobject.ClusterDO;
-import org.apache.skyline.admin.server.domain.entities.ClusterDomain;
+import org.apache.skyline.admin.server.domain.model.ClusterDomain;
 import org.apache.skyline.admin.server.domain.repository.ClusterRepository;
-import org.apache.skyline.admin.server.model.query.ClusterConditionQuery;
+import org.apache.skyline.admin.server.pojo.query.ClusterCombineQuery;
 import org.apache.skyline.admin.server.utils.PageCommonUtils;
 import org.bravo.gaia.commons.base.PageBean;
 import org.bravo.gaia.commons.util.AssertUtil;
@@ -45,8 +45,8 @@ public class ClusterRepositoryImpl implements ClusterRepository {
     private ClusterDao clusterDao;
 
     @Override
-    public boolean isExists(ClusterConditionQuery conditionQuery) {
-        return CollectionUtils.isNotEmpty(selectList(conditionQuery));
+    public boolean isExists(ClusterCombineQuery combineQuery) {
+        return CollectionUtils.isNotEmpty(selectList(combineQuery));
     }
 
     @Override
@@ -55,27 +55,27 @@ public class ClusterRepositoryImpl implements ClusterRepository {
     }
 
     @Override
-    public ClusterDomain findOne(ClusterConditionQuery conditionQuery) {
-        return selectList(conditionQuery).get(0);
+    public ClusterDomain findOne(ClusterCombineQuery combineQuery) {
+        return selectList(combineQuery).get(0);
     }
 
     @Override
-    public ClusterDomain findOneIfExists(ClusterConditionQuery conditionQuery) {
-        List<ClusterDomain> result = selectList(conditionQuery);
+    public ClusterDomain findOneIfExists(ClusterCombineQuery combineQuery) {
+        List<ClusterDomain> result = selectList(combineQuery);
 
-        AssertUtil.notEmpty(result, "illegal Argument");
+        AssertUtil.notEmpty(result, "Illegal argument");
 
         return result.get(0);
     }
 
     @Override
-    public List<ClusterDomain> findList(ClusterConditionQuery conditionQuery) {
-        return selectList(conditionQuery);
+    public List<ClusterDomain> findList(ClusterCombineQuery combineQuery) {
+        return selectList(combineQuery);
     }
 
     @Override
-    public boolean update(ClusterConditionQuery queryCluster, ClusterDomain clusterDomain) {
-        return doExecute(clusterDomain, item -> clusterDao.update(item, queryCluster.buildQuery()) > 0);
+    public boolean update(ClusterCombineQuery combineQuery, ClusterDomain clusterDomain) {
+        return doExecute(clusterDomain, item -> clusterDao.update(item, combineQuery.toQuery()) > 0);
     }
 
     @Override
@@ -84,18 +84,18 @@ public class ClusterRepositoryImpl implements ClusterRepository {
     }
 
     @Override
-    public PageBean<ClusterDomain> pageQuery(ClusterConditionQuery conditionQuery, Integer pageNo, Integer pageSize) {
+    public PageBean<ClusterDomain> pageQuery(ClusterCombineQuery combineQuery, Integer pageNo, Integer pageSize) {
         Page<ClusterDO> page = new Page<>();
         page.setCurrent(pageNo);
         page.setSize(pageSize);
 
-        Page<ClusterDO> result = clusterDao.selectPage(page, conditionQuery.buildQuery());
+        Page<ClusterDO> result = clusterDao.selectPage(page, combineQuery.toQuery());
 
         return PageCommonUtils.convert(result, items -> convert(items));
     }
 
-    public List<ClusterDomain> selectList(ClusterConditionQuery queryCluster) {
-        LambdaQueryWrapper<ClusterDO> condition = queryCluster.buildQuery();
+    public List<ClusterDomain> selectList(ClusterCombineQuery combineQuery) {
+        LambdaQueryWrapper<ClusterDO> condition = combineQuery.toQuery();
         List<ClusterDO> cluserList = clusterDao.selectList(condition);
 
         return Optional.ofNullable(cluserList)

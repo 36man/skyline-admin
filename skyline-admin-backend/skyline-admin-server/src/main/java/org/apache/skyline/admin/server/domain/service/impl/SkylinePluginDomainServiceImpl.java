@@ -1,6 +1,6 @@
 package org.apache.skyline.admin.server.domain.service.impl;
 
-import org.apache.skyline.admin.server.domain.entities.SkylinePluginDomain;
+import org.apache.skyline.admin.server.domain.model.PluginDomain;
 import org.apache.skyline.admin.server.domain.repository.PluginVersionRepository;
 import org.apache.skyline.admin.server.domain.repository.SkylinePluginRepository;
 import org.apache.skyline.admin.server.domain.request.GenerateSkylinePluginDomainRequest;
@@ -27,12 +27,12 @@ public class SkylinePluginDomainServiceImpl implements SkylinePluginDomainServic
     @Transactional
     @Override
     public Long createPlugin(GenerateSkylinePluginDomainRequest pluginDomainRequest) {
-        SkylinePluginDomain skylinePlugin = pluginDomainRequest.getPluginDomain();
+        PluginDomain skylinePlugin = pluginDomainRequest.getPluginDomain();
 
         try {
             skylinePluginRepository.create(skylinePlugin);
         } catch (DuplicateKeyException exception) {
-            SkylinePluginDomain pluginDomain = skylinePluginRepository.findByClassDefine(skylinePlugin.getDefineClass());
+            PluginDomain pluginDomain = skylinePluginRepository.findByClassDefine(skylinePlugin.getDefineClass());
 
             skylinePlugin.setId(pluginDomain.getId());
 

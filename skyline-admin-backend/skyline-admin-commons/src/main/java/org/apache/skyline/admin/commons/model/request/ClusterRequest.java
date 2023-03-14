@@ -18,38 +18,50 @@
 package org.apache.skyline.admin.commons.model.request;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 public class ClusterRequest {
 
     @NotBlank
+    @Length(max = 50)
     private String clusterName;
 
     @NotBlank
+    @Length(max = 50)
     private String domain;
 
     @NotBlank
-    private String businessName;
+    @Length(max = 50)
+    private String bizKey;
 
-    @NotBlank
+    @NotNull
+    @Max(100)
     private Integer instanceCount;
 
-    @NotBlank
-    private String configShare;
+    @NotNull
+    private Boolean configShare;
 
-    @NotBlank
     private String configUrl;
 
-    @NotBlank
     private String configSecret;
 
+    private Map<String, Object> configItem = new HashMap<>();
+
     @NotBlank
+    @Length(max = 50)
     private String configUser;
 
     @NotBlank
+    @Length(max = 50)
     private String useQuota;
 
+    @Length(max = 100)
     private String meno;
 }

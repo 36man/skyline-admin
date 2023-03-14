@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.server.model.query;
+package org.apache.skyline.admin.server.pojo.query;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.Builder;
@@ -27,7 +27,7 @@ import org.springframework.boot.context.properties.PropertyMapper;
 @Data
 @Accessors(chain = true)
 @Builder
-public class ClusterConditionQuery {
+public class ClusterCombineQuery {
 
     private Long id;
 
@@ -35,18 +35,19 @@ public class ClusterConditionQuery {
 
     private String clusterName;
 
-    private String businessName;
+    private String bizKey;
 
 
-    public LambdaQueryWrapper<ClusterDO> buildQuery(){
+    public LambdaQueryWrapper<ClusterDO> toQuery(){
 
         LambdaQueryWrapper<ClusterDO> condition = new LambdaQueryWrapper<ClusterDO>();
 
         PropertyMapper propertyMapper = PropertyMapper.get();
-        propertyMapper.from(this::getId).whenNonNull().to(domain-> condition.eq(ClusterDO::getId, id));
+        propertyMapper.from(this::getId).whenNonNull().to(id-> condition.eq(ClusterDO::getId, id));
         propertyMapper.from(this.getDomain()).whenHasText().to(domain-> condition.eq(ClusterDO::getDomain,domain));
         propertyMapper.from(this.getClusterName()).whenHasText().to(clusterName-> condition.eq(ClusterDO::getClusterName,clusterName));
-        propertyMapper.from(this.getBusinessName()).whenHasText().to(businessName-> condition.like(ClusterDO::getBusinessName,businessName));
+        propertyMapper.from(this.getBizKey()).whenHasText().to(bizKey-> condition.like(ClusterDO::getBizKey,bizKey));
+        condition.eq(ClusterDO::getDeleted, false);
 
         return condition;
     }

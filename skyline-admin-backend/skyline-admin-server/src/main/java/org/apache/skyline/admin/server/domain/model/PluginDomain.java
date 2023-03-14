@@ -1,18 +1,17 @@
-package org.apache.skyline.admin.server.domain.entities;
+package org.apache.skyline.admin.server.domain.model;
+
+import lombok.Data;
+import org.bravo.gaia.commons.base.BaseDomain;
 
 import java.util.Date;
 import java.util.List;
 
-import lombok.Data;
-
-import org.bravo.gaia.commons.base.BaseDomain;
-
 /**
  * @author hejianbing
- * @version @Id: SkylinePluginDomain.java, v 0.1 2022年12月23日 13:22 hejianbing Exp $
+ * @version @Id: PluginDomain.java, v 0.1 2022年12月23日 13:22 hejianbing Exp $
  */
 @Data
-public class SkylinePluginDomain extends BaseDomain {
+public class PluginDomain extends BaseDomain {
 
     private Long         id;
 
@@ -30,5 +29,5 @@ public class SkylinePluginDomain extends BaseDomain {
 
     private Date         updateTime;
 
-    private boolean      deleted;
+    private Boolean      deleted;
 }

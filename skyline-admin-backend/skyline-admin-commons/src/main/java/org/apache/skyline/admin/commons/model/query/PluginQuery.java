@@ -9,8 +9,11 @@ import lombok.Data;
 @Data
 public class PluginQuery {
 
-    private String keyword;
+    private String defineClass;
 
     private String pluginName;
+
+    private String maintainer;
+
 
 }

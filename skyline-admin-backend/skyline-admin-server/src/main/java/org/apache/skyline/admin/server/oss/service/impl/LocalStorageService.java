@@ -2,7 +2,7 @@ package org.apache.skyline.admin.server.oss.service.impl;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.skyline.admin.commons.exception.SkylineAdminErrorCode;
+import org.apache.skyline.admin.commons.exception.AdminErrorCode;
 import org.apache.skyline.admin.server.oss.builder.FileKeyBuilder;
 import org.apache.skyline.admin.server.oss.config.OssProperties;
 import org.apache.skyline.admin.server.oss.request.ObjectStoreRequest;
@@ -66,7 +66,7 @@ public class LocalStorageService extends AbstractOssService implements Initializ
         File file = new File(storeLocation,fileKey);
 
         if (!file.exists()) {
-            throw new PlatformException(SkylineAdminErrorCode.OSS_OBJECT_NOT_FOUND.getCode());
+            throw new PlatformException(AdminErrorCode.OSS_OBJECT_NOT_FOUND.getCode());
         }
         return file;
     }

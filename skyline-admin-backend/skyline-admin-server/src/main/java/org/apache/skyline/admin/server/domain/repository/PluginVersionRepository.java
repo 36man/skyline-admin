@@ -1,6 +1,6 @@
 package org.apache.skyline.admin.server.domain.repository;
 
-import org.apache.skyline.admin.server.domain.entities.PluginVersionDomain;
+import org.apache.skyline.admin.server.domain.model.PluginVersionDomain;
 
 /**
  * @author hejianbing

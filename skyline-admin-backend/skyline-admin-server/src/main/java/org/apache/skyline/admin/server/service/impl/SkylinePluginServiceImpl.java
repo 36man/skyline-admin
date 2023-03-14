@@ -5,7 +5,7 @@ import org.apache.skyline.admin.commons.model.query.PluginQuery;
 import org.apache.skyline.admin.commons.model.request.GeneratePluginRequest;
 import org.apache.skyline.admin.commons.model.request.PageRequest;
 import org.apache.skyline.admin.commons.model.vo.PluginVO;
-import org.apache.skyline.admin.server.domain.entities.SkylinePluginDomain;
+import org.apache.skyline.admin.server.domain.model.PluginDomain;
 import org.apache.skyline.admin.server.domain.repository.SkylinePluginRepository;
 import org.apache.skyline.admin.server.domain.request.GenerateSkylinePluginDomainRequest;
 import org.apache.skyline.admin.server.domain.service.SkylinePluginDomainService;
@@ -106,7 +106,7 @@ public class SkylinePluginServiceImpl implements SkylinePluginService {
         return sdf.format(new Date()).concat("_").concat(RandomStringUtils.randomNumeric(30)).concat(".jar");
     }
 
-    private List<PluginVO> convertList(List<SkylinePluginDomain> items) {
+    private List<PluginVO> convertList(List<PluginDomain> items) {
         return items.stream()
                 .map(item->{
                     PluginVO vo = new PluginVO();

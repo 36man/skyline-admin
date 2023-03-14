@@ -1,7 +1,4 @@
-package org.apache.skyline.admin.web.config.mvc.servlet;
-
-import javax.servlet.MultipartConfigElement;
-import javax.servlet.Servlet;
+package org.apache.skyline.admin.web.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -15,6 +12,9 @@ import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.DispatcherServlet;
+
+import javax.servlet.MultipartConfigElement;
+import javax.servlet.Servlet;
 
 /**
  * @author hejianbing

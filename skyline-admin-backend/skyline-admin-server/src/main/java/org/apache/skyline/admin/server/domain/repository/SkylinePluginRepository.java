@@ -2,7 +2,7 @@ package org.apache.skyline.admin.server.domain.repository;
 
 import org.apache.skyline.admin.commons.model.query.PluginQuery;
 import org.apache.skyline.admin.commons.model.request.PageRequest;
-import org.apache.skyline.admin.server.domain.entities.SkylinePluginDomain;
+import org.apache.skyline.admin.server.domain.model.PluginDomain;
 import org.bravo.gaia.commons.base.PageBean;
 
 /**
@@ -12,11 +12,11 @@ import org.bravo.gaia.commons.base.PageBean;
 public interface SkylinePluginRepository {
 
 
-    Long create(SkylinePluginDomain skylinePluginDomain);
+    Long create(PluginDomain skylinePluginDomain);
 
-    boolean updateById(SkylinePluginDomain skylinePluginDomain);
+    boolean updateById(PluginDomain skylinePluginDomain);
 
-    SkylinePluginDomain findByClassDefine(String classDefine);
+    PluginDomain findByClassDefine(String classDefine);
 
-    PageBean<SkylinePluginDomain> pageList(PageRequest<PluginQuery> condition);
+    PageBean<PluginDomain> pageList(PageRequest<PluginQuery> condition);
 }

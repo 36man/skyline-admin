@@ -2,7 +2,7 @@ package org.apache.skyline.admin.server.oss.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.skyline.admin.commons.exception.SkylineAdminErrorCode;
+import org.apache.skyline.admin.commons.exception.AdminErrorCode;
 import org.apache.skyline.admin.server.oss.request.ObjectStoreRequest;
 import org.apache.skyline.admin.server.oss.response.ObjectStoreResponse;
 import org.bravo.gaia.commons.exception.PlatformException;
@@ -64,7 +64,7 @@ public abstract class AbstractOssService implements OssService{
             if (exception instanceof PlatformException) {
                 throw (PlatformException) exception;
             }
-            throw new PlatformException(SkylineAdminErrorCode.OSS_ERROR.getCode());
+            throw new PlatformException(AdminErrorCode.OSS_ERROR.getCode());
         }
     }
 

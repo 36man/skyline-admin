@@ -15,18 +15,26 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.commons.model.query;
+package org.apache.skyline.admin.server.config.properties;
 
 import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.context.annotation.Configuration;
 
 @Data
-public class ClusterQuery {
+@Configuration(proxyBeanMethods = false)
+@ConfigurationProperties(prefix = "admin")
+public class AdminProperties{
 
-    private Long id;
+    @NestedConfigurationProperty
+    private SwaggerConfig swagger  = new SwaggerConfig();
 
-    private String domain;
 
-    private String bizKey;
+    @Data
+    public static class SwaggerConfig{
 
-    private String clusterName;
+        private boolean enable = true;
+
+    }
 }

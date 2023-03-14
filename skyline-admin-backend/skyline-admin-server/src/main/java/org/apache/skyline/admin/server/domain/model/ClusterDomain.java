@@ -15,18 +15,49 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.commons.model.query;
+package org.apache.skyline.admin.server.domain.model;
 
 import lombok.Data;
+import org.bravo.gaia.commons.base.BaseDomain;
+
+import java.util.Date;
+import java.util.Map;
 
 @Data
-public class ClusterQuery {
+public class ClusterDomain extends BaseDomain {
 
     private Long id;
+
+    private String clusterName;
 
     private String domain;
 
     private String bizKey;
 
-    private String clusterName;
+    private Integer instanceCount;
+
+    private Boolean configShare;
+
+    private String configUrl;
+
+    private String configUser;
+
+    private String configSecret;
+
+    private Map<String,Object> configItem;
+
+    private String useQuota;
+
+    private String userNo;
+
+    private String userName;
+
+    private String meno;
+
+    private Boolean deleted;
+
+    private Date createTime;
+
+    private Date updateTime;
+
 }

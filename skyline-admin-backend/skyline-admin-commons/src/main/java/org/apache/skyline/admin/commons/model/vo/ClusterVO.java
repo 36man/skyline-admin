@@ -46,5 +46,9 @@ public class ClusterVO implements Serializable {
 
     private String configPassword;
 
+    private String status;
+
+    private String statusName;
+
     private String meno;
 }

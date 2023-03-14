@@ -1,4 +1,4 @@
-package org.apache.skyline.admin.web.config.mvc.method.annotation;
+package org.apache.skyline.admin.web.config.custom;
 
 import org.bravo.gaia.commons.base.HttpResult;
 import org.springframework.core.MethodParameter;
@@ -13,13 +13,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 /**
  * @author hejianbing
- * @version @Id: HttpResultResponseAdvice.java, v 0.1 2022年12月26日 21:18 hejianbing Exp $
+ * @version @Id: ResponseBodyWrapper.java, v 0.1 2022年12月26日 21:18 hejianbing Exp $
  */
-@RestControllerAdvice
-public class HttpResultResponseAdvice implements ResponseBodyAdvice<Object> {
+@RestControllerAdvice(basePackages = "org.apache.skyline.admin.web.controller")
+public class ResponseBodyWrapper implements ResponseBodyAdvice<Object> {
 
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
+
         return (AnnotatedElementUtils.hasAnnotation(returnType.getContainingClass(), ResponseBody.class) ||
                 returnType.hasMethodAnnotation(ResponseBody.class))
                 && !HttpResult.class.equals(returnType.getParameterType());

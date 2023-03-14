@@ -21,15 +21,18 @@ import org.apache.skyline.admin.commons.model.query.ClusterQuery;
 import org.apache.skyline.admin.commons.model.request.ClusterRequest;
 import org.apache.skyline.admin.commons.model.request.PageRequest;
 import org.apache.skyline.admin.commons.model.vo.ClusterVO;
-import org.apache.skyline.admin.server.domain.entities.ClusterDomain;
+import org.apache.skyline.admin.server.config.properties.AdminProperties;
+import org.apache.skyline.admin.server.domain.model.ClusterDomain;
 import org.apache.skyline.admin.server.domain.repository.ClusterRepository;
-import org.apache.skyline.admin.server.model.query.ClusterConditionQuery;
+import org.apache.skyline.admin.server.pojo.query.ClusterCombineQuery;
 import org.apache.skyline.admin.server.service.ClusterService;
+import org.apache.skyline.admin.server.support.config.ConfigurationCenterEnvironmentLoader;
 import org.apache.skyline.admin.server.utils.PageCommonUtils;
 import org.bravo.gaia.commons.base.PageBean;
 import org.bravo.gaia.commons.util.AssertUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -43,21 +46,48 @@ public class ClusterServiceImpl implements ClusterService {
     @Autowired
     private ClusterRepository clusterRepository;
 
+    @Autowired
+    private AdminProperties adminProperties;
+
+    @Autowired
+    private ConfigurationCenterEnvironmentLoader configurationCenterEnvironmentLoader;
+
     public boolean create(ClusterRequest request){
         ClusterDomain clusterDomain = this.convert(request);
 
-        this.throwIfExists(ClusterConditionQuery.builder().domain(request.getClusterName()).build(), "domain is exists");
+        throwIfDuplicate(request);
+
+        this.setConfigItem(request);
 
         return clusterRepository.save(clusterDomain);
     }
 
+
+    @Override
+    public ClusterVO queryForOne(ClusterQuery clusterQuery) {
+        ClusterCombineQuery combineQuery = this.toQuery(clusterQuery);
+
+        ClusterDomain item = clusterRepository.findOne(combineQuery);
+        
+        return convert(item);
+    }
+
+
     @Override
     public boolean update(Long id, ClusterRequest request) {
-        ClusterConditionQuery queryCluster = ClusterConditionQuery.builder()
+        ClusterCombineQuery queryCluster = ClusterCombineQuery.builder()
                 .id(id)
                 .build();
 
+        this.setConfigItem(request);
+
         ClusterDomain clusterDomain = clusterRepository.findOneIfExists(queryCluster);
+
+        boolean isSame = !request.getDomain().equals(clusterDomain.getDomain())
+                && !request.getClusterName().equals(clusterDomain.getClusterName());
+        if (!isSame) {
+            throwIfDuplicate(request);
+        }
 
         BeanUtils.copyProperties(request, clusterDomain);
 
@@ -75,10 +105,10 @@ public class ClusterServiceImpl implements ClusterService {
     public PageBean<ClusterVO> pageList(PageRequest<ClusterQuery> pageRequest) {
         ClusterQuery condition = pageRequest.getCondition();
 
-        ClusterConditionQuery queryCondition = ClusterConditionQuery.builder()
+        ClusterCombineQuery queryCondition = ClusterCombineQuery.builder()
                 .domain(condition.getDomain())
                 .clusterName(condition.getClusterName())
-                .businessName(condition.getBusinessName())
+                .bizKey(condition.getBizKey())
                 .build();
 
         PageBean<ClusterDomain> pageBean = clusterRepository.pageQuery(queryCondition, pageRequest.getPageNo(), pageRequest.getPageSize());
@@ -99,12 +129,6 @@ public class ClusterServiceImpl implements ClusterService {
         return clusterDomain;
     }
 
-    private void throwIfExists(ClusterConditionQuery queryClusterCondition, String message) {
-        boolean isExists = clusterRepository.isExists(queryClusterCondition);
-        AssertUtil.isTrue(isExists, message);
-
-    }
-
     private List<ClusterVO> convert(List<ClusterDomain> clusterList){
         return Optional.ofNullable(clusterList)
                 .orElseGet(ArrayList::new)
@@ -119,5 +143,48 @@ public class ClusterServiceImpl implements ClusterService {
         BeanUtils.copyProperties(clusterDomain,clusterVO);
 
         return clusterVO;
+    }
+
+    private ClusterCombineQuery toQuery(ClusterQuery clusterQuery) {
+        return ClusterCombineQuery.builder()
+                .bizKey(clusterQuery.getBizKey())
+                .domain(clusterQuery.getDomain())
+                .id(clusterQuery.getId())
+                .clusterName(clusterQuery.getClusterName())
+                .build();
+    }
+
+    private void setConfigItem(ClusterRequest request) {
+        PropertyMapper propertyMapper = PropertyMapper.get();
+
+        propertyMapper.from(request.getConfigShare())
+                .whenTrue()
+                .as(e-> configurationCenterEnvironmentLoader.load())
+                .whenNot(item->{
+
+                    return true;
+                })
+                .whenNonNull()
+                .to(item->{
+                    request.setConfigUser(item.getSecret());
+                    request.setConfigSecret(item.getSecret());
+                    request.setConfigUrl(item.getUrl());
+                    request.setConfigItem(request.getConfigItem());
+                });
+
+        propertyMapper.from(request.getConfigShare())
+                .whenFalse()
+                .toCall(()->{
+                    AssertUtil.isNotBlank(request.getConfigSecret(), "configSecret is blank");
+                    AssertUtil.isNotBlank(request.getConfigUser(), "configUser is blank");
+                });
+    }
+
+    private void throwIfDuplicate(ClusterRequest request) {
+        ClusterCombineQuery build = ClusterCombineQuery.builder().domain(request.getDomain())
+                .clusterName(request.getClusterName()).build();
+
+        boolean isExists = clusterRepository.isExists(build);
+        AssertUtil.isTrue(!isExists, "domain is exists");
     }
 }

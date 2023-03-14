@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.PredicateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.skyline.admin.commons.exception.SkylineAdminErrorCode;
+import org.apache.skyline.admin.commons.exception.AdminErrorCode;
 import org.bravo.gaia.commons.exception.PlatformException;
 import org.bravo.gaia.log.GaiaLogger;
 import org.springframework.boot.context.properties.bind.Binder;
@@ -79,7 +79,7 @@ public class PluginDefineParser {
             GaiaLogger.getGlobalErrorLogger().error("plugin! parse pluginDefine content error {}",
                     ExceptionUtils.getRootCauseMessage(ex));
 
-            throw new PlatformException(SkylineAdminErrorCode.PLUGIN_PARSE_ERROR.getCode());
+            throw new PlatformException(AdminErrorCode.PLUGIN_PARSE_ERROR.getCode());
         }
     }
 }

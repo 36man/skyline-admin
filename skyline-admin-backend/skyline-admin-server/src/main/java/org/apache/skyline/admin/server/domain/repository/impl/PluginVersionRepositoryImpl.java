@@ -2,7 +2,7 @@ package org.apache.skyline.admin.server.domain.repository.impl;
 
 import org.apache.skyline.admin.server.dal.dao.PluginVersionDao;
 import org.apache.skyline.admin.server.dal.dataobject.PluginVersionDO;
-import org.apache.skyline.admin.server.domain.entities.PluginVersionDomain;
+import org.apache.skyline.admin.server.domain.model.PluginVersionDomain;
 import org.apache.skyline.admin.server.domain.repository.PluginVersionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

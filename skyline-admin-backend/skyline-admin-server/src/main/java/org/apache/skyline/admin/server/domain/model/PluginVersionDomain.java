@@ -1,4 +1,4 @@
-package org.apache.skyline.admin.server.domain.entities;
+package org.apache.skyline.admin.server.domain.model;
 
 import lombok.Data;
 import org.bravo.gaia.commons.base.BaseDomain;
@@ -18,7 +18,7 @@ public class PluginVersionDomain extends BaseDomain {
 
     private List<String>        features;
 
-    private SkylinePluginDomain pluginDomain;
+    private PluginDomain pluginDomain;
 
     private String              pageContent;
 

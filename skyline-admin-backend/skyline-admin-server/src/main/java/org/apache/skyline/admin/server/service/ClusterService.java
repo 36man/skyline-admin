@@ -30,6 +30,8 @@ import javax.validation.constraints.NotNull;
 public interface ClusterService {
     boolean create(@Valid ClusterRequest request);
 
+    ClusterVO queryForOne(ClusterQuery clusterQuery);
+
     boolean update(@NotNull Long id, @Valid ClusterRequest request);
 
     boolean delete(@NotNull Long id);

@@ -1,4 +1,4 @@
-package org.apache.skyline.admin.web.config.cors;
+package org.apache.skyline.admin.web.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

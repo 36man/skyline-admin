@@ -38,11 +38,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/cluster")
 public class ClusterController {
 
+    public ClusterController(){
+        System.out.println("");
+    }
+
 
     @Autowired
     private ClusterService clusterService;
 
-    @GetMapping("pageList")
+    @GetMapping("/pageList")
     public PageBean<ClusterVO> pageList(@RequestParam(value = "domain",required = false) String domain,
                                         @RequestParam(value = "businessName",required = false) String businessName,
                                         @RequestParam(value = "clusterName" ,required = false) String clusterName,
@@ -56,9 +60,17 @@ public class ClusterController {
         ClusterQuery clusterQuery = new ClusterQuery();
         clusterQuery.setClusterName(clusterName);
         clusterQuery.setDomain(domain);
-        clusterQuery.setBusinessName(businessName);
+        clusterQuery.setBizKey(businessName);
 
         return clusterService.pageList(pageRequest);
+    }
+
+    @GetMapping("/{id}")
+    public ClusterVO findById(@PathVariable("id") Long id) {
+        ClusterQuery clusterQuery = new ClusterQuery();
+        clusterQuery.setId(id);
+
+        return clusterService.queryForOne(clusterQuery);
     }
 
     @PostMapping
@@ -76,8 +88,8 @@ public class ClusterController {
         return clusterService.delete(id);
     }
 
-    @PutMapping("applyCluster")
-    public Boolean applyCluster(@RequestParam(value = "id") Long id) {
+    @PutMapping("/applyCluster/{id}")
+    public Boolean applyCluster(@PathVariable(value = "id") Long id) {
         return clusterService.applyCluster(id);
     }
 }

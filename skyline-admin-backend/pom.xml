@@ -18,6 +18,7 @@
     <properties>
         <revision>1.0.0-SNAPSHOT</revision>
         <aws.version>1.12.368</aws.version>
+        <swagger.version>2.9.2</swagger.version>
     </properties>
 
     <modules>
@@ -35,7 +36,25 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+
         </dependencies>
+
+
+
+
     </dependencyManagement>
 
 

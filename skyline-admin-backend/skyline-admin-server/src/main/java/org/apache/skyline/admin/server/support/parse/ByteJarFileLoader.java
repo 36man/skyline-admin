@@ -10,7 +10,7 @@ import org.apache.commons.collections4.Predicate;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.skyline.admin.commons.exception.SkylineAdminErrorCode;
+import org.apache.skyline.admin.commons.exception.AdminErrorCode;
 import org.bravo.gaia.commons.exception.PlatformException;
 import org.bravo.gaia.log.GaiaLogger;
 import org.springframework.util.FileCopyUtils;
@@ -40,7 +40,7 @@ public class ByteJarFileLoader implements AutoCloseable{
         } catch (Exception exception) {
             GaiaLogger.getGlobalErrorLogger().error("plugin! load error {}", ExceptionUtils.getRootCauseMessage(exception));
 
-            throw new PlatformException(SkylineAdminErrorCode.JAR_LOAD_ERROR.getCode());
+            throw new PlatformException(AdminErrorCode.JAR_LOAD_ERROR.getCode());
         }
     }
 
@@ -60,7 +60,7 @@ public class ByteJarFileLoader implements AutoCloseable{
         }catch(Exception ex){
             GaiaLogger.getGlobalErrorLogger().error("plugin!  get content jar error {}", ExceptionUtils.getRootCauseMessage(ex));
 
-            throw new PlatformException(SkylineAdminErrorCode.JAR_LOAD_ERROR.getCode());
+            throw new PlatformException(AdminErrorCode.JAR_LOAD_ERROR.getCode());
         }
     }
 

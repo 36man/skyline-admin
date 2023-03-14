@@ -48,7 +48,7 @@ public class ClusterController {
 
     @GetMapping("/pageList")
     public PageBean<ClusterVO> pageList(@RequestParam(value = "domain",required = false) String domain,
-                                        @RequestParam(value = "businessName",required = false) String businessName,
+                                        @RequestParam(value = "bizKey",required = false) String bizKey,
                                         @RequestParam(value = "clusterName" ,required = false) String clusterName,
                                         @RequestParam("pageNo") Integer pageNo,
                                         @RequestParam("pageSize") Integer pageSize) {
@@ -60,7 +60,9 @@ public class ClusterController {
         ClusterQuery clusterQuery = new ClusterQuery();
         clusterQuery.setClusterName(clusterName);
         clusterQuery.setDomain(domain);
-        clusterQuery.setBizKey(businessName);
+        clusterQuery.setBizKey(bizKey);
+
+        pageRequest.setCondition(clusterQuery);
 
         return clusterService.pageList(pageRequest);
     }

@@ -20,12 +20,16 @@ package org.apache.skyline.admin.server.domain.repository.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.skyline.admin.server.commons.constants.CopyIgnoreFields;
 import org.apache.skyline.admin.server.dal.dao.ClusterDao;
 import org.apache.skyline.admin.server.dal.dataobject.ClusterDO;
 import org.apache.skyline.admin.server.domain.model.ClusterDomain;
 import org.apache.skyline.admin.server.domain.repository.ClusterRepository;
 import org.apache.skyline.admin.server.pojo.query.ClusterCombineQuery;
-import org.apache.skyline.admin.server.utils.PageCommonUtils;
+import org.apache.skyline.admin.server.support.codec.ObjectMapperCodec;
+import org.apache.skyline.admin.server.commons.utils.PageCommonUtils;
 import org.bravo.gaia.commons.base.PageBean;
 import org.bravo.gaia.commons.util.AssertUtil;
 import org.springframework.beans.BeanUtils;
@@ -34,6 +38,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -43,6 +48,10 @@ public class ClusterRepositoryImpl implements ClusterRepository {
 
     @Autowired
     private ClusterDao clusterDao;
+
+    @Autowired
+    private ObjectMapperCodec objectMapperCodec;
+
 
     @Override
     public boolean isExists(ClusterCombineQuery combineQuery) {
@@ -113,7 +122,11 @@ public class ClusterRepositoryImpl implements ClusterRepository {
         }
         ClusterDomain clusterDomain = new ClusterDomain();
 
-        BeanUtils.copyProperties(clusterDO, clusterDomain);
+        BeanUtils.copyProperties(clusterDO, clusterDomain, CopyIgnoreFields.CONFIG_ITEM);
+
+        Optional.ofNullable(clusterDO.getConfigItem())
+                .filter(StringUtils::isNoneBlank)
+                .ifPresent(item -> clusterDomain.setConfigItem(objectMapperCodec.deserialize(item, Map.class)));
 
         return clusterDomain;
     }
@@ -124,7 +137,13 @@ public class ClusterRepositoryImpl implements ClusterRepository {
         }
         ClusterDO clusterDO = new ClusterDO();
 
-        BeanUtils.copyProperties(clusterDomain, clusterDO);
+        BeanUtils.copyProperties(clusterDomain, clusterDO,CopyIgnoreFields.CONFIG_ITEM);
+
+        Optional.ofNullable(clusterDomain.getConfigItem())
+                .filter(MapUtils::isNotEmpty)
+                .ifPresent(item->{
+                    clusterDO.setConfigItem(objectMapperCodec.serialize(item));
+                });
 
         return clusterDO;
     }

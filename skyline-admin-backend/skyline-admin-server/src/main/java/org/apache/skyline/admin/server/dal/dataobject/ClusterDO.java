@@ -3,8 +3,6 @@ package org.apache.skyline.admin.server.dal.dataobject;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.util.Map;
-
 /**
  * @author hejianbing
  * @version @Id: ClusterDO.java, v 0.1 2022年12月23日 11:08 hejianbing Exp $
@@ -31,7 +29,7 @@ public class ClusterDO extends BaseDO {
 
     private String configSecret;
 
-    private Map<String, Object> configItem;
+    private String configItem;
 
     private String useQuota;
 

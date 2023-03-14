@@ -27,7 +27,7 @@ import org.apache.skyline.admin.server.domain.repository.ClusterRepository;
 import org.apache.skyline.admin.server.pojo.query.ClusterCombineQuery;
 import org.apache.skyline.admin.server.service.ClusterService;
 import org.apache.skyline.admin.server.support.config.ConfigurationCenterEnvironmentLoader;
-import org.apache.skyline.admin.server.utils.PageCommonUtils;
+import org.apache.skyline.admin.server.commons.utils.PageCommonUtils;
 import org.bravo.gaia.commons.base.PageBean;
 import org.bravo.gaia.commons.util.AssertUtil;
 import org.springframework.beans.BeanUtils;
@@ -67,7 +67,7 @@ public class ClusterServiceImpl implements ClusterService {
     public ClusterVO queryForOne(ClusterQuery clusterQuery) {
         ClusterCombineQuery combineQuery = this.toQuery(clusterQuery);
 
-        ClusterDomain item = clusterRepository.findOne(combineQuery);
+        ClusterDomain item = clusterRepository.findOneIfExists(combineQuery);
         
         return convert(item);
     }
@@ -83,8 +83,8 @@ public class ClusterServiceImpl implements ClusterService {
 
         ClusterDomain clusterDomain = clusterRepository.findOneIfExists(queryCluster);
 
-        boolean isSame = !request.getDomain().equals(clusterDomain.getDomain())
-                && !request.getClusterName().equals(clusterDomain.getClusterName());
+        boolean isSame = request.getDomain().equals(clusterDomain.getDomain())
+                && request.getClusterName().equals(clusterDomain.getClusterName());
         if (!isSame) {
             throwIfDuplicate(request);
         }
@@ -160,16 +160,12 @@ public class ClusterServiceImpl implements ClusterService {
         propertyMapper.from(request.getConfigShare())
                 .whenTrue()
                 .as(e-> configurationCenterEnvironmentLoader.load())
-                .whenNot(item->{
-
-                    return true;
-                })
                 .whenNonNull()
                 .to(item->{
                     request.setConfigUser(item.getSecret());
                     request.setConfigSecret(item.getSecret());
                     request.setConfigUrl(item.getUrl());
-                    request.setConfigItem(request.getConfigItem());
+                    request.setConfigItem(item.getItems());
                 });
 
         propertyMapper.from(request.getConfigShare())

@@ -45,6 +45,15 @@ public class ConfigurationCenterEnvironmentLoader {
     private ConfigCenterValue doLoad() {
         ConfigCenterValue configCenterValue = new ConfigCenterValue();
 
+        Map<String, Object> items = new HashMap<>();
+        items.put("namespace","default");
+        items.put("group", "default");
+
+        configCenterValue.setUrl("http://localhost:8889");
+        configCenterValue.setUser("nacos");
+        configCenterValue.setSecret("nacos");
+        configCenterValue.setItems(items);
+
         return configCenterValue;
     }
 

@@ -50,13 +50,12 @@ public class ClusterRequest {
 
     private String configUrl;
 
+    @Length(max = 50)
+    private String configUser;
+
     private String configSecret;
 
     private Map<String, Object> configItem = new HashMap<>();
-
-    @NotBlank
-    @Length(max = 50)
-    private String configUser;
 
     @NotBlank
     @Length(max = 50)

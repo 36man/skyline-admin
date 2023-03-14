@@ -1,13 +1,12 @@
-package org.apache.skyline.admin.server.utils;
+package org.apache.skyline.admin.server.commons.utils;
 
-import java.util.List;
-import java.util.function.Function;
-
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bravo.gaia.commons.base.PageBean;
 import org.springframework.boot.context.properties.PropertyMapper;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.util.List;
+import java.util.function.Function;
 
 /**
  * @author hejianbing

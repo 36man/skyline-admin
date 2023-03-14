@@ -15,41 +15,10 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.commons.model.vo;
+package org.apache.skyline.admin.server.commons.constants;
 
-import lombok.Data;
+final public class CopyIgnoreFields {
 
-import java.io.Serializable;
-import java.util.Map;
+    public static final String CONFIG_ITEM = "configItem";
 
-@Data
-public class ClusterVO implements Serializable {
-
-    private Long id;
-
-    private String clusterName;
-
-    private String domain;
-
-    private String bizKey;
-
-    private Integer instanceCount;
-
-    private Boolean configShare;
-
-    private String configUrl;
-
-    private String configUser;
-
-    private String configSecret;
-
-    private Map<String, Object> configItem;
-
-    private String useQuota;
-
-    private String status;
-
-    private String statusName;
-
-    private String meno;
 }

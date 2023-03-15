@@ -23,12 +23,12 @@ import java.util.Map;
 
 /**
  * @author hejianbing
- * @version @Id: PluginDefineParser.java, v 0.1 2022年12月24日 18:35 hejianbing Exp $
+ * @version @Id: PluginDefineResolver.java, v 0.1 2022年12月24日 18:35 hejianbing Exp $
  */
 @Slf4j
 public class PluginDefineResolver {
 
-    private YamlPropertySourceLoader sourceLoader  = new YamlPropertySourceLoader();
+    private YamlPropertySourceLoader sourceLoader = new YamlPropertySourceLoader();
     private PluginClassLoader pluginClassLoader;
 
 
@@ -42,12 +42,13 @@ public class PluginDefineResolver {
         this.resolvePageContent(pluginDefine);
 
         this.resolveSwitchItems(pluginDefine);
+
         
         return pluginDefine;
     }
 
     private void resolveSwitchItems(PluginDefine pluginDefine) {
-        try{
+        try {
             String classDefine = pluginDefine.getClassDefine();
 
             Class<?> clazz = Class.forName(classDefine, true, this.pluginClassLoader);
@@ -64,13 +65,14 @@ public class PluginDefineResolver {
 
             List<Map<String, Object>> items = new ArrayList<>();
 
-            List<Object> config = (List<Object>) result;
+            List<Object> capableSwitchList = (List<Object>) result;
 
-            for (Object o : config) {
+            for (Object o : capableSwitchList) {
                 if (!o.getClass().getName().equals("org.apache.skyline.plugin.api.CapableSwitch")) {
                     continue;
                 }
                 Map<String, Object> item = new HashMap<>();
+
                 ReflectionUtils.doWithLocalFields(o.getClass(), field -> {
                     String name = field.getName();
                     Object value = field.get(o);
@@ -84,7 +86,7 @@ public class PluginDefineResolver {
                 pluginDefine.setSwitchItems(JSON.toJSONString(items));
             }
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
             throw new PlatformException("switch parse error");
         }
     }

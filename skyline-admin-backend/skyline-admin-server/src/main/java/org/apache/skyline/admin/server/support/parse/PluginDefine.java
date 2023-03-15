@@ -47,17 +47,4 @@ public class PluginDefine {
         AssertUtil.isNotBlank(pageDefine, "pageDefine! definePage is null");
         AssertUtil.isNotBlank(ver, "ver is null");
     }
-
-
-    @Data
-    public static class SwitchDefine {
-
-        private String name;
-
-        private String type;
-
-        private String value;
-
-    }
-
 }

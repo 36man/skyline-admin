@@ -9,7 +9,7 @@ import org.apache.skyline.admin.server.commons.utils.PageCommonUtils;
 import org.apache.skyline.admin.server.dal.dao.SkylinePluginDao;
 import org.apache.skyline.admin.server.dal.dataobject.PluginDO;
 import org.apache.skyline.admin.server.domain.model.PluginDomain;
-import org.apache.skyline.admin.server.domain.repository.SkylinePluginRepository;
+import org.apache.skyline.admin.server.domain.repository.PluginRepository;
 import org.bravo.gaia.commons.base.PageBean;
 import org.bravo.gaia.id.generator.IdGenerator;
 import org.springframework.beans.BeanUtils;
@@ -22,10 +22,10 @@ import java.util.stream.Collectors;
 
 /**
  * @author hejianbing
- * @version @Id: SkylinePluginRepositoryImpl.java, v 0.1 2022年12月23日 13:43 hejianbing Exp $
+ * @version @Id: PluginRepositoryImpl.java, v 0.1 2022年12月23日 13:43 hejianbing Exp $
  */
 @Repository
-public class SkylinePluginRepositoryImpl implements SkylinePluginRepository {
+public class PluginRepositoryImpl implements PluginRepository {
 
     @Autowired
     private SkylinePluginDao skylinePluginDao;

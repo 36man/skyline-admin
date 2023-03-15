@@ -7,10 +7,9 @@ import org.bravo.gaia.commons.base.PageBean;
 
 /**
  * @author hejianbing
- * @version @Id: SkylinePluginRepository.java, v 0.1 2022年12月23日 13:43 hejianbing Exp $
+ * @version @Id: PluginRepository.java, v 0.1 2022年12月23日 13:43 hejianbing Exp $
  */
-public interface SkylinePluginRepository {
-
+public interface PluginRepository {
 
     Long create(PluginDomain skylinePluginDomain);
 

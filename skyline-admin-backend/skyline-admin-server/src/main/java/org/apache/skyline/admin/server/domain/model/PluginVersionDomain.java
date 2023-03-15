@@ -12,27 +12,29 @@ import java.util.List;
 @Data
 public class PluginVersionDomain extends BaseDomain {
 
-    private Long                id;
+    private Long id;
 
-    private String              ver;
+    private String ver;
 
-    private List<String>        features;
+    private List<String> features;
 
     private PluginDomain pluginDomain;
 
-    private String              pageContent;
+    private String pageContent;
 
-    private boolean             deleted;
+    private boolean deleted;
 
-    private boolean             active;
+    private boolean active;
 
-    private Long                size;
+    private Long size;
 
-    private String              md5;
+    private String md5;
 
-    private String              jarUrl;
+    private String jarUrl;
 
-    private String              fileKey;
+    private String fileKey;
 
-    private List<String>        verTags;
+    private List<String> verTags;
+
+    private String switchItems;
 }

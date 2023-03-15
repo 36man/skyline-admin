@@ -1,4 +1,4 @@
-package org.apache.skyline.admin.server.dal.config;
+package org.apache.skyline.admin.server.config.custom;
 
 import org.bravo.gaia.id.generator.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -21,13 +21,12 @@ import org.apache.skyline.admin.commons.model.query.ClusterQuery;
 import org.apache.skyline.admin.commons.model.request.ClusterRequest;
 import org.apache.skyline.admin.commons.model.request.PageRequest;
 import org.apache.skyline.admin.commons.model.vo.ClusterVO;
-import org.apache.skyline.admin.server.config.properties.AdminProperties;
+import org.apache.skyline.admin.server.commons.utils.PageCommonUtils;
 import org.apache.skyline.admin.server.domain.model.ClusterDomain;
 import org.apache.skyline.admin.server.domain.repository.ClusterRepository;
 import org.apache.skyline.admin.server.pojo.query.ClusterCombineQuery;
 import org.apache.skyline.admin.server.service.ClusterService;
-import org.apache.skyline.admin.server.support.config.ConfigurationCenterEnvironmentLoader;
-import org.apache.skyline.admin.server.commons.utils.PageCommonUtils;
+import org.apache.skyline.admin.server.support.config.ConfigCenterEnvironmentLoader;
 import org.bravo.gaia.commons.base.PageBean;
 import org.bravo.gaia.commons.util.AssertUtil;
 import org.springframework.beans.BeanUtils;
@@ -45,12 +44,8 @@ public class ClusterServiceImpl implements ClusterService {
 
     @Autowired
     private ClusterRepository clusterRepository;
-
     @Autowired
-    private AdminProperties adminProperties;
-
-    @Autowired
-    private ConfigurationCenterEnvironmentLoader configurationCenterEnvironmentLoader;
+    private ConfigCenterEnvironmentLoader configCenterEnvironmentLoader;
 
     public boolean create(ClusterRequest request){
         ClusterDomain clusterDomain = this.convert(request);
@@ -159,7 +154,7 @@ public class ClusterServiceImpl implements ClusterService {
 
         propertyMapper.from(request.getConfigShare())
                 .whenTrue()
-                .as(e-> configurationCenterEnvironmentLoader.load())
+                .as(e-> configCenterEnvironmentLoader.load())
                 .whenNonNull()
                 .to(item->{
                     request.setConfigUser(item.getSecret());

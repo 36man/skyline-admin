@@ -1,4 +1,4 @@
-package org.apache.skyline.admin.server.oss.service.impl;
+package org.apache.skyline.admin.server.support.oss.service.impl;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -7,11 +7,12 @@ import com.amazonaws.services.s3.model.S3Object;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.skyline.admin.commons.enums.SymbolKind;
-import org.apache.skyline.admin.server.oss.builder.FileKeyBuilder;
-import org.apache.skyline.admin.server.oss.config.OssProperties;
-import org.apache.skyline.admin.server.oss.request.ObjectStoreRequest;
-import org.apache.skyline.admin.server.oss.response.ObjectStoreResponse;
-import org.apache.skyline.admin.server.oss.service.AbstractOssService;
+import org.apache.skyline.admin.server.support.oss.builder.FileKeyBuilder;
+import org.apache.skyline.admin.server.support.oss.config.OSSProperties;
+import org.apache.skyline.admin.server.support.oss.config.StoreType;
+import org.apache.skyline.admin.server.support.oss.request.ObjectStoreRequest;
+import org.apache.skyline.admin.server.support.oss.response.ObjectStoreResponse;
+import org.apache.skyline.admin.server.support.oss.service.BaseOSSService;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.io.ByteArrayInputStream;
@@ -24,15 +25,15 @@ import java.util.Date;
  * @author hejianbing
  * @version @Id: AmazonS3Service.java, v 0.1 2022年12月22日 16:22 hejianbing Exp $
  */
-public class AmazonS3Service extends AbstractOssService implements InitializingBean {
+public class AmazonS3Service extends BaseOSSService implements InitializingBean {
 
-    private OssProperties ossProperties;
+    private OSSProperties ossProperties;
 
     private AmazonS3 ossClient;
 
     private String bucketName;
 
-    public AmazonS3Service(OssProperties ossProperties, AmazonS3 ossClient) {
+    public AmazonS3Service(OSSProperties ossProperties, AmazonS3 ossClient) {
         this.ossProperties = ossProperties;
         this.ossClient = ossClient;
     }
@@ -96,5 +97,10 @@ public class AmazonS3Service extends AbstractOssService implements InitializingB
             ossClient.createBucket(bucketName);
         }
         this.bucketName = bucketName;
+    }
+
+    @Override
+    public StoreType storeType() {
+        return StoreType.S3;
     }
 }

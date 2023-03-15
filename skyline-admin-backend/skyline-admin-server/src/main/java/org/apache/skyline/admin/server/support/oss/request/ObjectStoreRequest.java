@@ -1,4 +1,4 @@
-package org.apache.skyline.admin.server.oss.request;
+package org.apache.skyline.admin.server.support.oss.request;
 
 import lombok.Data;
 

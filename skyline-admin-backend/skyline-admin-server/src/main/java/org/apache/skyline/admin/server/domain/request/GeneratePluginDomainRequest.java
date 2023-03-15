@@ -8,11 +8,11 @@ import org.apache.skyline.admin.server.support.parse.PluginDefine;
 
 /**
  * @author hejianbing
- * @version @Id: GenerateSkylinePluginDomainRequest.java, v 0.1 2022年12月26日 09:31 hejianbing Exp $
+ * @version @Id: GeneratePluginDomainRequest.java, v 0.1 2022年12月26日 09:31 hejianbing Exp $
  */
 @Data
 @Builder
-public class GenerateSkylinePluginDomainRequest {
+public class GeneratePluginDomainRequest {
 
     private PluginDefine pluginDefine;
 
@@ -22,15 +22,12 @@ public class GenerateSkylinePluginDomainRequest {
 
     private Long size;
 
-    private String md5;
-
     public PluginDomain getPluginDomain() {
         PluginDomain pluginDomain = new PluginDomain();
         pluginDomain.setPluginName(pluginDefine.getPluginName());
         pluginDomain.setMaintainer(pluginDefine.getMaintainer());
         pluginDomain.setOverview(pluginDefine.getOverview());
-        pluginDomain.setKeywords(pluginDefine.getKeywords());
-        pluginDomain.setDefineClass(pluginDefine.getDefineClass());
+        pluginDomain.setDefineClass(pluginDefine.getClassDefine());
 
         return pluginDomain;
     }
@@ -41,12 +38,10 @@ public class GenerateSkylinePluginDomainRequest {
         pluginVersionDomain.setJarUrl(jarUrl);
         pluginVersionDomain.setVer(pluginDefine.getVer());
         pluginVersionDomain.setFeatures(pluginDefine.getFeatures());
-        pluginVersionDomain.setVerTags(pluginDefine.getVerTags());
         pluginVersionDomain.setSize(size);
         pluginVersionDomain.setDeleted(false);
         pluginVersionDomain.setActive(true);
-        pluginVersionDomain.setMd5(md5);
-        pluginVersionDomain.setPageContent(pluginDefine.getDefinePage());
+        pluginVersionDomain.setPageContent(pluginDefine.getPageDefine());
 
         pluginVersionDomain.setPluginDomain(getPluginDomain());
 

@@ -1,4 +1,4 @@
-package org.apache.skyline.admin.server.oss.builder;
+package org.apache.skyline.admin.server.support.oss.builder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.skyline.admin.commons.enums.SymbolKind;

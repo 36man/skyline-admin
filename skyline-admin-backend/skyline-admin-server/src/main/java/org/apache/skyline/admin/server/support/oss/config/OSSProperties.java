@@ -1,4 +1,4 @@
-package org.apache.skyline.admin.server.oss.config;
+package org.apache.skyline.admin.server.support.oss.config;
 
 import lombok.Data;
 
@@ -12,11 +12,14 @@ import org.springframework.validation.annotation.Validated;
 @Data
 @ConfigurationProperties(prefix = "admin.oss")
 @Validated
-public class OssProperties {
+public class OSSProperties {
     private String endpoint = "xxx";
 
-    /** local:D:/statics/, cloud:bucketName*/
+    /** lcloud:bucketName*/
     private String bucketName;
+
+    private String storePath;
+
     private String accessKey;
     private String secretKey;
 
@@ -34,8 +37,5 @@ public class OssProperties {
     private StoreType storeType;
 
 
-    public enum StoreType{
-        S3,
-        LOCAL
-    }
+
 }

@@ -1,12 +1,11 @@
 package org.apache.skyline.admin.server.support.parse;
 
-import java.util.List;
-
 import lombok.Data;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.skyline.admin.commons.enums.SymbolKind;
 import org.bravo.gaia.commons.util.AssertUtil;
+
+import java.util.List;
 
 /**
  * @author hejianbing
@@ -15,40 +14,50 @@ import org.bravo.gaia.commons.util.AssertUtil;
 @Data
 public class PluginDefine {
 
-    private String       pluginName;
+    private String pluginName;
 
-    private String       maintainer;
+    private String classDefine;
 
-    private List<String> keywords;
+    private String pageDefine;
 
-    private String       overview;
+    private String pageContent;
 
-    private String       defineClass;
+    private String maintainer;
 
-    private String       definePage;
+    private String overview;
 
-    private String       pageContent;
-
-    private String       ver;
+    private String ver;
 
     private List<String> features;
 
-    private List<String> verTags;
+    private String switchItems;
+
 
     public String getPluginName() {
         if (StringUtils.isBlank(this.pluginName)) {
-            return this.defineClass
-                .substring(this.defineClass.lastIndexOf(SymbolKind.DOT.getSymbol()) + 1);
+            return this.classDefine.substring(
+                    this.classDefine.lastIndexOf(SymbolKind.DOT.getSymbol()) + 1);
         }
         return this.pluginName;
     }
 
-    public void checkNotNull() {
+    public void checkParams() {
         AssertUtil.isNotBlank(maintainer, "plugin! maintainer is null");
-        AssertUtil.notEmpty(keywords, "plugin! keywords is empty");
-        AssertUtil.isNotBlank(defineClass, "plugin! defineClass is null");
-        AssertUtil.isNotBlank(definePage, "plugin! definePage is null");
+        AssertUtil.isNotBlank(classDefine, "plugin! classDefine is null");
+        AssertUtil.isNotBlank(pageDefine, "pageDefine! definePage is null");
         AssertUtil.isNotBlank(ver, "ver is null");
+    }
+
+
+    @Data
+    public static class SwitchDefine {
+
+        private String name;
+
+        private String type;
+
+        private String value;
+
     }
 
 }

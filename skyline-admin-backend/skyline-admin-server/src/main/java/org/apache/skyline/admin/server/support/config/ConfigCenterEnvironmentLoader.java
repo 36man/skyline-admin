@@ -25,10 +25,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class ConfigurationCenterEnvironmentLoader {
+public class ConfigCenterEnvironmentLoader {
 
 
-    public ConfigurationCenterEnvironmentLoader(){
+    public ConfigCenterEnvironmentLoader(){
     }
 
     public ConfigCenterValue load(){

@@ -36,8 +36,6 @@ public class PluginDomainServiceImpl implements PluginDomainService {
 
             pluginDomain.setId(pluginDomain.getId());
 
-            pluginDomain.setKeywords(pluginDomain.getKeywords());
-
             pluginRepository.updateById(pluginDomain);
         }
 

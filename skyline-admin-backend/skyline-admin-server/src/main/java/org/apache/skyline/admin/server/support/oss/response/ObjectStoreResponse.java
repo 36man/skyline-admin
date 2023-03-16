@@ -15,4 +15,5 @@ public class ObjectStoreResponse {
 
     private String resourceUrl;
 
+    private String storePath;
 }

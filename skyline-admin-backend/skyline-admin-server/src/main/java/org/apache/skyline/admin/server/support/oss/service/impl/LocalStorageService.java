@@ -2,6 +2,7 @@ package org.apache.skyline.admin.server.support.oss.service.impl;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.skyline.admin.commons.enums.SymbolKind;
 import org.apache.skyline.admin.commons.exception.AdminErrorCode;
 import org.apache.skyline.admin.server.support.oss.builder.FileKeyBuilder;
 import org.apache.skyline.admin.server.support.oss.config.OSSProperties;
@@ -49,13 +50,18 @@ public class LocalStorageService extends BaseOSSService implements InitializingB
         }
         FileCopyUtils.copy(request.getBytes(), file);
 
-        String accessUrl = ossProperties.getEndpoint()+fileKey;
+        String endpoint = ossProperties.getEndpoint();
+
+        String accessUrl = endpoint.endsWith(SymbolKind.SLASH.getSymbol()) ?
+                endpoint + fileKey :
+                endpoint + SymbolKind.SLASH.getSymbol() + fileKey;
 
         ObjectStoreResponse result = new ObjectStoreResponse();
 
         result.setFileKey(fileKey);
         result.setResourceUrl(accessUrl);
-        result.setBucketName(this.ossProperties.getStorePath());
+        result.setBucketName(this.ossProperties.getLocal());
+        result.setStorePath(file.getPath());
 
         return result;
     }
@@ -79,7 +85,7 @@ public class LocalStorageService extends BaseOSSService implements InitializingB
 
         AssertUtil.isNotBlank(this.ossProperties.getEndpoint(), "oss endpoint is null");
 
-        String location = this.ossProperties.getStorePath();
+        String location = this.ossProperties.getLocal();
 
         if (!StringUtils.isNotBlank(location)) {
             location = System.getProperty("user.dir");

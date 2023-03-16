@@ -1,10 +1,10 @@
 package org.apache.skyline.admin.server.support.parse;
 
-import com.alibaba.fastjson2.JSON;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.skyline.admin.server.support.codec.ObjectMapperCodec;
 import org.bravo.gaia.commons.exception.PlatformException;
 import org.bravo.gaia.commons.util.AssertUtil;
 import org.bravo.gaia.commons.util.ClassUtils;
@@ -31,9 +31,12 @@ public class PluginDefineResolver {
     private YamlPropertySourceLoader sourceLoader = new YamlPropertySourceLoader();
     private PluginClassLoader pluginClassLoader;
 
+    private ObjectMapperCodec objectMapperCodec;
 
-    public PluginDefineResolver(String path) {
-        pluginClassLoader = new PluginClassLoader(PluginDefineResolver.class.getClassLoader(), path);
+
+    public PluginDefineResolver(ObjectMapperCodec objectMapperCodec,String path) {
+        this.pluginClassLoader = new PluginClassLoader(PluginDefineResolver.class.getClassLoader(), path);
+        this.objectMapperCodec = objectMapperCodec;
     }
 
     public PluginDefine resolve() {
@@ -41,13 +44,12 @@ public class PluginDefineResolver {
 
         this.resolvePageContent(pluginDefine);
 
-        this.resolveSwitchItems(pluginDefine);
+        this.resolveApiDefine(pluginDefine);
 
-        
         return pluginDefine;
     }
 
-    private void resolveSwitchItems(PluginDefine pluginDefine) {
+    private void resolveApiDefine(PluginDefine pluginDefine) {
         try {
             String classDefine = pluginDefine.getClassDefine();
 
@@ -55,36 +57,16 @@ public class PluginDefineResolver {
 
             Object plugin = clazz.newInstance();
 
-            Method method = plugin.getClass().getMethod("exportCapableSwitches");
+            Map<String, Object> items = new HashMap<>();
 
-            Object result = method.invoke(plugin, null);
+            List<Map<String,Object>> capableSwitches = getMethodValueList(plugin, "exportCapableSwitches", o -> o.getClass().getName().equals("org.apache.skyline.plugin.api.CapableSwitch"));
 
-            if (result == null) {
-                return;
-            }
+            List<Map<String,Object>> perpetualResourceList = getMethodValueList(plugin, "exportPerpetualObjs", o -> o.getClass().getName().equals("org.apache.skyline.plugin.api.PerpetualResource"));
 
-            List<Map<String, Object>> items = new ArrayList<>();
+            items.put("capableSwitchList", capableSwitches);
+            items.put("perpetualResourceList", perpetualResourceList);
 
-            List<Object> capableSwitchList = (List<Object>) result;
-
-            for (Object o : capableSwitchList) {
-                if (!o.getClass().getName().equals("org.apache.skyline.plugin.api.CapableSwitch")) {
-                    continue;
-                }
-                Map<String, Object> item = new HashMap<>();
-
-                ReflectionUtils.doWithLocalFields(o.getClass(), field -> {
-                    String name = field.getName();
-                    Object value = field.get(o);
-                    item.put(name, value);
-
-                });
-                items.add(item);
-            }
-
-            if (CollectionUtils.isNotEmpty(items)) {
-                pluginDefine.setSwitchItems(JSON.toJSONString(items));
-            }
+            pluginDefine.setApiDefine(objectMapperCodec.serialize(items));
 
         } catch (Exception ex) {
             throw new PlatformException("switch parse error");
@@ -101,7 +83,7 @@ public class PluginDefineResolver {
     }
 
     private PluginDefine resolveDefine() {
-        String content = pluginClassLoader.getContentIfPresent(name -> name.endsWith("skyline.yaml") || name.endsWith("skyline.yml"));
+        String content = pluginClassLoader.getContentIfPresent(name -> name.equalsIgnoreCase("skyline.yaml") || name.equalsIgnoreCase("skyline.yml"));
 
         AssertUtil.isNotBlank(content, "plugin config not found");
 
@@ -126,6 +108,41 @@ public class PluginDefineResolver {
         AssertUtil.isTrue(classDefineExists, "classDefine not found");
 
         return pluginDefine;
+    }
+
+
+
+    public List<Map<String,Object>> getMethodValueList(Object object, String methodName, Predicate<Object> filter) throws Exception {
+        Method method = object.getClass().getMethod(methodName);
+
+        Object result = method.invoke(object, null);
+
+        if (result == null) {
+            return null;
+        }
+
+        List<Map<String, Object>> items = new ArrayList<>();
+
+        List<Object> capableSwitchList = (List<Object>) result;
+
+        for (Object o : capableSwitchList) {
+            if (!filter.evaluate(o)) {
+                continue;
+            }
+
+            Map<String, Object> item = new HashMap<>();
+
+            ReflectionUtils.doWithLocalFields(o.getClass(), field -> {
+                String name = field.getName();
+                field.setAccessible(true);
+                Object value = field.get(o);
+                item.put(name, value);
+
+            });
+            items.add(item);
+        }
+
+        return items;
     }
 
 }

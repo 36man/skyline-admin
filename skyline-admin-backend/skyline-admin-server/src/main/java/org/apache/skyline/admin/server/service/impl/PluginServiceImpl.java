@@ -5,10 +5,10 @@ import org.apache.skyline.admin.commons.model.request.PageRequest;
 import org.apache.skyline.admin.commons.model.request.PluginRequest;
 import org.apache.skyline.admin.commons.model.vo.PluginVO;
 import org.apache.skyline.admin.server.domain.model.PluginDomain;
-import org.apache.skyline.admin.server.domain.repository.PluginRepository;
 import org.apache.skyline.admin.server.domain.request.GeneratePluginDomainRequest;
 import org.apache.skyline.admin.server.domain.service.PluginDomainService;
 import org.apache.skyline.admin.server.service.PluginService;
+import org.apache.skyline.admin.server.support.codec.ObjectMapperCodec;
 import org.apache.skyline.admin.server.support.oss.OSSExecutor;
 import org.apache.skyline.admin.server.support.oss.builder.FileKeyBuilder;
 import org.apache.skyline.admin.server.support.oss.config.OSSProperties;
@@ -41,10 +41,10 @@ public class PluginServiceImpl implements PluginService {
     private PluginDomainService pluginDomainService;
 
     @Autowired
-    private PluginRepository pluginRepository;
+    private OSSProperties ossProperties;
 
     @Autowired
-    private OSSProperties ossProperties;
+    private ObjectMapperCodec objectMapperCodec;
 
     public Boolean generate(PluginRequest pluginRequest) {
         ObjectStoreRequest storeRequest = new ObjectStoreRequest();
@@ -56,27 +56,32 @@ public class PluginServiceImpl implements PluginService {
 
         ObjectStoreResponse result = ossExecutor.doExecute(StoreType.LOCAL,service-> service.store(storeRequest));
 
-        String resourceUrl = result.getResourceUrl();
+        String storePath = result.getStorePath();
 
-        PluginDefineResolver pluginDefineResolver = new PluginDefineResolver(resourceUrl);
+        PluginDefineResolver pluginDefineResolver = new PluginDefineResolver(objectMapperCodec,storePath);
 
         PluginDefine pluginDefine = pluginDefineResolver.resolve();
 
-        result = this.storeOSS(pluginDefine, pluginRequest);
+        ObjectStoreResponse objectStoreResponse = this.storeOSS(pluginDefine, pluginRequest);
+
+        if (objectStoreResponse == null) {
+            objectStoreResponse = result;
+        }
 
         GeneratePluginDomainRequest pluginDomainRequest = GeneratePluginDomainRequest.builder()
-                .fileKey(result.getFileKey())
-                .jarUrl(result.getResourceUrl())
+                .fileKey(objectStoreResponse.getFileKey())
+                .jarUrl(objectStoreResponse.getResourceUrl())
                 .size(pluginRequest.getSize())
                 .build();
 
         pluginDomainService.storePlugin(pluginDomainRequest);
 
-        ossExecutor.doExecute(StoreType.LOCAL,service-> {
-            service.deleteObject(resourceUrl);
-            return null;
-        });
-
+        if (!ossProperties.getStoreType().equals(StoreType.LOCAL)) {
+            ossExecutor.doExecute(StoreType.LOCAL,service-> {
+                service.deleteObject(storePath);
+                return null;
+            });
+        }
         return true;
     }
 
@@ -104,7 +109,6 @@ public class PluginServiceImpl implements PluginService {
         return null;
     }
 
-
     private ObjectStoreResponse storeOSS(PluginDefine pluginDefine, PluginRequest pluginRequest) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         String date = sdf.format(new Date());
@@ -118,7 +122,12 @@ public class PluginServiceImpl implements PluginService {
         uploadObjectRequest.setFileName(FileKeyBuilder.newBuilder(pluginDefine.getPluginName(),fileKey).build());
         uploadObjectRequest.setSize(pluginRequest.getSize());
 
-        return ossExecutor.doExecute(ossProperties.getStoreType(),service->service.store(uploadObjectRequest));
+        if (!ossProperties.getStoreType().equals(StoreType.LOCAL)) {
+            return ossExecutor.doExecute(ossProperties.getStoreType(),service->service.store(uploadObjectRequest));
+        }
+
+        return null;
+
     }
 
     private List<PluginVO> convertList(List<PluginDomain> items) {

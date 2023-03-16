@@ -24,11 +24,12 @@ import org.apache.ibatis.plugin.PluginException;
 import org.bravo.gaia.commons.exception.PlatformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
@@ -47,43 +48,50 @@ public class PluginClassLoader extends ClassLoader {
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PluginClassLoader.class);
-    private final File      pluginDir;
-    private       List<Jar> allJars;
+    private final File pluginPath;
+    private List<Jar> allJars;
 
     private final ReentrantLock jarScanLock = new ReentrantLock();
 
     public PluginClassLoader(ClassLoader parent, String packagePath){
         super(parent);
 
-        pluginDir = new File(packagePath);
+        pluginPath = new File(packagePath);
 
-        if (!pluginDir.exists()) {
+        if (!pluginPath.exists()) {
             throw new PluginException("plugin source not found");
         }
     }
 
     public String getContent(String resourceName) {
-        return getContent(jar -> jar.sourceFile.getName().equals(resourceName));
+        return getContent(jar -> jar.getName().equals(resourceName));
     }
 
     public String getContentIfPresent(Predicate<String> condition){
-        return getContent(jar -> condition.test(jar.getSourceFile().getName()));
+        return getContent(jar -> condition.test(jar.getName()));
     }
 
-    public String getContent(Predicate<Jar> condition) {
+    public String getContent(Predicate<JarEntry> condition) {
         List<Jar> jars = getAllJars();
         for (Jar jar : jars) {
-            File sourceFile = jar.sourceFile;
-            if (!sourceFile.isDirectory() && condition.test(jar)) {
-                try {
-                    FileInputStream inputStream = new FileInputStream(sourceFile);
+            JarFile jarFile = jar.jarFile;
 
-                    return IOUtils.toString(inputStream);
-                } catch (Exception ex) {
-                    LOGGER.error("get content error with resource");
-                    throw new PlatformException("load resource error");
+            for(Enumeration<JarEntry> enumeration =  jarFile.entries(); enumeration.hasMoreElements(); ) {
+                JarEntry jarEntry = enumeration.nextElement();
+
+                System.out.println("===>>> "+jarEntry.getName());
+
+                if (!jarEntry.isDirectory() && condition.test(jarEntry)) {
+                    try {
+                        InputStream is = jarFile.getInputStream(jarEntry);
+                        return IOUtils.toString(is);
+                    } catch (Exception ex) {
+                        LOGGER.error("get content error with resource");
+                        throw new PlatformException("load resource error");
+                    }
                 }
             }
+
         }
         return null;
     }
@@ -174,22 +182,17 @@ public class PluginClassLoader extends ClassLoader {
 
     private LinkedList<Jar> doGetJars() {
         LinkedList<Jar> jars = new LinkedList<>();
-        if (pluginDir.exists() && pluginDir.isDirectory()) {
-            String[] jarFileNames = pluginDir.list();
-            if (jarFileNames != null) {
-                for (String fileName : jarFileNames) {
-                    try {
-                        File file = new File(pluginDir, fileName);
+        if (pluginPath.exists()) {
+            try {
+                JarFile jarFile = new JarFile(pluginPath);
+                Jar jar = new Jar(jarFile, pluginPath);
 
-                        if (fileName.endsWith(".jar")) {
-                            Jar jar = new Jar(new JarFile(file), file);
-                            jars.add(jar);
-                        }
-                        LOGGER.info("{} loaded.", file.toString());
-                    } catch (IOException e) {
-                        LOGGER.error("{} jar file can't be resolved", fileName, e);
-                    }
-                }
+                jars.add(jar);
+
+                LOGGER.info("{} loaded.", pluginPath.toString());
+
+            } catch (IOException e) {
+                LOGGER.error("{} jar file can't be resolved", pluginPath.getPath(), e);
             }
         }
         return jars;

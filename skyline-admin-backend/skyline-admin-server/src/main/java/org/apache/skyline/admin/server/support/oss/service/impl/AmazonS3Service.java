@@ -82,6 +82,8 @@ public class AmazonS3Service extends BaseOSSService implements InitializingBean 
 
         result.setResourceUrl(resourceUrl);
 
+        result.setStorePath(bucketName + SymbolKind.SLASH.getSymbol() + fileKey);
+
         return result;
     }
 

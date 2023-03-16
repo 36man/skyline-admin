@@ -38,10 +38,8 @@ public class PluginVersionRepositoryImpl implements PluginVersionRepository {
         pluginVersionDO.setDeleted(false);
         pluginVersionDO.setActive(true);
         pluginVersionDO.setSize(pluginVersionDomain.getSize());
-        pluginVersionDO.setMd5(pluginVersionDomain.getMd5());
         pluginVersionDO.setJarUrl(pluginVersionDomain.getJarUrl());
         pluginVersionDO.setFileKey(pluginVersionDomain.getFileKey());
-        pluginVersionDO.setVerTags(JSON.toJSONString(pluginVersionDomain.getVerTags()));
 
         return pluginVersionDO;
 

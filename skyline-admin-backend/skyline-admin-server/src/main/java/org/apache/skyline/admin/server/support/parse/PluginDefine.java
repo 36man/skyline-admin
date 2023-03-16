@@ -30,8 +30,7 @@ public class PluginDefine {
 
     private List<String> features;
 
-    private String switchItems;
-
+    private String apiDefine;
 
     public String getPluginName() {
         if (StringUtils.isBlank(this.pluginName)) {

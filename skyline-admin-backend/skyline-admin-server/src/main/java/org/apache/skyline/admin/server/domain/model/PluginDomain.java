@@ -4,7 +4,6 @@ import lombok.Data;
 import org.bravo.gaia.commons.base.BaseDomain;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author hejianbing
@@ -22,8 +21,6 @@ public class PluginDomain extends BaseDomain {
     private String       defineClass;
 
     public String        overview;
-
-    private List<String> keywords;
 
     private Date         createTime;
 

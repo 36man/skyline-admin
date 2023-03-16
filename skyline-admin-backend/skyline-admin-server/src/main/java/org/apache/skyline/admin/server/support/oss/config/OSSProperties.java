@@ -18,7 +18,7 @@ public class OSSProperties {
     /** lcloud:bucketName*/
     private String bucketName;
 
-    private String storePath;
+    private String local;
 
     private String accessKey;
     private String secretKey;

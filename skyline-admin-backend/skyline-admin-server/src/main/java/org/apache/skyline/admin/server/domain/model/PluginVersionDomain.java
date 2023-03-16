@@ -28,13 +28,9 @@ public class PluginVersionDomain extends BaseDomain {
 
     private Long size;
 
-    private String md5;
-
     private String jarUrl;
 
     private String fileKey;
 
-    private List<String> verTags;
-
-    private String switchItems;
+    private String apiDefine;
 }

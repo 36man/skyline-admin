@@ -21,4 +21,6 @@ final public class CopyIgnoreFields {
 
     public static final String CONFIG_ITEM = "configItem";
 
+    public static final String FEATURES = "features";
+
 }

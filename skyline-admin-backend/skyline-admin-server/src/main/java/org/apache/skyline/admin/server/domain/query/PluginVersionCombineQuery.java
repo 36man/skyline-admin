@@ -21,6 +21,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.Builder;
 import lombok.Data;
 import org.apache.skyline.admin.server.dal.dataobject.PluginVersionDO;
+import org.bravo.gaia.commons.util.AssertUtil;
 import org.springframework.boot.context.properties.PropertyMapper;
 
 @Data
@@ -29,14 +30,23 @@ public class PluginVersionCombineQuery implements CombineQuery<PluginVersionDO>{
 
     private Long pluginId;
 
+    private String ver;
+
     @Override
     public LambdaQueryWrapper<PluginVersionDO> toQuery() {
+
+        AssertUtil.notNull(pluginId, "pluginId is null");
 
         LambdaQueryWrapper<PluginVersionDO> condition = new LambdaQueryWrapper<>();
 
         PropertyMapper propertyMapper = PropertyMapper.get();
         propertyMapper.from(this::getPluginId).whenNonNull().to(pluginId-> condition.eq(
                 PluginVersionDO::getPluginId, pluginId));
+
+        propertyMapper.from(this::getVer).whenHasText().to(ver-> condition.eq(
+                PluginVersionDO::getVer, ver));
+
+        condition.eq(PluginVersionDO::getDeleted, false);
 
         return condition;
     }

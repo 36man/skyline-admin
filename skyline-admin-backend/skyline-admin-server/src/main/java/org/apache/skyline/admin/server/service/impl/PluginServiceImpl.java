@@ -69,6 +69,7 @@ public class PluginServiceImpl implements PluginService {
         objectStoreResponse = Optional.ofNullable(objectStoreResponse).orElseGet(()->result);
 
         GeneratePluginDomainRequest pluginDomainRequest = GeneratePluginDomainRequest.builder()
+                .pluginDefine(pluginDefine)
                 .fileKey(objectStoreResponse.getFileKey())
                 .jarUrl(objectStoreResponse.getResourceUrl())
                 .size(pluginRequest.getSize())

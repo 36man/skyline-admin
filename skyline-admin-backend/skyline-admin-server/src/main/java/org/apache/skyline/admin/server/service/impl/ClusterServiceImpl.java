@@ -168,6 +168,7 @@ public class ClusterServiceImpl implements ClusterService {
                 .toCall(()->{
                     AssertUtil.isNotBlank(request.getConfigSecret(), "configSecret is blank");
                     AssertUtil.isNotBlank(request.getConfigUser(), "configUser is blank");
+                    AssertUtil.isNotBlank(request.getConfigUrl(), "configUrl is blank");
                 });
     }
 

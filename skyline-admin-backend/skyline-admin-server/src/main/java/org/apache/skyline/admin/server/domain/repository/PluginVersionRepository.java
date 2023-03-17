@@ -11,5 +11,11 @@ public interface PluginVersionRepository {
 
     Long create(PluginVersionDomain pluginVersionDomain);
 
-    boolean delete(PluginVersionCombineQuery versionCombineQuery);
+    boolean delete(PluginVersionCombineQuery combineQuery);
+
+    PluginVersionDomain findOne(PluginVersionCombineQuery combineQuery);
+
+    Boolean update(PluginVersionCombineQuery combineQuery,PluginVersionDomain pluginVersionDomain);
+
+
 }

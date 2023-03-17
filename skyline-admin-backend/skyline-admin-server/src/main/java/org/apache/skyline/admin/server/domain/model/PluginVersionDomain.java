@@ -22,9 +22,9 @@ public class PluginVersionDomain extends BaseDomain {
 
     private String pageContent;
 
-    private boolean deleted;
+    private Boolean deleted;
 
-    private boolean active;
+    private Boolean active;
 
     private Long size;
 

@@ -19,13 +19,23 @@ package org.apache.skyline.admin.commons.model.request;
 
 import lombok.Data;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 @Data
 public class PageRequest <T>{
 
+    @NotNull
+    @Min(1)
+    @Max(100)
     private Integer pageNo;
 
+    @NotNull
+    @Min(10)
+    @Max(100)
     private Integer pageSize;
 
-
+    @NotNull
     private T condition;
 }

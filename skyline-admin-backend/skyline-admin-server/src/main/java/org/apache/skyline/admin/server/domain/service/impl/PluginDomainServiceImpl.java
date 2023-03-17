@@ -1,6 +1,7 @@
 package org.apache.skyline.admin.server.domain.service.impl;
 
 import org.apache.skyline.admin.server.domain.model.PluginDomain;
+import org.apache.skyline.admin.server.domain.model.PluginVersionDomain;
 import org.apache.skyline.admin.server.domain.query.PluginCombineQuery;
 import org.apache.skyline.admin.server.domain.query.PluginVersionCombineQuery;
 import org.apache.skyline.admin.server.domain.repository.PluginRepository;
@@ -8,7 +9,6 @@ import org.apache.skyline.admin.server.domain.repository.PluginVersionRepository
 import org.apache.skyline.admin.server.domain.request.GeneratePluginDomainRequest;
 import org.apache.skyline.admin.server.domain.service.PluginDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,23 +31,27 @@ public class PluginDomainServiceImpl implements PluginDomainService {
     public Long storePlugin(GeneratePluginDomainRequest pluginDomainRequest) {
         PluginDomain newPluginDomain = pluginDomainRequest.getPluginDomain();
 
-        try {
-            pluginRepository.create(newPluginDomain);
-        } catch (DuplicateKeyException exception) {
-            PluginCombineQuery combineQuery = PluginCombineQuery.builder()
-                    .classDefine(pluginDomainRequest.getPluginDefine().getClassDefine())
-                    .build();
+        PluginCombineQuery combineQuery = PluginCombineQuery.builder()
+                .classDefine(pluginDomainRequest.getPluginDefine().getClassDefine())
+                .build();
 
-            PluginDomain pluginDomain = pluginRepository.findOne(combineQuery);
+        PluginDomain pluginDomain = pluginRepository.findOne(combineQuery);
 
-            pluginDomain.setId(pluginDomain.getId());
+        if (pluginDomain == null) {
+            Long id = pluginRepository.create(newPluginDomain);
+            newPluginDomain.setId(id);
+        }else{
+            newPluginDomain.setId(pluginDomain.getId());
 
-            pluginRepository.updateById(pluginDomain);
+            pluginRepository.updateById(newPluginDomain);
         }
-        pluginVersionRepository.create(pluginDomainRequest.getPluginVersionDomain());
+
+        storeVer(pluginDomainRequest.getPluginVersionDomain(), newPluginDomain);
 
         return newPluginDomain.getId();
     }
+
+
 
     @Transactional
     @Override
@@ -61,6 +65,24 @@ public class PluginDomainServiceImpl implements PluginDomainService {
         success = pluginVersionRepository.delete(versionCombineQuery);
 
         return success;
+    }
+
+    private void storeVer(PluginVersionDomain pluginVersionDomain, PluginDomain newPluginDomain) {
+        pluginVersionDomain.setPluginDomain(newPluginDomain);
+
+        PluginVersionCombineQuery versionCombineQuery = PluginVersionCombineQuery.builder()
+                .pluginId(newPluginDomain.getId())
+                .ver(pluginVersionDomain.getVer())
+                .build();
+        PluginVersionDomain versionDomain = pluginVersionRepository.findOne(versionCombineQuery);
+
+        if (null == versionDomain) {
+            pluginVersionRepository.create(pluginVersionDomain);
+        }else{
+            pluginVersionDomain.setId(versionDomain.getId());
+
+            pluginVersionRepository.update(versionCombineQuery, pluginVersionDomain);
+        }
     }
 
 }

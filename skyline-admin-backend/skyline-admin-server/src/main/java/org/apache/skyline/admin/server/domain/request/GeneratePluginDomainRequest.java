@@ -22,12 +22,15 @@ public class GeneratePluginDomainRequest {
 
     private Long size;
 
+    private Long id;
+
     public PluginDomain getPluginDomain() {
         PluginDomain pluginDomain = new PluginDomain();
         pluginDomain.setPluginName(pluginDefine.getPluginName());
         pluginDomain.setMaintainer(pluginDefine.getMaintainer());
         pluginDomain.setOverview(pluginDefine.getOverview());
         pluginDomain.setDefineClass(pluginDefine.getClassDefine());
+        pluginDomain.setId(id);
 
         return pluginDomain;
     }
@@ -42,8 +45,7 @@ public class GeneratePluginDomainRequest {
         pluginVersionDomain.setDeleted(false);
         pluginVersionDomain.setActive(true);
         pluginVersionDomain.setPageContent(pluginDefine.getPageContent());
-
-        pluginVersionDomain.setPluginDomain(getPluginDomain());
+        pluginVersionDomain.setApiDefine(pluginDefine.getApiDefine());
 
         return pluginVersionDomain;
     }

@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface PluginVersionService {
 
-    List<PluginVersionVO> queryForList(PluginVersionQuery pluginVersionQuery);
+    List<PluginVersionVO> pageList(PluginVersionQuery pluginVersionQuery);
 
     boolean deleted(Long id);
 

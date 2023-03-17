@@ -7,7 +7,7 @@ import lombok.Data;
  * @author hejianbing
  * @version @Id: PluginVersionDO.java, v 0.1 2022年12月23日 10:57 hejianbing Exp $
  */
-@TableName("plugin_version")
+@TableName("admin_plugin_version")
 @Data
 public class PluginVersionDO extends BaseDO {
 
@@ -21,18 +21,16 @@ public class PluginVersionDO extends BaseDO {
 
     private String  pageContent;
 
-    private boolean deleted;
+    private Boolean deleted;
 
-    private boolean active;
+    private Boolean active;
 
     private Long    size;
-
-    private String  md5;
 
     private String  jarUrl;
 
     private String  fileKey;
 
-    private String  verTags;
+    private String apiDefine;
 
 }

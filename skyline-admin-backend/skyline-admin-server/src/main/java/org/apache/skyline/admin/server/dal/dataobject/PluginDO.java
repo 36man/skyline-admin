@@ -8,7 +8,7 @@ import lombok.Data;
  * @version @Id: PluginDO.java, v 0.1 2022年12月23日 10:46 hejianbing Exp $
  */
 @Data
-@TableName("plugin")
+@TableName("admin_plugin")
 public class PluginDO extends BaseDO {
 
     private Long   id;

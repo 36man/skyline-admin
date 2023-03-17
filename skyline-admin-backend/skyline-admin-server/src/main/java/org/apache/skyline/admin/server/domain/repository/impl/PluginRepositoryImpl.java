@@ -71,6 +71,11 @@ public class PluginRepositoryImpl implements PluginRepository {
         return PageCommonUtils.convert(result, items -> convert(items));
     }
 
+    @Override
+    public boolean delete(PluginCombineQuery combineQuery) {
+        return pluginDao.delete(combineQuery.toQuery()) > 0;
+    }
+
     private PluginDO convertDO(PluginDomain skylinePluginDomain) {
         PluginDO pluginDO = new PluginDO();
         pluginDO.setMaintainer(skylinePluginDomain.getMaintainer());

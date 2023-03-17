@@ -24,7 +24,7 @@ import org.apache.skyline.admin.commons.model.vo.ClusterVO;
 import org.apache.skyline.admin.server.commons.utils.PageCommonUtils;
 import org.apache.skyline.admin.server.domain.model.ClusterDomain;
 import org.apache.skyline.admin.server.domain.repository.ClusterRepository;
-import org.apache.skyline.admin.server.pojo.query.ClusterCombineQuery;
+import org.apache.skyline.admin.server.domain.query.ClusterCombineQuery;
 import org.apache.skyline.admin.server.service.ClusterService;
 import org.apache.skyline.admin.server.support.config.ConfigCenterEnvironmentLoader;
 import org.bravo.gaia.commons.base.PageBean;

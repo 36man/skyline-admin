@@ -4,7 +4,10 @@ import org.apache.skyline.admin.commons.model.query.PluginQuery;
 import org.apache.skyline.admin.commons.model.request.PageRequest;
 import org.apache.skyline.admin.commons.model.request.PluginRequest;
 import org.apache.skyline.admin.commons.model.vo.PluginVO;
+import org.apache.skyline.admin.server.commons.utils.PageCommonUtils;
 import org.apache.skyline.admin.server.domain.model.PluginDomain;
+import org.apache.skyline.admin.server.domain.query.PluginCombineQuery;
+import org.apache.skyline.admin.server.domain.repository.PluginRepository;
 import org.apache.skyline.admin.server.domain.request.GeneratePluginDomainRequest;
 import org.apache.skyline.admin.server.domain.service.PluginDomainService;
 import org.apache.skyline.admin.server.service.PluginService;
@@ -21,10 +24,13 @@ import org.bravo.gaia.commons.base.PageBean;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -46,15 +52,11 @@ public class PluginServiceImpl implements PluginService {
     @Autowired
     private ObjectMapperCodec objectMapperCodec;
 
+    @Autowired
+    private PluginRepository pluginRepository;
+
     public Boolean generate(PluginRequest pluginRequest) {
-        ObjectStoreRequest storeRequest = new ObjectStoreRequest();
-
-        storeRequest.setBytes(pluginRequest.getBytes());
-        storeRequest.setSize(pluginRequest.getSize());
-        storeRequest.setContentType(pluginRequest.getContentType());
-        storeRequest.setFileName(pluginRequest.getFileName());
-
-        ObjectStoreResponse result = ossExecutor.doExecute(StoreType.LOCAL,service-> service.store(storeRequest));
+        ObjectStoreResponse result = storeLocal(pluginRequest);
 
         String storePath = result.getStorePath();
 
@@ -64,9 +66,7 @@ public class PluginServiceImpl implements PluginService {
 
         ObjectStoreResponse objectStoreResponse = this.storeOSS(pluginDefine, pluginRequest);
 
-        if (objectStoreResponse == null) {
-            objectStoreResponse = result;
-        }
+        objectStoreResponse = Optional.ofNullable(objectStoreResponse).orElseGet(()->result);
 
         GeneratePluginDomainRequest pluginDomainRequest = GeneratePluginDomainRequest.builder()
                 .fileKey(objectStoreResponse.getFileKey())
@@ -76,27 +76,33 @@ public class PluginServiceImpl implements PluginService {
 
         pluginDomainService.storePlugin(pluginDomainRequest);
 
-        if (!ossProperties.getStoreType().equals(StoreType.LOCAL)) {
-            ossExecutor.doExecute(StoreType.LOCAL,service-> {
-                service.deleteObject(storePath);
-                return null;
-            });
-        }
+        deleteIfNecessary(storePath);
+
         return true;
     }
 
     @Override
-    public PageBean<PluginVO> pageList(PageRequest<PluginQuery> condition) {
-        //PageBean<SkylinePluginDomain> pageBean = skylinePluginRepository.pageList(condition);
+    public PageBean<PluginVO> pageList(PageRequest<PluginQuery> pageRequest) {
+        PluginQuery condition = pageRequest.getCondition();
 
-        //return PageCommonUtils.convert(pageBean,this::convertList);
+        PluginCombineQuery queryCondition = PluginCombineQuery.builder()
+                .maintainer(condition.getMaintainer())
+                .pluginName(condition.getPluginName())
+                .classDefine(condition.getClassDefine())
+                .build();
 
-        return null;
+        PageBean<PluginDomain> pageBean = pluginRepository.pageQuery(queryCondition, pageRequest.getPageNo(), pageRequest.getPageSize());
+
+        return PageCommonUtils.convert(pageBean, clusterDomains -> convert(clusterDomains));
     }
 
+    @Transactional
     @Override
     public Boolean deleted(Long id) {
-        return null;
+        PluginCombineQuery combineQuery = PluginCombineQuery.builder()
+                .id(id)
+                .build();
+        return pluginDomainService.delete(combineQuery);
     }
 
     @Override
@@ -130,38 +136,35 @@ public class PluginServiceImpl implements PluginService {
 
     }
 
-    private List<PluginVO> convertList(List<PluginDomain> items) {
-        return items.stream()
+    private List<PluginVO> convert(List<PluginDomain> items) {
+        return Optional.ofNullable(items).orElseGet(ArrayList::new)
+                .stream()
                 .map(item->{
                     PluginVO vo = new PluginVO();
                     BeanUtils.copyProperties(item,vo);
                     return vo;
                 }).collect(Collectors.toList());
+    }
 
+    private void deleteIfNecessary(String storePath) {
+        if (!ossProperties.getStoreType().equals(StoreType.LOCAL)) {
+            ossExecutor.doExecute(StoreType.LOCAL,service-> {
+                service.deleteObject(storePath);
+                return null;
+            });
+        }
+    }
+
+    private ObjectStoreResponse storeLocal(PluginRequest pluginRequest) {
+        ObjectStoreRequest storeRequest = new ObjectStoreRequest();
+
+        storeRequest.setBytes(pluginRequest.getBytes());
+        storeRequest.setSize(pluginRequest.getSize());
+        storeRequest.setContentType(pluginRequest.getContentType());
+        storeRequest.setFileName(pluginRequest.getFileName());
+
+        ObjectStoreResponse result = ossExecutor.doExecute(StoreType.LOCAL,service-> service.store(storeRequest));
+        return result;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

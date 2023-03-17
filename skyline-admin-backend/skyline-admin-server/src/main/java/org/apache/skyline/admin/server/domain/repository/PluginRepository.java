@@ -1,8 +1,7 @@
 package org.apache.skyline.admin.server.domain.repository;
 
-import org.apache.skyline.admin.commons.model.query.PluginQuery;
-import org.apache.skyline.admin.commons.model.request.PageRequest;
 import org.apache.skyline.admin.server.domain.model.PluginDomain;
+import org.apache.skyline.admin.server.domain.query.PluginCombineQuery;
 import org.bravo.gaia.commons.base.PageBean;
 
 /**
@@ -11,11 +10,13 @@ import org.bravo.gaia.commons.base.PageBean;
  */
 public interface PluginRepository {
 
-    Long create(PluginDomain skylinePluginDomain);
+    Long create(PluginDomain pluginDomain);
 
-    boolean updateById(PluginDomain skylinePluginDomain);
+    boolean updateById(PluginDomain pluginDomain);
 
-    PluginDomain findByClassDefine(String classDefine);
+    PluginDomain findOne(PluginCombineQuery pluginCombineQuery);
 
-    PageBean<PluginDomain> pageList(PageRequest<PluginQuery> condition);
+    PageBean<PluginDomain> pageQuery(PluginCombineQuery condition,Integer pageNo,Integer pageSize);
+
+    boolean delete(PluginCombineQuery combineQuery);
 }

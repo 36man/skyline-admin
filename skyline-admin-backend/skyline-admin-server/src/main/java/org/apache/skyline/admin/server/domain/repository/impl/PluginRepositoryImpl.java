@@ -2,22 +2,23 @@ package org.apache.skyline.admin.server.domain.repository.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.skyline.admin.commons.model.query.PluginQuery;
-import org.apache.skyline.admin.commons.model.request.PageRequest;
 import org.apache.skyline.admin.server.commons.utils.PageCommonUtils;
-import org.apache.skyline.admin.server.dal.dao.SkylinePluginDao;
+import org.apache.skyline.admin.server.dal.dao.PluginDao;
 import org.apache.skyline.admin.server.dal.dataobject.PluginDO;
 import org.apache.skyline.admin.server.domain.model.PluginDomain;
+import org.apache.skyline.admin.server.domain.query.PluginCombineQuery;
 import org.apache.skyline.admin.server.domain.repository.PluginRepository;
 import org.bravo.gaia.commons.base.PageBean;
+import org.bravo.gaia.commons.util.AssertUtil;
 import org.bravo.gaia.id.generator.IdGenerator;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -28,58 +29,46 @@ import java.util.stream.Collectors;
 public class PluginRepositoryImpl implements PluginRepository {
 
     @Autowired
-    private SkylinePluginDao skylinePluginDao;
+    private PluginDao pluginDao;
 
     @Autowired
     private IdGenerator<Long> idGenerator;
 
     @Override
-    public Long create(PluginDomain skylinePluginDomain) {
-        PluginDO pluginDO = this.convertDO(skylinePluginDomain);
+    public Long create(PluginDomain pluginDomain) {
+        return doExecute(pluginDomain,item->{
 
-        pluginDO.setId(idGenerator.generate());
+            item.setId(idGenerator.generate());
 
-        skylinePluginDao.insert(pluginDO);
+            pluginDao.insert(item);
 
-        return pluginDO.getId();
+            return item.getId();
+        });
     }
 
     @Override
-    public boolean updateById(PluginDomain skylinePluginDomain) {
-
-        PluginDO pluginDO = convertDO(skylinePluginDomain);
-
-        pluginDO.setId(skylinePluginDomain.getId());
-
-        int rows = skylinePluginDao.updateById(pluginDO);
-
-        return rows > 0;
+    public boolean updateById(PluginDomain pluginDomain) {
+        return doExecute(pluginDomain,item->{
+            int rows = pluginDao.updateById(item);
+            return rows > 0;
+        });
     }
 
     @Override
-    public PluginDomain findByClassDefine(String classDefine) {
-        LambdaQueryWrapper<PluginDO> condition = new LambdaQueryWrapper<>();
-        condition.eq(PluginDO::getClassDefine, classDefine);
-
-        PluginDO pluginDO = skylinePluginDao.selectOne(condition);
-
-        return this.convertDomain(pluginDO);
+    public PluginDomain findOne(PluginCombineQuery pluginCombineQuery) {
+        return selectList(pluginCombineQuery).get(0);
     }
 
-    @Override
-    public PageBean<PluginDomain> pageList(PageRequest<PluginQuery> condition) {
+    public PageBean<PluginDomain> pageQuery(PluginCombineQuery pluginCombineQuery,
+                                            Integer pageNo,
+                                            Integer pageSize) {
         Page<PluginDO> page = new Page<>();
-        page.setCurrent(condition.getPageNo());
-        page.setSize(condition.getPageSize());
-        LambdaQueryWrapper<PluginDO> pageCondition = new LambdaQueryWrapper<>();
+        page.setCurrent(pageNo);
+        page.setSize(pageSize);
 
-        PluginQuery skylinePluginQuery = condition.getCondition();
+        Page<PluginDO> result = pluginDao.selectPage(page, pluginCombineQuery.toQuery());
 
-        pageCondition.eq(StringUtils.isNoneBlank(skylinePluginQuery.getPluginName()), PluginDO::getPluginName, skylinePluginQuery.getPluginName());
-
-        Page<PluginDO> result = skylinePluginDao.selectPage(page, pageCondition);
-
-        return PageCommonUtils.convert(result,this::convertDomain);
+        return PageCommonUtils.convert(result, items -> convert(items));
     }
 
     private PluginDO convertDO(PluginDomain skylinePluginDomain) {
@@ -91,25 +80,35 @@ public class PluginRepositoryImpl implements PluginRepository {
         return pluginDO;
     }
 
-    private  List<PluginDomain> convertDomain(List<PluginDO> items) {
-        if (items == null) {
-            return null;
-        }
-        return items.stream().map(item-> convertDomain(item)).collect(Collectors.toList());
+    private List<PluginDomain> selectList(PluginCombineQuery pluginCombineQuery) {
+        LambdaQueryWrapper<PluginDO> condition = pluginCombineQuery.toQuery();
 
+        List<PluginDO> pluginDOList = pluginDao.selectList(condition);
+
+        return convert(pluginDOList);
     }
 
-    private static PluginDomain convertDomain(PluginDO item) {
-        if (item == null) {
-            return null;
-        }
+    private List<PluginDomain> convert(List<PluginDO> items) {
+        return Optional.ofNullable(items)
+                .orElseGet(ArrayList::new)
+                .stream()
+                .map(this::convert)
+                .collect(Collectors.toList());
+    }
 
-        PluginDomain skylinePluginDomain = new PluginDomain();
+    private PluginDomain convert(PluginDO pluginDO) {
+        PluginDomain pluginDomain = new PluginDomain();
 
-        BeanUtils.copyProperties(item, skylinePluginDomain);
+        BeanUtils.copyProperties(pluginDO, pluginDomain);
 
-        PropertyMapper propertyMapper = PropertyMapper.get();
+        return pluginDomain;
+    }
 
-        return skylinePluginDomain;
+    private <T> T doExecute(PluginDomain pluginDomain, Function<PluginDO, T> handler) {
+        PluginDO pluginDO = convertDO(pluginDomain);
+
+        AssertUtil.notNull(pluginDO, "pluginDO is null");
+
+        return handler.apply(pluginDO);
     }
 }

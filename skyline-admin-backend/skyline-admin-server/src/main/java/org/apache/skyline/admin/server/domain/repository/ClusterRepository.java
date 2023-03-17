@@ -18,7 +18,7 @@
 package org.apache.skyline.admin.server.domain.repository;
 
 import org.apache.skyline.admin.server.domain.model.ClusterDomain;
-import org.apache.skyline.admin.server.pojo.query.ClusterCombineQuery;
+import org.apache.skyline.admin.server.domain.query.ClusterCombineQuery;
 import org.bravo.gaia.commons.base.PageBean;
 
 import java.util.List;

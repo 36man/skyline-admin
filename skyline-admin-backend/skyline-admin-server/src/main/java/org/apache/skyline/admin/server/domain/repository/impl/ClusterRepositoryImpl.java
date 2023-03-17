@@ -27,7 +27,7 @@ import org.apache.skyline.admin.server.dal.dao.ClusterDao;
 import org.apache.skyline.admin.server.dal.dataobject.ClusterDO;
 import org.apache.skyline.admin.server.domain.model.ClusterDomain;
 import org.apache.skyline.admin.server.domain.repository.ClusterRepository;
-import org.apache.skyline.admin.server.pojo.query.ClusterCombineQuery;
+import org.apache.skyline.admin.server.domain.query.ClusterCombineQuery;
 import org.apache.skyline.admin.server.support.codec.ObjectMapperCodec;
 import org.apache.skyline.admin.server.commons.utils.PageCommonUtils;
 import org.bravo.gaia.commons.base.PageBean;

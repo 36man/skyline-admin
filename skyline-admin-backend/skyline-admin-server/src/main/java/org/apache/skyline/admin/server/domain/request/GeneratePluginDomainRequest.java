@@ -41,7 +41,7 @@ public class GeneratePluginDomainRequest {
         pluginVersionDomain.setSize(size);
         pluginVersionDomain.setDeleted(false);
         pluginVersionDomain.setActive(true);
-        pluginVersionDomain.setPageContent(pluginDefine.getPageDefine());
+        pluginVersionDomain.setPageContent(pluginDefine.getPageContent());
 
         pluginVersionDomain.setPluginDomain(getPluginDomain());
 

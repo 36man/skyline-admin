@@ -19,6 +19,8 @@
         <revision>1.0.0-SNAPSHOT</revision>
         <aws.version>1.12.368</aws.version>
         <swagger.version>2.9.2</swagger.version>
+        <reactor.version>3.4.18</reactor.version>
+        <skyline.version>1.0.0-SNAPSHOT</skyline.version>
     </properties>
 
     <modules>

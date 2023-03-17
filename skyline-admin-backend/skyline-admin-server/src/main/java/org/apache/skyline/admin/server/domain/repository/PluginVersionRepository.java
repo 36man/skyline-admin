@@ -1,6 +1,7 @@
 package org.apache.skyline.admin.server.domain.repository;
 
 import org.apache.skyline.admin.server.domain.model.PluginVersionDomain;
+import org.apache.skyline.admin.server.domain.query.PluginVersionCombineQuery;
 
 /**
  * @author hejianbing
@@ -9,4 +10,6 @@ import org.apache.skyline.admin.server.domain.model.PluginVersionDomain;
 public interface PluginVersionRepository {
 
     Long create(PluginVersionDomain pluginVersionDomain);
+
+    boolean delete(PluginVersionCombineQuery versionCombineQuery);
 }

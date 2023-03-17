@@ -6,8 +6,8 @@ import org.apache.skyline.admin.server.dal.dataobject.PluginDO;
 
 /**
  * @author hejianbing
- * @version @Id: SkylinePluginMapper.java, v 0.1 2022年12月23日 13:42 hejianbing Exp $
+ * @version @Id: PluginDao.java, v 0.1 2022年12月23日 13:42 hejianbing Exp $
  */
 @Mapper
-public interface SkylinePluginDao extends BaseMapper<PluginDO> {
+public interface PluginDao extends BaseMapper<PluginDO> {
 }

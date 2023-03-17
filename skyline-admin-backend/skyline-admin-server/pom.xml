@@ -53,6 +53,18 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <artifactId>skyline-plugin-api</artifactId>
+            <groupId>org.apache.skyline</groupId>
+            <version>${skyline.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
+            <version>${reactor.version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>

@@ -1,8 +1,10 @@
 package org.apache.skyline.admin.server.domain.service.impl;
 
 import org.apache.skyline.admin.server.domain.model.PluginDomain;
-import org.apache.skyline.admin.server.domain.repository.PluginVersionRepository;
+import org.apache.skyline.admin.server.domain.query.PluginCombineQuery;
+import org.apache.skyline.admin.server.domain.query.PluginVersionCombineQuery;
 import org.apache.skyline.admin.server.domain.repository.PluginRepository;
+import org.apache.skyline.admin.server.domain.repository.PluginVersionRepository;
 import org.apache.skyline.admin.server.domain.request.GeneratePluginDomainRequest;
 import org.apache.skyline.admin.server.domain.service.PluginDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,16 +34,33 @@ public class PluginDomainServiceImpl implements PluginDomainService {
         try {
             pluginRepository.create(newPluginDomain);
         } catch (DuplicateKeyException exception) {
-            PluginDomain pluginDomain = pluginRepository.findByClassDefine(newPluginDomain.getDefineClass());
+            PluginCombineQuery combineQuery = PluginCombineQuery.builder()
+                    .classDefine(pluginDomainRequest.getPluginDefine().getClassDefine())
+                    .build();
+
+            PluginDomain pluginDomain = pluginRepository.findOne(combineQuery);
 
             pluginDomain.setId(pluginDomain.getId());
 
             pluginRepository.updateById(pluginDomain);
         }
-
         pluginVersionRepository.create(pluginDomainRequest.getPluginVersionDomain());
 
         return newPluginDomain.getId();
+    }
+
+    @Transactional
+    @Override
+    public Boolean delete(PluginCombineQuery combineQuery) {
+        boolean success = pluginRepository.delete(combineQuery);
+
+        PluginVersionCombineQuery versionCombineQuery = PluginVersionCombineQuery.builder()
+                .pluginId(combineQuery.getId())
+                .build();
+
+        success = pluginVersionRepository.delete(versionCombineQuery);
+
+        return success;
     }
 
 }

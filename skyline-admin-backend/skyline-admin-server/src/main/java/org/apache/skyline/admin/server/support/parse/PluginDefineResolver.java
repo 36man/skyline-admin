@@ -69,7 +69,7 @@ public class PluginDefineResolver {
             pluginDefine.setApiDefine(objectMapperCodec.serialize(items));
 
         } catch (Exception ex) {
-            throw new PlatformException("switch parse error");
+            throw new PlatformException("plugin api method parse error");
         }
     }
 

@@ -1,5 +1,8 @@
 package org.apache.skyline.admin.server.dal.dataobject;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -12,6 +15,10 @@ import lombok.Data;
 public class ClusterDO extends BaseDO {
 
     private Long id;
+
+    @TableLogic
+    @TableField(fill = FieldFill.INSERT)
+    private Boolean deleted;
 
     private String clusterName;
 

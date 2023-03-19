@@ -26,5 +26,6 @@ public class PluginDomain extends BaseDomain {
 
     private Date         updateTime;
 
-    private Boolean      deleted;
+    private Boolean active;
+
 }

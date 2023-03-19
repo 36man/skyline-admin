@@ -21,7 +21,5 @@ public class BaseDO {
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
-    @TableLogic
-    @TableField(fill = FieldFill.INSERT)
-    private Boolean deleted;
+
 }

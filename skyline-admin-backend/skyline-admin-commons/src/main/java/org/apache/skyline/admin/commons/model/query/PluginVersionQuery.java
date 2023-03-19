@@ -17,5 +17,11 @@
 
 package org.apache.skyline.admin.commons.model.query;
 
-public class PluginVersionQuery {
+import lombok.Data;
+
+@Data
+public class PluginVersionQuery extends PluginQuery {
+
+    private String ver;
+
 }

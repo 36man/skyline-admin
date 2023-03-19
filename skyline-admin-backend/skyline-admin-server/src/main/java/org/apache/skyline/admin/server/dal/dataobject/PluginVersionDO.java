@@ -31,6 +31,6 @@ public class PluginVersionDO extends BaseDO {
 
     private String  fileKey;
 
-    private String apiDefine;
+    private String typeMeta;
 
 }

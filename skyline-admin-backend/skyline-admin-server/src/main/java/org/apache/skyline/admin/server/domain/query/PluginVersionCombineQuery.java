@@ -20,28 +20,34 @@ package org.apache.skyline.admin.server.domain.query;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.Builder;
 import lombok.Data;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.skyline.admin.server.dal.dataobject.PluginVersionDO;
-import org.bravo.gaia.commons.util.AssertUtil;
 import org.springframework.boot.context.properties.PropertyMapper;
+
+import java.util.List;
 
 @Data
 @Builder
 public class PluginVersionCombineQuery implements CombineQuery<PluginVersionDO>{
 
-    private Long pluginId;
+    private List<Long> pluginIdList;
 
     private String ver;
 
+    private Long id;
+
+
     @Override
     public LambdaQueryWrapper<PluginVersionDO> toQuery() {
-
-        AssertUtil.notNull(pluginId, "pluginId is null");
-
         LambdaQueryWrapper<PluginVersionDO> condition = new LambdaQueryWrapper<>();
 
         PropertyMapper propertyMapper = PropertyMapper.get();
-        propertyMapper.from(this::getPluginId).whenNonNull().to(pluginId-> condition.eq(
-                PluginVersionDO::getPluginId, pluginId));
+
+        propertyMapper.from(this::getId).whenNonNull().to(id-> condition.eq(
+                PluginVersionDO::getId, id));
+
+        propertyMapper.from(this::getPluginIdList).when(CollectionUtils::isNotEmpty).to(pluginIdList-> condition.in(
+                PluginVersionDO::getPluginId, pluginIdList));
 
         propertyMapper.from(this::getVer).whenHasText().to(ver-> condition.eq(
                 PluginVersionDO::getVer, ver));

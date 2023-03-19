@@ -15,5 +15,4 @@ public class PluginQuery {
 
     private String maintainer;
 
-
 }

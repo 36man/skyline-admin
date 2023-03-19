@@ -21,4 +21,6 @@ public class PluginDO extends BaseDO {
 
     public String  overview;
 
+    private Boolean active;
+
 }

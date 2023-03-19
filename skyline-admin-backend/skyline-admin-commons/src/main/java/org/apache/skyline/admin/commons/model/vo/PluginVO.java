@@ -21,8 +21,6 @@ public class PluginVO {
 
     public String  overview;
 
-    private String keywords;
-
     private Date   createTime;
 
     private Date   updateTime;

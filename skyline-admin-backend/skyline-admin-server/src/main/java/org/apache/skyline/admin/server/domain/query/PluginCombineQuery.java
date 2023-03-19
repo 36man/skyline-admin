@@ -46,8 +46,6 @@ public class PluginCombineQuery implements CombineQuery<PluginDO> {
         propertyMapper.from(this::getClassDefine).whenNonNull().to(classDefine-> condition.like(PluginDO::getClassDefine, classDefine));
         propertyMapper.from(this::getId).whenHasText().to(id-> condition.eq(PluginDO::getId, id));
 
-        condition.eq(PluginDO::getDeleted, false);
-
         return condition;
     }
 }

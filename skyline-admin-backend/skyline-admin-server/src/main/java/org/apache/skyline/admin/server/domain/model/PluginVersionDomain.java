@@ -32,5 +32,5 @@ public class PluginVersionDomain extends BaseDomain {
 
     private String fileKey;
 
-    private String apiDefine;
+    private String typeMeta;
 }

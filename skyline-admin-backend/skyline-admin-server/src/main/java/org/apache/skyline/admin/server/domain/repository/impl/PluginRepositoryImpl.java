@@ -54,6 +54,7 @@ public class PluginRepositoryImpl implements PluginRepository {
         });
     }
 
+
     @Override
     public PluginDomain findOne(PluginCombineQuery pluginCombineQuery) {
         return selectList(pluginCombineQuery).get(0);
@@ -74,6 +75,11 @@ public class PluginRepositoryImpl implements PluginRepository {
     @Override
     public boolean delete(PluginCombineQuery combineQuery) {
         return pluginDao.delete(combineQuery.toQuery()) > 0;
+    }
+
+    @Override
+    public List<PluginDomain> findList(PluginCombineQuery combineQuery) {
+        return this.selectList(combineQuery);
     }
 
     private PluginDO convertDO(PluginDomain skylinePluginDomain) {

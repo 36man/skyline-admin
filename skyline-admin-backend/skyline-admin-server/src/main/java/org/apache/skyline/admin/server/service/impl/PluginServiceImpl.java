@@ -84,15 +84,8 @@ public class PluginServiceImpl implements PluginService {
 
     @Override
     public PageBean<PluginVO> pageList(PageRequest<PluginQuery> pageRequest) {
-        PluginQuery condition = pageRequest.getCondition();
-
-        PluginCombineQuery queryCondition = PluginCombineQuery.builder()
-                .maintainer(condition.getMaintainer())
-                .pluginName(condition.getPluginName())
-                .classDefine(condition.getClassDefine())
-                .build();
-
-        PageBean<PluginDomain> pageBean = pluginRepository.pageQuery(queryCondition, pageRequest.getPageNo(), pageRequest.getPageSize());
+        PageBean<PluginDomain> pageBean = pluginRepository.pageQuery(toQuery(pageRequest.getCondition()),
+                pageRequest.getPageNo(), pageRequest.getPageSize());
 
         return PageCommonUtils.convert(pageBean, clusterDomains -> convert(clusterDomains));
     }
@@ -100,20 +93,23 @@ public class PluginServiceImpl implements PluginService {
     @Transactional
     @Override
     public Boolean deleted(Long id) {
-        PluginCombineQuery combineQuery = PluginCombineQuery.builder()
-                .id(id)
-                .build();
-        return pluginDomainService.delete(combineQuery);
+
+        return pluginDomainService.delete(id);
     }
 
     @Override
     public Boolean actived(Long id) {
-        return null;
+        return pluginDomainService.actived(id);
     }
 
     @Override
     public Boolean disabled(Long id) {
-        return null;
+        return pluginDomainService.disabled(id);
+    }
+
+    @Override
+    public List<PluginVO> queryForList(PluginQuery pluginQuery) {
+        return convert(pluginRepository.findList(toQuery(pluginQuery)));
     }
 
     private ObjectStoreResponse storeOSS(PluginDefine pluginDefine, PluginRequest pluginRequest) {
@@ -166,6 +162,14 @@ public class PluginServiceImpl implements PluginService {
 
         ObjectStoreResponse result = ossExecutor.doExecute(StoreType.LOCAL,service-> service.store(storeRequest));
         return result;
+    }
+
+    private PluginCombineQuery toQuery(PluginQuery pluginQuery){
+        return PluginCombineQuery.builder()
+                .maintainer(pluginQuery.getMaintainer())
+                .pluginName(pluginQuery.getPluginName())
+                .classDefine(pluginQuery.getClassDefine())
+                .build();
     }
 }
 

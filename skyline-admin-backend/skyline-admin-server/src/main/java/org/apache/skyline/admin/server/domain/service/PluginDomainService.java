@@ -1,6 +1,5 @@
 package org.apache.skyline.admin.server.domain.service;
 
-import org.apache.skyline.admin.server.domain.query.PluginCombineQuery;
 import org.apache.skyline.admin.server.domain.request.GeneratePluginDomainRequest;
 
 /**
@@ -11,5 +10,10 @@ public interface PluginDomainService {
 
     Long storePlugin(GeneratePluginDomainRequest pluginDomainRequest);
 
-    Boolean delete(PluginCombineQuery combineQuery);
+    Boolean delete(Long id);
+
+
+    Boolean actived(Long id);
+
+    Boolean disabled(Long id);
 }

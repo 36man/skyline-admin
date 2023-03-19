@@ -44,12 +44,12 @@ public class PluginDefineResolver {
 
         this.resolvePageContent(pluginDefine);
 
-        this.resolveApiDefine(pluginDefine);
+        this.resolveTypeMeta(pluginDefine);
 
         return pluginDefine;
     }
 
-    private void resolveApiDefine(PluginDefine pluginDefine) {
+    private void resolveTypeMeta(PluginDefine pluginDefine) {
         try {
             String classDefine = pluginDefine.getClassDefine();
 
@@ -59,14 +59,14 @@ public class PluginDefineResolver {
 
             Map<String, Object> items = new HashMap<>();
 
-            List<Map<String,Object>> capableSwitches = getMethodValueList(plugin, "exportCapableSwitches", o -> o.getClass().getName().equals("org.apache.skyline.plugin.api.CapableSwitch"));
+            List<Map<String,Object>> capableSwitches = resolveMethodMeta(plugin, "exportCapableSwitches", o -> o.getClass().getName().equals("org.apache.skyline.plugin.api.CapableSwitch"));
 
-            List<Map<String,Object>> perpetualResourceList = getMethodValueList(plugin, "exportPerpetualObjs", o -> o.getClass().getName().equals("org.apache.skyline.plugin.api.PerpetualResource"));
+            List<Map<String,Object>> perpetualResourceList = resolveMethodMeta(plugin, "exportPerpetualObjs", o -> o.getClass().getName().equals("org.apache.skyline.plugin.api.PerpetualResource"));
 
             items.put("capableSwitchList", capableSwitches);
             items.put("perpetualResourceList", perpetualResourceList);
 
-            pluginDefine.setApiDefine(objectMapperCodec.serialize(items));
+            pluginDefine.setTypeMeta(objectMapperCodec.serialize(items));
 
         } catch (Exception ex) {
             throw new PlatformException("plugin api method parse error");
@@ -112,7 +112,7 @@ public class PluginDefineResolver {
 
 
 
-    public List<Map<String,Object>> getMethodValueList(Object object, String methodName, Predicate<Object> filter) throws Exception {
+    public List<Map<String,Object>> resolveMethodMeta(Object object, String methodName, Predicate<Object> filter) throws Exception {
         Method method = object.getClass().getMethod(methodName);
 
         Object result = method.invoke(object, null);

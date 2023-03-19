@@ -12,32 +12,26 @@ import java.util.List;
 @Data
 public class PluginVersionVO {
 
-    private Long            id;
+    private Long id;
 
-    private String          ver;
+    private String ver;
 
-    private List<String>    features;
+    private List<String> features;
 
-    private PluginVO skylinePluginVO;
+    private PluginVO pluginVO;
 
-    private String          pageContent;
+    private String pageContent;
 
-    private boolean         deleted;
+    private boolean active;
 
-    private boolean         active;
+    private Long size;
 
-    private Long            size;
+    private String jarUrl;
 
-    private String          md5;
+    private String fileKey;
 
-    private String          jarUrl;
+    private Date createTime;
 
-    private String          fileKey;
-
-    private List<String>    verTags;
-
-    private Date            createTime;
-
-    private Date            updateTime;
+    private Date updateTime;
 
 }

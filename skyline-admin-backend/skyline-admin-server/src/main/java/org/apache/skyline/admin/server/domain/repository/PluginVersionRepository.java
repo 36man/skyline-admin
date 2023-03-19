@@ -2,6 +2,7 @@ package org.apache.skyline.admin.server.domain.repository;
 
 import org.apache.skyline.admin.server.domain.model.PluginVersionDomain;
 import org.apache.skyline.admin.server.domain.query.PluginVersionCombineQuery;
+import org.bravo.gaia.commons.base.PageBean;
 
 /**
  * @author hejianbing
@@ -13,9 +14,13 @@ public interface PluginVersionRepository {
 
     boolean delete(PluginVersionCombineQuery combineQuery);
 
+    boolean active(PluginVersionCombineQuery combineQuery);
+
+    boolean disable(PluginVersionCombineQuery combineQuery);
+
     PluginVersionDomain findOne(PluginVersionCombineQuery combineQuery);
 
     Boolean update(PluginVersionCombineQuery combineQuery,PluginVersionDomain pluginVersionDomain);
 
-
+    PageBean<PluginVersionDomain> pageQuery(PluginVersionCombineQuery versionQuery, Integer pageNo, Integer pageSize);
 }

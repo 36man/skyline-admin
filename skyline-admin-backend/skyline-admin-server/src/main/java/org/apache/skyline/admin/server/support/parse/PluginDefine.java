@@ -30,7 +30,7 @@ public class PluginDefine {
 
     private List<String> features;
 
-    private String apiDefine;
+    private String typeMeta;
 
     public String getPluginName() {
         if (StringUtils.isBlank(this.pluginName)) {

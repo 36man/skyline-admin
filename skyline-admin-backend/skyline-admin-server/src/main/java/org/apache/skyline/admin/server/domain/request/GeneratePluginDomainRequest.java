@@ -45,7 +45,7 @@ public class GeneratePluginDomainRequest {
         pluginVersionDomain.setDeleted(false);
         pluginVersionDomain.setActive(true);
         pluginVersionDomain.setPageContent(pluginDefine.getPageContent());
-        pluginVersionDomain.setApiDefine(pluginDefine.getApiDefine());
+        pluginVersionDomain.setTypeMeta(pluginDefine.getTypeMeta());
 
         return pluginVersionDomain;
     }

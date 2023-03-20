@@ -23,4 +23,6 @@ public interface PluginRepository {
     boolean delete(PluginCombineQuery combineQuery);
 
     List<PluginDomain> findList(PluginCombineQuery combineQuery);
+
+    List<PluginDomain> matchQuery(PluginCombineQuery combineQuery);
 }

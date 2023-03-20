@@ -20,9 +20,9 @@ public interface PluginService {
 
     Boolean deleted(Long id);
 
-    Boolean actived(Long id);
-
-    Boolean disabled(Long id);
+    Boolean active(Long id,boolean active);
 
     List<PluginVO> queryForList(PluginQuery pluginQuery);
+
+    List<PluginVO> matchQuery(PluginQuery pluginQuery);
 }

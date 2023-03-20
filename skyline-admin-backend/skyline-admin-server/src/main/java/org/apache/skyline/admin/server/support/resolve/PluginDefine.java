@@ -1,4 +1,4 @@
-package org.apache.skyline.admin.server.support.parse;
+package org.apache.skyline.admin.server.support.resolve;
 
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;

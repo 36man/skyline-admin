@@ -3,6 +3,7 @@ package org.apache.skyline.admin.server.domain.model;
 import lombok.Data;
 import org.bravo.gaia.commons.base.BaseDomain;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,4 +34,8 @@ public class PluginVersionDomain extends BaseDomain {
     private String fileKey;
 
     private String typeMeta;
+
+    private Date createTime;
+
+    private Date updateTime;
 }

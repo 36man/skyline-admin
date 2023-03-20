@@ -43,6 +43,8 @@ public class PluginDomainServiceImpl implements PluginDomainService {
                     .build();
 
             PluginDomain pluginDomain = pluginRepository.findOne(combineQuery);
+            newPluginDomain.setActive(true);
+
             pluginRepository.updateById(newPluginDomain);
             newPluginDomain.setId(pluginDomain.getId());
         }
@@ -71,46 +73,34 @@ public class PluginDomainServiceImpl implements PluginDomainService {
     }
 
     @Override
-    public Boolean actived(Long id) {
+    public Boolean active(Long id,boolean active) {
         PluginDomain pluginDomain = new PluginDomain();
         pluginDomain.setId(id);
-        pluginDomain.setActive(true);
-        boolean active = pluginRepository.updateById(pluginDomain);
+        pluginDomain.setActive(active);
+
+        boolean isActive = pluginRepository.updateById(pluginDomain);
 
         PluginVersionCombineQuery combineQuery = PluginVersionCombineQuery.builder()
-                .pluginIdList(Lists.newArrayList(id)).build();
+                .pluginIdList(Lists.newArrayList(id))
+                .build();
 
-        active = pluginVersionRepository.active(combineQuery);
+        isActive = pluginVersionRepository.active(combineQuery, active);
 
-        return active;
-    }
-
-    @Override
-    public Boolean disabled(Long id) {
-        PluginDomain pluginDomain = new PluginDomain();
-        pluginDomain.setId(id);
-        pluginDomain.setActive(false);
-
-        boolean disable = pluginRepository.updateById(pluginDomain);
-
-        PluginVersionCombineQuery combineQuery = PluginVersionCombineQuery.builder()
-                .pluginIdList(Lists.newArrayList(id)).build();
-
-        disable = pluginVersionRepository.disable(combineQuery);
-
-        return disable;
-
+        return isActive;
     }
 
     private void storeVer(PluginVersionDomain pluginVersionDomain, PluginDomain newPluginDomain) {
         pluginVersionDomain.setPluginDomain(newPluginDomain);
         try{
+            pluginVersionDomain.setActive(true);
             pluginVersionRepository.create(pluginVersionDomain);
         }catch (DuplicateKeyException ex){
             PluginVersionCombineQuery combineQuery = PluginVersionCombineQuery.builder()
                     .pluginIdList(Lists.newArrayList(newPluginDomain.getId()))
                     .ver(pluginVersionDomain.getVer())
                     .build();
+
+            pluginVersionDomain.setActive(true);
             pluginVersionRepository.update(combineQuery, pluginVersionDomain);
         }
     }

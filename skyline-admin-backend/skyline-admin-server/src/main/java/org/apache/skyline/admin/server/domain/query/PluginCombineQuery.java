@@ -18,11 +18,16 @@
 package org.apache.skyline.admin.server.domain.query;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.skyline.admin.server.dal.dataobject.PluginDO;
 import org.springframework.boot.context.properties.PropertyMapper;
+
+import java.util.List;
 
 @Data
 @Accessors(chain = true)
@@ -30,6 +35,8 @@ import org.springframework.boot.context.properties.PropertyMapper;
 public class PluginCombineQuery implements CombineQuery<PluginDO> {
 
     private Long id;
+
+    private List<Long> ids;
 
     private String classDefine;
 
@@ -45,7 +52,17 @@ public class PluginCombineQuery implements CombineQuery<PluginDO> {
         propertyMapper.from(this::getMaintainer).whenNonNull().to(maintainer-> condition.like(PluginDO::getMaintainer, maintainer));
         propertyMapper.from(this::getClassDefine).whenNonNull().to(classDefine-> condition.like(PluginDO::getClassDefine, classDefine));
         propertyMapper.from(this::getId).whenHasText().to(id-> condition.eq(PluginDO::getId, id));
+        propertyMapper.from(this::getIds).when(CollectionUtils::isNotEmpty).to(ids-> condition.in(PluginDO::getId, ids));
 
         return condition;
+    }
+
+
+    public LambdaQueryWrapper<PluginDO> matchQuery() {
+        LambdaQueryWrapper<PluginDO> condition = Wrappers.lambdaQuery();
+        return condition
+                .or(StringUtils.isNotBlank(this.getPluginName()),lam -> lam.like(PluginDO::getPluginName, pluginName))
+                .or(StringUtils.isNotBlank(this.getMaintainer()),lam -> lam.like(PluginDO::getMaintainer, maintainer))
+                .or(StringUtils.isNotBlank(this.getClassDefine()),lam -> lam.like(PluginDO::getClassDefine, classDefine));
     }
 }

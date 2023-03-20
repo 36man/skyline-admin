@@ -20,8 +20,9 @@ package org.apache.skyline.admin.commons.model.query;
 import lombok.Data;
 
 @Data
-public class PluginVersionQuery extends PluginQuery {
+public class PluginVersionQuery {
+
+    private Long pluginId;
 
     private String ver;
-
 }

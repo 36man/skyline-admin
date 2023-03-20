@@ -17,6 +17,7 @@
 
 package org.apache.skyline.admin.server.service.impl;
 
+import com.google.common.collect.Lists;
 import org.apache.skyline.admin.commons.model.query.PluginQuery;
 import org.apache.skyline.admin.commons.model.query.PluginVersionQuery;
 import org.apache.skyline.admin.commons.model.request.PageRequest;
@@ -51,29 +52,50 @@ public class PluginVersionServiceImpl implements PluginVersionService {
 
 
     @Override
-    public PageBean<PluginVersionVO> pageList(PageRequest<PluginVersionQuery> pageRequest) {
+    public PageBean<PluginVersionVO> search(PageRequest<String> pageRequest) {
+        String [] condition = pageRequest.getCondition().split(":");
         PluginQuery pluginQuery = new PluginQuery();
 
-        BeanUtils.copyProperties(pageRequest.getCondition(), pluginQuery);
+        pluginQuery.setPluginName(condition[0]);
+        pluginQuery.setMaintainer(condition[0]);
+        pluginQuery.setPluginName(condition[0]);
 
-        List<PluginVO> pluginItems = pluginService.queryForList(pluginQuery);
+        String ver = "";
+        if (condition.length == 2) {
+            ver = condition[1];
+        }
+
+        List<PluginVO> pluginItems = pluginService.matchQuery(pluginQuery);
 
         Map<Long, PluginVO> idToPlugin =  Optional.ofNullable(pluginItems)
                 .orElseGet(ArrayList::new)
                 .stream()
                 .collect(Collectors.toMap(PluginVO::getId, v -> v));
 
-        PluginVersionCombineQuery versionQuery =
+        PluginVersionCombineQuery combineQuery =
                 PluginVersionCombineQuery.builder()
-                        .ver(pageRequest.getCondition().getVer())
+                        .ver(ver)
+                        .active(true)
                         .pluginIdList(idToPlugin.keySet().stream().collect(Collectors.toList()))
                         .build();
 
-        PageBean<PluginVersionDomain> pageBean = pluginVersionRepository.pageQuery(versionQuery, pageRequest.getPageNo(),
+        PageBean<PluginVersionDomain> pageBean = pluginVersionRepository.pageQuery(combineQuery, pageRequest.getPageNo(),
                 pageRequest.getPageSize());
 
         return PageCommonUtils.convert(pageBean,
                 clusterDomains -> convert(clusterDomains,idToPlugin));    }
+
+    @Override
+    public PageBean<PluginVersionVO> pageList(PageRequest<PluginVersionQuery> pageRequest) {
+        PluginVersionCombineQuery combineQuery = this.toQuery(pageRequest.getCondition());
+        combineQuery.setLazyLoad(false);
+
+        PageBean<PluginVersionDomain> pageBean = pluginVersionRepository.pageQuery(combineQuery, pageRequest.getPageNo(),
+                pageRequest.getPageSize());
+
+        return PageCommonUtils.convert(pageBean,
+                clusterDomains -> convert(clusterDomains));
+    }
 
     @Override
     public boolean deleted(Long id) {
@@ -84,17 +106,8 @@ public class PluginVersionServiceImpl implements PluginVersionService {
     }
 
     @Override
-    public boolean actived(Long id) {
-        return pluginVersionRepository.active(PluginVersionCombineQuery.builder()
-                        .id(id)
-                .build());
-    }
-
-    @Override
-    public boolean disabled(Long id) {
-        return pluginVersionRepository.disable(PluginVersionCombineQuery.builder()
-                .id(id)
-                .build());
+    public boolean active(Long id,boolean active) {
+        return pluginVersionRepository.active(id, active);
     }
 
     private List<PluginVersionVO> convert(List<PluginVersionDomain> items,Map<Long,PluginVO> pluginMap) {
@@ -119,6 +132,32 @@ public class PluginVersionServiceImpl implements PluginVersionService {
         BeanUtils.copyProperties(pluginVersionDomain, pluginVersionVO);
 
         return pluginVersionVO;
+    }
+
+
+    private List<PluginVersionVO> convert(List<PluginVersionDomain> items) {
+        return Optional.ofNullable(items)
+                .orElseGet(ArrayList::new)
+                .stream()
+                .map(e->{
+                    PluginVersionVO versionVO = convert(e);
+
+                    PluginVO pluginVO = new PluginVO();
+
+                    BeanUtils.copyProperties(e.getPluginDomain(), pluginVO);
+
+                    versionVO.setPluginVO(pluginVO);
+
+                    return versionVO;
+                }).collect(Collectors.toList());
+    }
+
+
+    private PluginVersionCombineQuery toQuery(PluginVersionQuery versionQuery) {
+        return PluginVersionCombineQuery.builder()
+                .pluginIdList(Lists.newArrayList(versionQuery.getPluginId()))
+                .ver(versionQuery.getVer())
+                .build();
     }
 
 }

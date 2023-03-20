@@ -39,6 +39,7 @@ public class PluginRepositoryImpl implements PluginRepository {
         return doExecute(pluginDomain,item->{
 
             item.setId(idGenerator.generate());
+            item.setActive(true);
 
             pluginDao.insert(item);
 
@@ -82,18 +83,23 @@ public class PluginRepositoryImpl implements PluginRepository {
         return this.selectList(combineQuery);
     }
 
-    private PluginDO convertDO(PluginDomain skylinePluginDomain) {
+    @Override
+    public List<PluginDomain> matchQuery(PluginCombineQuery combineQuery) {
+        return this.selectList(combineQuery.matchQuery());
+    }
+
+
+    private PluginDO convertDO(PluginDomain pluginDomain) {
         PluginDO pluginDO = new PluginDO();
-        pluginDO.setMaintainer(skylinePluginDomain.getMaintainer());
-        pluginDO.setClassDefine(skylinePluginDomain.getDefineClass());
-        pluginDO.setPluginName(skylinePluginDomain.getPluginName());
-        pluginDO.setOverview(skylinePluginDomain.getOverview());
+        BeanUtils.copyProperties(pluginDomain,pluginDO);
         return pluginDO;
     }
 
     private List<PluginDomain> selectList(PluginCombineQuery pluginCombineQuery) {
-        LambdaQueryWrapper<PluginDO> condition = pluginCombineQuery.toQuery();
+        return selectList(pluginCombineQuery.toQuery());
+    }
 
+    private List<PluginDomain> selectList(LambdaQueryWrapper<PluginDO> condition) {
         List<PluginDO> pluginDOList = pluginDao.selectList(condition);
 
         return convert(pluginDOList);

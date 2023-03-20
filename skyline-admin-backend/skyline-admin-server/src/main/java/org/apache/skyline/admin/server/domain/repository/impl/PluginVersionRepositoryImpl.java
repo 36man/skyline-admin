@@ -9,7 +9,9 @@ import org.apache.skyline.admin.server.dal.dao.PluginVersionDao;
 import org.apache.skyline.admin.server.dal.dataobject.PluginVersionDO;
 import org.apache.skyline.admin.server.domain.model.PluginDomain;
 import org.apache.skyline.admin.server.domain.model.PluginVersionDomain;
+import org.apache.skyline.admin.server.domain.query.PluginCombineQuery;
 import org.apache.skyline.admin.server.domain.query.PluginVersionCombineQuery;
+import org.apache.skyline.admin.server.domain.repository.PluginRepository;
 import org.apache.skyline.admin.server.domain.repository.PluginVersionRepository;
 import org.apache.skyline.admin.server.support.codec.ObjectMapperCodec;
 import org.bravo.gaia.commons.base.PageBean;
@@ -19,7 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -36,6 +40,9 @@ public class PluginVersionRepositoryImpl implements PluginVersionRepository {
 
     @Autowired
     private ObjectMapperCodec objectMapperCodec;
+
+    @Autowired
+    private PluginRepository pluginRepository;
 
     @Override
     public Long create(PluginVersionDomain pluginversiondomain) {
@@ -55,21 +62,25 @@ public class PluginVersionRepositoryImpl implements PluginVersionRepository {
     }
 
     @Override
-    public boolean active(PluginVersionCombineQuery combineQuery) {
+    public boolean active(Long id,boolean active) {
+        PluginVersionCombineQuery combineQuery = PluginVersionCombineQuery.builder()
+                .id(id)
+                .build();
 
         PluginVersionDO versionDO = new PluginVersionDO();
-        versionDO.setActive(true);
+        versionDO.setActive(active);
 
         return pluginVersionDao.update(versionDO, combineQuery.toQuery()) > 0;
 
     }
 
     @Override
-    public boolean disable(PluginVersionCombineQuery combineQuery) {
+    public boolean active(PluginVersionCombineQuery combineQuery,boolean active) {
         PluginVersionDO versionDO = new PluginVersionDO();
-        versionDO.setActive(false);
+        versionDO.setActive(active);
 
-        return pluginVersionDao.update(versionDO, combineQuery.toQuery()) > 0;    }
+        return pluginVersionDao.update(versionDO, combineQuery.toQuery()) > 0;
+    }
 
     @Override
     public PluginVersionDomain findOne(PluginVersionCombineQuery combineQuery) {
@@ -93,7 +104,8 @@ public class PluginVersionRepositoryImpl implements PluginVersionRepository {
 
         Page<PluginVersionDO> result = pluginVersionDao.selectPage(page, combineQuery.toQuery());
 
-        return PageCommonUtils.convert(result, items -> convert(items));
+
+        return PageCommonUtils.convert(result, items -> convert(items,combineQuery));
 
     }
 
@@ -102,16 +114,42 @@ public class PluginVersionRepositoryImpl implements PluginVersionRepository {
         List<PluginVersionDO> items = pluginVersionDao.selectList(
                 combineQuery.toQuery());
 
-        List<PluginVersionDomain> result = this.convert(items);
-
-        return result;
+        return this.convert(items,combineQuery);
     }
 
-    private List<PluginVersionDomain> convert(List<PluginVersionDO> items) {
+    private List<PluginVersionDomain> convert(List<PluginVersionDO> items,PluginVersionCombineQuery combineQuery) {
+        Map<Long, PluginDomain> idToPlugin;
+
+        if (!combineQuery.isLazyLoad()) {
+            List<Long> pluginIdList = items.stream().map(PluginVersionDO::getPluginId)
+                    .collect(Collectors.toList());
+
+            PluginCombineQuery queryBuilder = PluginCombineQuery.builder()
+                    .ids(pluginIdList)
+                    .build();
+            List<PluginDomain> pluginDomains = pluginRepository.findList(queryBuilder);
+
+            idToPlugin = Optional.ofNullable(pluginDomains).orElseGet(ArrayList::new)
+                    .stream().collect(Collectors.toMap(PluginDomain::getId, v -> v));
+        } else {
+            idToPlugin = new HashMap<>();
+        }
+
         return Optional.ofNullable(items)
                 .orElseGet(ArrayList::new)
                 .stream()
-                .map(item-> convert(item)).collect(Collectors.toList());
+                .map(item-> {
+
+                    PluginVersionDomain domain = convert(item);
+
+                    PluginDomain pluginDomain = idToPlugin.get(domain.getPluginDomain().getId());
+
+                    if (pluginDomain != null) {
+                        domain.setPluginDomain(pluginDomain);
+                    }
+                    return domain;
+
+                }).collect(Collectors.toList());
     }
 
     private PluginVersionDomain convert(PluginVersionDO pluginVersionDO) {
@@ -142,7 +180,6 @@ public class PluginVersionRepositoryImpl implements PluginVersionRepository {
 
         pluginVersionDO.setPluginId(pluginVersionDomain.getPluginDomain().getId());
         pluginVersionDO.setPageContent(pluginVersionDomain.getPageContent());
-        pluginVersionDO.setDeleted(false);
         pluginVersionDO.setActive(true);
         pluginVersionDO.setSize(pluginVersionDomain.getSize());
         pluginVersionDO.setJarUrl(pluginVersionDomain.getJarUrl());

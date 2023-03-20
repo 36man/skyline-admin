@@ -18,7 +18,7 @@ public class PluginDomain extends BaseDomain {
 
     public String        pluginName;
 
-    private String       defineClass;
+    private String       classDefine;
 
     public String        overview;
 

@@ -12,8 +12,5 @@ public interface PluginDomainService {
 
     Boolean delete(Long id);
 
-
-    Boolean actived(Long id);
-
-    Boolean disabled(Long id);
+    Boolean active(Long id,boolean active);
 }

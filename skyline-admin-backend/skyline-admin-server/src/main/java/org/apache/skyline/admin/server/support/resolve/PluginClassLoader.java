@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.server.support.parse;
+package org.apache.skyline.admin.server.support.resolve;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

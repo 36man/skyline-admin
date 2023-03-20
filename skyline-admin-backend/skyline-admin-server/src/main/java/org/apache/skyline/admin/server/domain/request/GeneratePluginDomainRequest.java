@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.apache.skyline.admin.server.domain.model.PluginVersionDomain;
 import org.apache.skyline.admin.server.domain.model.PluginDomain;
-import org.apache.skyline.admin.server.support.parse.PluginDefine;
+import org.apache.skyline.admin.server.support.resolve.PluginDefine;
 
 /**
  * @author hejianbing
@@ -29,7 +29,7 @@ public class GeneratePluginDomainRequest {
         pluginDomain.setPluginName(pluginDefine.getPluginName());
         pluginDomain.setMaintainer(pluginDefine.getMaintainer());
         pluginDomain.setOverview(pluginDefine.getOverview());
-        pluginDomain.setDefineClass(pluginDefine.getClassDefine());
+        pluginDomain.setClassDefine(pluginDefine.getClassDefine());
         pluginDomain.setId(id);
 
         return pluginDomain;

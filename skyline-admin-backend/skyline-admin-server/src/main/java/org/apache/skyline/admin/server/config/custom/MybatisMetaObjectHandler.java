@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Slf4j
 @Component
-public class MybatisFieldInjectHandler implements MetaObjectHandler {
+public class MybatisMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {

@@ -1,4 +1,4 @@
-package org.apache.skyline.admin.server.support.parse;
+package org.apache.skyline.admin.server.support.resolve;
 
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +32,6 @@ public class PluginDefineResolver {
     private PluginClassLoader pluginClassLoader;
 
     private ObjectMapperCodec objectMapperCodec;
-
 
     public PluginDefineResolver(ObjectMapperCodec objectMapperCodec,String path) {
         this.pluginClassLoader = new PluginClassLoader(PluginDefineResolver.class.getClassLoader(), path);
@@ -112,7 +111,7 @@ public class PluginDefineResolver {
 
 
 
-    public List<Map<String,Object>> resolveMethodMeta(Object object, String methodName, Predicate<Object> filter) throws Exception {
+    private List<Map<String,Object>> resolveMethodMeta(Object object, String methodName, Predicate<Object> filter) throws Exception {
         Method method = object.getClass().getMethod(methodName);
 
         Object result = method.invoke(object, null);
@@ -123,9 +122,9 @@ public class PluginDefineResolver {
 
         List<Map<String, Object>> items = new ArrayList<>();
 
-        List<Object> capableSwitchList = (List<Object>) result;
+        List<Object> params = (List<Object>) result;
 
-        for (Object o : capableSwitchList) {
+        for (Object o : params) {
             if (!filter.evaluate(o)) {
                 continue;
             }

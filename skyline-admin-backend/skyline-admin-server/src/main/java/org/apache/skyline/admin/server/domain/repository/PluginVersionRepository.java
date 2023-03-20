@@ -14,9 +14,9 @@ public interface PluginVersionRepository {
 
     boolean delete(PluginVersionCombineQuery combineQuery);
 
-    boolean active(PluginVersionCombineQuery combineQuery);
+    boolean active(Long id,boolean active);
 
-    boolean disable(PluginVersionCombineQuery combineQuery);
+    boolean active(PluginVersionCombineQuery combineQuery, boolean active);
 
     PluginVersionDomain findOne(PluginVersionCombineQuery combineQuery);
 

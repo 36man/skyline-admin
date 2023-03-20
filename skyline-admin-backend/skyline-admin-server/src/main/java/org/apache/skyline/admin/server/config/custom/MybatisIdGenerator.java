@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 
 @Component
-public class MybatisIdentifierGenerator implements IdentifierGenerator {
+public class MybatisIdGenerator implements IdentifierGenerator {
 
     @Autowired
     private IdGenerator<Long> idGenerator;

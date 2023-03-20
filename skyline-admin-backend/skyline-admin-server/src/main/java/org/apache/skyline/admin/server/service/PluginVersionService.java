@@ -11,11 +11,11 @@ import org.bravo.gaia.commons.base.PageBean;
  */
 public interface PluginVersionService {
 
+    PageBean<PluginVersionVO> search(PageRequest<String> pageRequest);
+
     PageBean<PluginVersionVO> pageList(PageRequest<PluginVersionQuery> pageRequest);
 
     boolean deleted(Long id);
 
-    boolean actived(Long id);
-
-    boolean disabled(Long id);
+    boolean active(Long id,boolean active);
 }

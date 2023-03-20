@@ -36,6 +36,10 @@ public class PluginVersionCombineQuery implements CombineQuery<PluginVersionDO>{
 
     private Long id;
 
+    private Boolean active;
+
+    private boolean lazyLoad = true;
+
 
     @Override
     public LambdaQueryWrapper<PluginVersionDO> toQuery() {
@@ -46,13 +50,14 @@ public class PluginVersionCombineQuery implements CombineQuery<PluginVersionDO>{
         propertyMapper.from(this::getId).whenNonNull().to(id-> condition.eq(
                 PluginVersionDO::getId, id));
 
+        propertyMapper.from(this::getActive).whenNonNull().to(id-> condition.eq(
+                PluginVersionDO::getActive, active));
+
         propertyMapper.from(this::getPluginIdList).when(CollectionUtils::isNotEmpty).to(pluginIdList-> condition.in(
                 PluginVersionDO::getPluginId, pluginIdList));
 
-        propertyMapper.from(this::getVer).whenHasText().to(ver-> condition.eq(
+        propertyMapper.from(this::getVer).whenHasText().to(ver-> condition.like(
                 PluginVersionDO::getVer, ver));
-
-        condition.eq(PluginVersionDO::getDeleted, false);
 
         return condition;
     }

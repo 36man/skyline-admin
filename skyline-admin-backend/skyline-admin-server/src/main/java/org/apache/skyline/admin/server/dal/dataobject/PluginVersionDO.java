@@ -20,9 +20,6 @@ public class PluginVersionDO extends BaseDO {
     private Long  pluginId;
 
     private String  pageContent;
-
-    private Boolean deleted;
-
     private Boolean active;
 
     private Long    size;

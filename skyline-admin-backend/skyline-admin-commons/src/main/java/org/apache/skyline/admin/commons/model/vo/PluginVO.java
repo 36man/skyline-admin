@@ -15,7 +15,7 @@ public class PluginVO {
 
     private String maintainer;
 
-    private String defineClass;
+    private String classDefine;
 
     public String  pluginName;
 

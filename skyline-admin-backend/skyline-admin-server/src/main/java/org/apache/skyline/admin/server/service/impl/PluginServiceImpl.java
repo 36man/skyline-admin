@@ -18,8 +18,8 @@ import org.apache.skyline.admin.server.support.oss.config.OSSProperties;
 import org.apache.skyline.admin.server.support.oss.config.StoreType;
 import org.apache.skyline.admin.server.support.oss.request.ObjectStoreRequest;
 import org.apache.skyline.admin.server.support.oss.response.ObjectStoreResponse;
-import org.apache.skyline.admin.server.support.parse.PluginDefine;
-import org.apache.skyline.admin.server.support.parse.PluginDefineResolver;
+import org.apache.skyline.admin.server.support.resolve.PluginDefine;
+import org.apache.skyline.admin.server.support.resolve.PluginDefineResolver;
 import org.bravo.gaia.commons.base.PageBean;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,23 +93,23 @@ public class PluginServiceImpl implements PluginService {
     @Transactional
     @Override
     public Boolean deleted(Long id) {
-
         return pluginDomainService.delete(id);
     }
 
     @Override
-    public Boolean actived(Long id) {
-        return pluginDomainService.actived(id);
+    public Boolean active(Long id,boolean active) {
+        return pluginDomainService.active(id,active);
     }
 
-    @Override
-    public Boolean disabled(Long id) {
-        return pluginDomainService.disabled(id);
-    }
 
     @Override
     public List<PluginVO> queryForList(PluginQuery pluginQuery) {
         return convert(pluginRepository.findList(toQuery(pluginQuery)));
+    }
+
+    @Override
+    public List<PluginVO> matchQuery(PluginQuery pluginQuery) {
+        return convert(pluginRepository.matchQuery(toQuery(pluginQuery)));
     }
 
     private ObjectStoreResponse storeOSS(PluginDefine pluginDefine, PluginRequest pluginRequest) {

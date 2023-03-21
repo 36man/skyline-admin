@@ -15,8 +15,26 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.web.controller;
+package org.apache.skyline.admin.commons.model.request;
 
-public class ApiInstanceController {
+import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+@Data
+public class ApiInstanceRequest {
+
+    @NotNull
+    private Long clusterId;
+
+    @NotBlank
+    private String matchPath;
+
+    @NotBlank
+    private String description;
+
+    @NotBlank
+    private String meno;
 
 }

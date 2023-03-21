@@ -2,7 +2,8 @@ package org.apache.skyline.admin.server.service.impl;
 
 import org.apache.skyline.admin.commons.model.query.PluginQuery;
 import org.apache.skyline.admin.commons.model.request.PageRequest;
-import org.apache.skyline.admin.commons.model.request.PluginRequest;
+import org.apache.skyline.admin.commons.model.request.GeneratePluginRequest;
+import org.apache.skyline.admin.commons.model.request.UpdatePluginRequest;
 import org.apache.skyline.admin.commons.model.vo.PluginVO;
 import org.apache.skyline.admin.server.commons.utils.PageCommonUtils;
 import org.apache.skyline.admin.server.domain.model.PluginDomain;
@@ -55,8 +56,8 @@ public class PluginServiceImpl implements PluginService {
     @Autowired
     private PluginRepository pluginRepository;
 
-    public Boolean generate(PluginRequest pluginRequest) {
-        ObjectStoreResponse result = storeLocal(pluginRequest);
+    public Boolean generate(GeneratePluginRequest pluginGenerateRequest) {
+        ObjectStoreResponse result = storeLocal(pluginGenerateRequest);
 
         String storePath = result.getStorePath();
 
@@ -64,7 +65,7 @@ public class PluginServiceImpl implements PluginService {
 
         PluginDefine pluginDefine = pluginDefineResolver.resolve();
 
-        ObjectStoreResponse objectStoreResponse = this.storeOSS(pluginDefine, pluginRequest);
+        ObjectStoreResponse objectStoreResponse = this.storeOSS(pluginDefine, pluginGenerateRequest);
 
         objectStoreResponse = Optional.ofNullable(objectStoreResponse).orElseGet(()->result);
 
@@ -72,7 +73,7 @@ public class PluginServiceImpl implements PluginService {
                 .pluginDefine(pluginDefine)
                 .fileKey(objectStoreResponse.getFileKey())
                 .jarUrl(objectStoreResponse.getResourceUrl())
-                .size(pluginRequest.getSize())
+                .size(pluginGenerateRequest.getSize())
                 .build();
 
         pluginDomainService.storePlugin(pluginDomainRequest);
@@ -112,7 +113,16 @@ public class PluginServiceImpl implements PluginService {
         return convert(pluginRepository.matchQuery(toQuery(pluginQuery)));
     }
 
-    private ObjectStoreResponse storeOSS(PluginDefine pluginDefine, PluginRequest pluginRequest) {
+    @Override
+    public Boolean update(UpdatePluginRequest updatePlugin) {
+        PluginDomain pluginDomain = new PluginDomain();
+
+        BeanUtils.copyProperties(updatePlugin,pluginDomain);
+
+        return pluginRepository.updateById(pluginDomain);
+    }
+
+    private ObjectStoreResponse storeOSS(PluginDefine pluginDefine, GeneratePluginRequest pluginRequest) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         String date = sdf.format(new Date());
 
@@ -152,7 +162,7 @@ public class PluginServiceImpl implements PluginService {
         }
     }
 
-    private ObjectStoreResponse storeLocal(PluginRequest pluginRequest) {
+    private ObjectStoreResponse storeLocal(GeneratePluginRequest pluginRequest) {
         ObjectStoreRequest storeRequest = new ObjectStoreRequest();
 
         storeRequest.setBytes(pluginRequest.getBytes());

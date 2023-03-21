@@ -15,8 +15,23 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.web.controller;
+package org.apache.skyline.admin.server.service;
 
-public class ApiInstanceController {
+import org.apache.skyline.admin.commons.model.query.ApiInstanceQuery;
+import org.apache.skyline.admin.commons.model.request.ApiInstanceRequest;
+import org.apache.skyline.admin.commons.model.request.PageRequest;
+import org.apache.skyline.admin.commons.model.vo.ApiInstanceVO;
+import org.bravo.gaia.commons.base.PageBean;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
+
+@Validated
+public interface ApiInstanceService {
+
+    Long create(@Valid ApiInstanceRequest apiInstanceRequest);
+
+    Boolean update(Long id, ApiInstanceRequest apiInstanceRequest);
+
+    PageBean<ApiInstanceVO> pageList(PageRequest<ApiInstanceQuery> pageRequest);
 }

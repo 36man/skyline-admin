@@ -15,8 +15,10 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.web.controller;
+package org.apache.skyline.admin.server.dal.dao;
 
-public class ApiInstanceController {
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.skyline.admin.server.dal.dataobject.ApiInstanceDO;
 
+public interface ApiInstanceDao extends BaseMapper<ApiInstanceDO> {
 }

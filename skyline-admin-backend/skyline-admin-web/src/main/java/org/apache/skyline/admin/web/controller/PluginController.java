@@ -2,7 +2,8 @@ package org.apache.skyline.admin.web.controller;
 
 import org.apache.skyline.admin.commons.model.query.PluginQuery;
 import org.apache.skyline.admin.commons.model.request.PageRequest;
-import org.apache.skyline.admin.commons.model.request.PluginRequest;
+import org.apache.skyline.admin.commons.model.request.GeneratePluginRequest;
+import org.apache.skyline.admin.commons.model.request.UpdatePluginRequest;
 import org.apache.skyline.admin.commons.model.vo.PluginVO;
 import org.apache.skyline.admin.server.service.PluginService;
 import org.bravo.gaia.commons.base.PageBean;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,9 +29,9 @@ public class PluginController {
     private PluginService pluginService;
 
 
-    @PostMapping
+    @PostMapping("/upload")
     public boolean upload(@RequestParam("file") CommonsMultipartFile file) {
-        PluginRequest pluginRequest = new PluginRequest();
+        GeneratePluginRequest pluginRequest = new GeneratePluginRequest();
         pluginRequest.setFileName(file.getOriginalFilename());
         pluginRequest.setContentType(file.getContentType());
         pluginRequest.setSize(file.getSize());
@@ -67,6 +69,11 @@ public class PluginController {
     public Boolean active(@RequestParam(name="id") Long id,
                            @RequestParam(name="active") boolean active){
         return pluginService.active(id, active);
+    }
+
+    @PostMapping
+    public Boolean update(@RequestBody UpdatePluginRequest pluginUpdateRequest) {
+        return pluginService.update(pluginUpdateRequest);
     }
 
 

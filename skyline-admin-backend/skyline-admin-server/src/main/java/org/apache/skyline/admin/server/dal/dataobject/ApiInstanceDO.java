@@ -15,8 +15,26 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.web.controller;
+package org.apache.skyline.admin.server.dal.dataobject;
 
-public class ApiInstanceController {
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
+@Data
+@TableName("admin_api_instance")
+public class ApiInstanceDO extends BaseDO {
+
+    private Long id;
+
+    private Long clusterId;
+
+    private String matchPath;
+
+    private String description;
+
+    private String meno;
+
+    private String status;
+
+    private String pluginConfig;
 }

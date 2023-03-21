@@ -15,8 +15,24 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.web.controller;
+package org.apache.skyline.admin.server.domain.model;
 
-public class ApiInstanceController {
+import lombok.Data;
 
+@Data
+public class ApiInstanceDomain {
+
+    private Long id;
+
+    private Long clusterId;
+
+    private String matchPath;
+
+    private String description;
+
+    private String meno;
+
+    private String status;
+
+    private String pluginConfig;
 }

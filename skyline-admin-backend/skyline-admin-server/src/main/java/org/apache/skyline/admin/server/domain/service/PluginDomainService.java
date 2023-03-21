@@ -8,7 +8,7 @@ import org.apache.skyline.admin.server.domain.request.GeneratePluginDomainReques
  */
 public interface PluginDomainService {
 
-    Long storePlugin(GeneratePluginDomainRequest pluginDomainRequest);
+    Long storePlugin(GeneratePluginDomainRequest pluginGenerateDomainRequest);
 
     Boolean delete(Long id);
 

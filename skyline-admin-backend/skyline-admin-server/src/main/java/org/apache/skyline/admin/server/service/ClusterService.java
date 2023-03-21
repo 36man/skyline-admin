@@ -32,7 +32,7 @@ public interface ClusterService {
 
     ClusterVO queryForOne(ClusterQuery clusterQuery);
 
-    boolean update(@NotNull Long id, @Valid ClusterRequest request);
+    boolean update(@NotNull Long id,ClusterRequest request);
 
     boolean delete(@NotNull Long id);
 

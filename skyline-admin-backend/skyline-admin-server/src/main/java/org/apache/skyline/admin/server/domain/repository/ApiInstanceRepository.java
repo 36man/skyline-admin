@@ -15,8 +15,17 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.web.controller;
+package org.apache.skyline.admin.server.domain.repository;
 
-public class ApiInstanceController {
+import org.apache.skyline.admin.server.domain.model.ApiInstanceDomain;
+import org.apache.skyline.admin.server.domain.query.ApiInstanceCombineQuery;
+import org.bravo.gaia.commons.base.PageBean;
+
+public interface ApiInstanceRepository {
+    Long save(ApiInstanceDomain apiInstanceDomain);
+
+    boolean updateById(ApiInstanceDomain apiInstanceDomain);
+
+    PageBean<ApiInstanceDomain> pageQuery(ApiInstanceCombineQuery combineQuery, Integer pageNo, Integer pageSize);
 
 }

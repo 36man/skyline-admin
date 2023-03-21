@@ -15,8 +15,30 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.web.controller;
+package org.apache.skyline.admin.commons.model.vo;
 
-public class ApiInstanceController {
+import lombok.Data;
 
+import java.util.Date;
+
+@Data
+public class ApiInstanceVO {
+
+    private Long id;
+
+    private Long clusterId;
+
+    private String matchPath;
+
+    private String description;
+
+    private String meno;
+
+    private String status;
+
+    private String pluginConfig;
+
+    private Date createTime;
+
+    private Date updateTime;
 }

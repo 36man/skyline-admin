@@ -15,8 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.web.controller;
+package org.apache.skyline.admin.commons.model.query;
 
-public class ApiInstanceController {
+import lombok.Data;
 
+@Data
+public class ApiInstanceQuery {
+
+    private Long clusterId;
+
+    private String matchPath;
 }

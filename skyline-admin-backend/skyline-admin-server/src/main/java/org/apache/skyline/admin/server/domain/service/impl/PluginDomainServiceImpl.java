@@ -30,8 +30,8 @@ public class PluginDomainServiceImpl implements PluginDomainService {
 
     @Transactional
     @Override
-    public Long storePlugin(GeneratePluginDomainRequest pluginDomainRequest) {
-        PluginDomain newPluginDomain = pluginDomainRequest.getPluginDomain();
+    public Long storePlugin(GeneratePluginDomainRequest pluginGenerateDomainRequest) {
+        PluginDomain newPluginDomain = pluginGenerateDomainRequest.getPluginDomain();
 
         try{
             Long id = pluginRepository.create(newPluginDomain);
@@ -39,7 +39,7 @@ public class PluginDomainServiceImpl implements PluginDomainService {
         }catch (DuplicateKeyException exception){
 
             PluginCombineQuery combineQuery = PluginCombineQuery.builder()
-                    .classDefine(pluginDomainRequest.getPluginDefine().getClassDefine())
+                    .classDefine(pluginGenerateDomainRequest.getPluginDefine().getClassDefine())
                     .build();
 
             PluginDomain pluginDomain = pluginRepository.findOne(combineQuery);
@@ -49,7 +49,7 @@ public class PluginDomainServiceImpl implements PluginDomainService {
             newPluginDomain.setId(pluginDomain.getId());
         }
 
-        storeVer(pluginDomainRequest.getPluginVersionDomain(), newPluginDomain);
+        storeVer(pluginGenerateDomainRequest.getPluginVersionDomain(), newPluginDomain);
 
         return newPluginDomain.getId();
     }

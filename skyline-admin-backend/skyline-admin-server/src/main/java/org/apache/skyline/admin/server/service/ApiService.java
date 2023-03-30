@@ -40,7 +40,7 @@ public interface ApiService {
 
     boolean deleteByIds(@NotEmpty List<Long> ids);
 
-    boolean configPlugin(ApiConfigPluginRequest configPluginRequest);
+    boolean configPlugin(@Valid ApiConfigPluginRequest configPluginRequest);
 
     boolean publish(@NotEmpty List<Long> id);
 

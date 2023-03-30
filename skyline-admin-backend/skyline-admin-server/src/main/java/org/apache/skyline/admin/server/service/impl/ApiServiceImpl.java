@@ -168,7 +168,6 @@ public class ApiServiceImpl implements ApiService {
 
     }
 
-
     private List<ApiVO> convert(List<ApiDomain> items) {
         return Optional.ofNullable(items)
                 .orElseGet(ArrayList::new)
@@ -206,7 +205,7 @@ public class ApiServiceImpl implements ApiService {
 
                     List<API.Plugin> plugins = configPluginInfoList.stream().map(item -> {
 
-                        checkPlugin(item);
+                        valid(item);
 
                         API.Plugin plugin = new API.Plugin();
 
@@ -221,15 +220,6 @@ public class ApiServiceImpl implements ApiService {
                 }).collect(Collectors.toList());
     }
 
-    private void checkPlugin(ConfigPluginInfo item) {
-        AssertUtil.notNull(item,"plugin is null");
-        AssertUtil.isNotBlank(item.getStage(),"plugin stage is empty");
-        AssertUtil.isNotBlank(item.getStageName(),"plugin stageName is empty");
-        AssertUtil.isNotBlank(item.getJarUrl(),"plugin jarUrl is empty");
-        AssertUtil.isNotBlank(item.getClassDefine(),"plugin classDefine is empty");
-        AssertUtil.isNotBlank(item.getVer(),"plugin ver is null");
-        AssertUtil.notNull(item.getSn(),"plugin sn is null");
-    }
 
     private void throwIsNotExistsCluster(Long clusterId) {
         ClusterQuery clusterQuery = new ClusterQuery();
@@ -267,5 +257,15 @@ public class ApiServiceImpl implements ApiService {
         options.setClusterName(clusterVO.getClusterName());
 
         return options;
+    }
+
+    private void valid(ConfigPluginInfo item) {
+        AssertUtil.notNull(item,"plugin is null");
+        AssertUtil.isNotBlank(item.getStage(),"plugin stage is empty");
+        AssertUtil.isNotBlank(item.getStageName(),"plugin stageName is empty");
+        AssertUtil.isNotBlank(item.getJarUrl(),"plugin jarUrl is empty");
+        AssertUtil.isNotBlank(item.getClassDefine(),"plugin classDefine is empty");
+        AssertUtil.isNotBlank(item.getVer(),"plugin ver is null");
+        AssertUtil.notNull(item.getSn(),"plugin sn is null");
     }
 }

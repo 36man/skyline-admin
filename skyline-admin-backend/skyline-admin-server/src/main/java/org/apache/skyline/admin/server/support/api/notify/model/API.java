@@ -68,8 +68,6 @@ public class API implements Serializable {
 
         private String jarUrl;
 
-        private String storeType;
-
         private Integer sn;
 
         private String config;
@@ -78,21 +76,23 @@ public class API implements Serializable {
 
         private String ver;
 
-
         @Override
         public boolean equals(Object o) {
             if (this == o)
                 return true;
             if (!(o instanceof Plugin))
                 return false;
-            Plugin apiPlugin = (Plugin) o;
-            return classDefine.equals(apiPlugin.classDefine) && config.equals(
-                    apiPlugin.getConfig()) && storeType.equals(apiPlugin.storeType);
+            Plugin plugin = (Plugin) o;
+            return Objects.equals(getStateSn(), plugin.getStateSn()) && Objects.equals(getJarUrl(),
+                    plugin.getJarUrl()) && Objects.equals(getSn(),
+                    plugin.getSn()) && Objects.equals(getConfig(),
+                    plugin.getConfig()) && Objects.equals(getClassDefine(),
+                    plugin.getClassDefine());
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(classDefine, config, storeType);
+            return Objects.hash(getStateSn(), getJarUrl(), getSn(), getConfig(), getClassDefine());
         }
     }
 

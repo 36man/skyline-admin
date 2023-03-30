@@ -20,9 +20,6 @@ public class ConfigPluginInfo {
     @NotBlank
     private String jarUrl;
 
-    @NotBlank
-    private String storeType;
-
     @NotNull
     private Integer sn;
 

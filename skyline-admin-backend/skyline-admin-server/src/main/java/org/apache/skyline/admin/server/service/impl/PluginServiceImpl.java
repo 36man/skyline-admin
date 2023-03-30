@@ -1,8 +1,9 @@
 package org.apache.skyline.admin.server.service.impl;
 
+import lombok.AllArgsConstructor;
 import org.apache.skyline.admin.commons.model.query.PluginQuery;
-import org.apache.skyline.admin.commons.model.request.PageRequest;
 import org.apache.skyline.admin.commons.model.request.GeneratePluginRequest;
+import org.apache.skyline.admin.commons.model.request.PageRequest;
 import org.apache.skyline.admin.commons.model.request.UpdatePluginRequest;
 import org.apache.skyline.admin.commons.model.vo.PluginVO;
 import org.apache.skyline.admin.server.commons.utils.PageCommonUtils;
@@ -23,7 +24,6 @@ import org.apache.skyline.admin.server.support.resolve.PluginDefine;
 import org.apache.skyline.admin.server.support.resolve.PluginDefineResolver;
 import org.bravo.gaia.commons.base.PageBean;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,21 +39,17 @@ import java.util.stream.Collectors;
  * @version @Id: SkylinePluginService.java, v 0.1 2022年12月23日 13:31 hejianbing Exp $
  */
 @Service
+@AllArgsConstructor
 public class PluginServiceImpl implements PluginService {
 
-    @Autowired
     private OSSExecutor ossExecutor;
 
-    @Autowired
     private PluginDomainService pluginDomainService;
 
-    @Autowired
     private OSSProperties ossProperties;
 
-    @Autowired
     private ObjectMapperCodec objectMapperCodec;
 
-    @Autowired
     private PluginRepository pluginRepository;
 
     public Boolean generate(GeneratePluginRequest pluginGenerateRequest) {

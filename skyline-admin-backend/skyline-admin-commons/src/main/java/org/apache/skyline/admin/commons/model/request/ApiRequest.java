@@ -15,28 +15,26 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.server.config.properties;
+package org.apache.skyline.admin.commons.model.request;
 
 import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import org.springframework.context.annotation.Configuration;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
-@Configuration(proxyBeanMethods = false)
-@ConfigurationProperties(prefix = "admin")
-public class AdminProperties{
+public class ApiRequest {
 
-    @NestedConfigurationProperty
-    private SwaggerConfig swagger  = new SwaggerConfig();
+    @NotNull
+    private Long clusterId;
 
-    private String changeSrvType = "nacos";
+    @NotBlank
+    private String matchCondition;
 
+    @NotBlank
+    private String description;
 
-    @Data
-    public static class SwaggerConfig{
+    @NotBlank
+    private String meno;
 
-        private boolean enable = true;
-
-    }
 }

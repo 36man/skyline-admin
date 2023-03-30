@@ -1,0 +1,12 @@
+nacos:
+  config:
+    server-addr: 127.0.0.1:8848
+    file-extension: yaml
+    group: DEFAULT_GROUP
+    data-id: admin
+    bootstrap:
+      enable: true
+      log-enable: true
+    enable-remote-sync-config: true
+    namespace: admin
+    type: yaml

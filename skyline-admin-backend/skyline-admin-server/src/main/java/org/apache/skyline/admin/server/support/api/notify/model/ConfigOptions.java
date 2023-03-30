@@ -15,26 +15,27 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.commons.model.request;
+package org.apache.skyline.admin.server.support.api.notify.model;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.util.Map;
 
 @Data
-public class ApiInstanceRequest {
+public class ConfigOptions {
 
-    @NotNull
-    private Long clusterId;
+    private Long id;
 
-    @NotBlank
-    private String matchPath;
+    private String clusterName;
 
-    @NotBlank
-    private String description;
+    private String domain;
 
-    @NotBlank
-    private String meno;
+    private String configUrl;
+
+    private String configUser;
+
+    private String configSecret;
+
+    private Map<String, Object> configItems;
 
 }

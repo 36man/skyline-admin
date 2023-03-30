@@ -18,6 +18,7 @@
 package org.apache.skyline.admin.server.service.impl;
 
 import com.google.common.collect.Lists;
+import lombok.AllArgsConstructor;
 import org.apache.skyline.admin.commons.model.query.PluginQuery;
 import org.apache.skyline.admin.commons.model.query.PluginVersionQuery;
 import org.apache.skyline.admin.commons.model.request.PageRequest;
@@ -32,7 +33,6 @@ import org.apache.skyline.admin.server.service.PluginService;
 import org.apache.skyline.admin.server.service.PluginVersionService;
 import org.bravo.gaia.commons.base.PageBean;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -42,13 +42,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class PluginVersionServiceImpl implements PluginVersionService {
 
-    @Autowired
-    private PluginService pluginService;
+    private final PluginService pluginService;
 
-    @Autowired
-    private PluginVersionRepository pluginVersionRepository;
+    private final PluginVersionRepository pluginVersionRepository;
 
 
     @Override
@@ -88,7 +87,6 @@ public class PluginVersionServiceImpl implements PluginVersionService {
     @Override
     public PageBean<PluginVersionVO> pageList(PageRequest<PluginVersionQuery> pageRequest) {
         PluginVersionCombineQuery combineQuery = this.toQuery(pageRequest.getCondition());
-        combineQuery.setLazyLoad(false);
 
         PageBean<PluginVersionDomain> pageBean = pluginVersionRepository.pageQuery(combineQuery, pageRequest.getPageNo(),
                 pageRequest.getPageSize());
@@ -156,6 +154,7 @@ public class PluginVersionServiceImpl implements PluginVersionService {
     private PluginVersionCombineQuery toQuery(PluginVersionQuery versionQuery) {
         return PluginVersionCombineQuery.builder()
                 .pluginIdList(Lists.newArrayList(versionQuery.getPluginId()))
+                .isLoadPlugin(versionQuery.getIsLoadPlugin() != null ? true : false)
                 .ver(versionQuery.getVer())
                 .build();
     }

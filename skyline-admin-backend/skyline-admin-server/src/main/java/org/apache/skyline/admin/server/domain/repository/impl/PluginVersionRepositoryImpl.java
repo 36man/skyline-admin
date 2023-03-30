@@ -120,7 +120,7 @@ public class PluginVersionRepositoryImpl implements PluginVersionRepository {
     private List<PluginVersionDomain> convert(List<PluginVersionDO> items,PluginVersionCombineQuery combineQuery) {
         Map<Long, PluginDomain> idToPlugin;
 
-        if (!combineQuery.isLazyLoad()) {
+        if (combineQuery.isLoadPlugin()) {
             List<Long> pluginIdList = items.stream().map(PluginVersionDO::getPluginId)
                     .collect(Collectors.toList());
 

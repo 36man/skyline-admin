@@ -15,28 +15,32 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.server.config.properties;
+package org.apache.skyline.admin.commons.model.vo;
 
 import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import org.springframework.context.annotation.Configuration;
+
+import java.util.Date;
 
 @Data
-@Configuration(proxyBeanMethods = false)
-@ConfigurationProperties(prefix = "admin")
-public class AdminProperties{
+public class ApiVO {
 
-    @NestedConfigurationProperty
-    private SwaggerConfig swagger  = new SwaggerConfig();
+    private Long id;
 
-    private String changeSrvType = "nacos";
+    private Long clusterId;
 
+    private String matchPath;
 
-    @Data
-    public static class SwaggerConfig{
+    private String description;
 
-        private boolean enable = true;
+    private String meno;
 
-    }
+    private String status;
+
+    private String plugins;
+
+    private Date createTime;
+
+    private Date updateTime;
+
+    private ClusterVO clusterVO;
 }

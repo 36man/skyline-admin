@@ -15,26 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.server.dal.dataobject;
+package org.apache.skyline.admin.commons.model.query;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 @Data
-@TableName("admin_api_instance")
-public class ApiInstanceDO extends BaseDO {
-
-    private Long id;
+public class ApiQuery {
 
     private Long clusterId;
 
-    private String matchPath;
-
-    private String description;
-
-    private String meno;
-
-    private String status;
-
-    private String pluginConfig;
+    private String matchCondition;
 }

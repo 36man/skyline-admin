@@ -1,6 +1,5 @@
 package org.apache.skyline.admin.web.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -21,12 +20,18 @@ import javax.servlet.Servlet;
  * @version @Id: MultipleFileUploadConfiguration.java, v 0.1 2022年12月23日 18:38 hejianbing Exp $
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnClass({ Servlet.class, StandardServletMultipartResolver.class, MultipartConfigElement.class })
+@ConditionalOnClass({ Servlet.class,
+                      StandardServletMultipartResolver.class,
+                      MultipartConfigElement.class })
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @EnableConfigurationProperties(MultipartProperties.class)
 public class MultipleFileUploadConfiguration {
-    @Autowired
-    private MultipartProperties multipartProperties;
+
+    private final MultipartProperties multipartProperties;
+
+    public MultipleFileUploadConfiguration(MultipartProperties multipartProperties) {
+        this.multipartProperties = multipartProperties;
+    }
 
     @Bean
     public MultipartConfigElement multipartConfigElement() {

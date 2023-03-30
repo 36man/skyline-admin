@@ -75,7 +75,7 @@ public class SwaggerConfiguration {
 
 
     @Bean
-    public Docket createRestApi() {
+    public Docket docker() {
         ParameterBuilder commonParam = new ParameterBuilder();
 
         List<Parameter> pars = new ArrayList<>();

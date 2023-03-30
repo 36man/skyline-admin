@@ -15,14 +15,10 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.commons.model.query;
+package org.apache.skyline.admin.server.dal.dao;
 
-import lombok.Data;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.skyline.admin.server.dal.dataobject.ApiDO;
 
-@Data
-public class ApiInstanceQuery {
-
-    private Long clusterId;
-
-    private String matchPath;
+public interface ApiDao extends BaseMapper<ApiDO> {
 }

@@ -38,11 +38,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/cluster")
 public class ClusterController {
 
-    public ClusterController(){
-        System.out.println("");
-    }
-
-
     @Autowired
     private ClusterService clusterService;
 
@@ -61,7 +56,6 @@ public class ClusterController {
         clusterQuery.setClusterName(clusterName);
         clusterQuery.setDomain(domain);
         clusterQuery.setBizKey(bizKey);
-
         pageRequest.setCondition(clusterQuery);
 
         return clusterService.pageList(pageRequest);

@@ -37,6 +37,8 @@ public class ClusterCombineQuery implements CombineQuery<ClusterDO> {
 
     private String bizKey;
 
+    private String status;
+
 
     public LambdaQueryWrapper<ClusterDO> toQuery(){
 
@@ -47,6 +49,7 @@ public class ClusterCombineQuery implements CombineQuery<ClusterDO> {
         propertyMapper.from(this.getDomain()).whenHasText().to(domain-> condition.eq(ClusterDO::getDomain,domain));
         propertyMapper.from(this.getClusterName()).whenHasText().to(clusterName-> condition.eq(ClusterDO::getClusterName,clusterName));
         propertyMapper.from(this.getBizKey()).whenHasText().to(bizKey-> condition.like(ClusterDO::getBizKey,bizKey));
+
         condition.eq(ClusterDO::getDeleted, false);
 
         return condition;

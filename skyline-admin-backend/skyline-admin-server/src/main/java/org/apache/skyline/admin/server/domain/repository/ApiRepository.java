@@ -15,8 +15,29 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.web.controller;
+package org.apache.skyline.admin.server.domain.repository;
 
-public class ApiInstanceController {
+import org.apache.skyline.admin.server.domain.model.ApiDomain;
+import org.apache.skyline.admin.server.domain.query.ApiCombineQuery;
+import org.bravo.gaia.commons.base.PageBean;
 
+import java.util.List;
+
+public interface ApiRepository {
+    Long save(ApiDomain apiDomain);
+
+    boolean updateById(ApiDomain apiDomain);
+
+    PageBean<ApiDomain> pageQuery(ApiCombineQuery combineQuery, Integer pageNo, Integer pageSize);
+
+
+    List<ApiDomain> findList(ApiCombineQuery combineQuery);
+
+    ApiDomain findOneByIdIfExists(Long id);
+
+    boolean deleteById(Long id);
+
+    boolean deleteByIds(List<Long> ids);
+
+    boolean isExists(ApiCombineQuery combineQuery);
 }

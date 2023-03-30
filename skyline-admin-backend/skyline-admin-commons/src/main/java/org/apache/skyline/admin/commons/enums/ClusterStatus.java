@@ -15,28 +15,34 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.server.config.properties;
+package org.apache.skyline.admin.commons.enums;
 
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import org.springframework.context.annotation.Configuration;
+public enum ClusterStatus implements IEnum{
 
-@Data
-@Configuration(proxyBeanMethods = false)
-@ConfigurationProperties(prefix = "admin")
-public class AdminProperties{
+    PENDING("PENDING","创建成功,未开始调度"),
+    RUNNING("RUNNING","已经被调度至节点,至少有一个启动成功"),
+    SUCCEEDED("SUCCEEDED","启动成功"),
 
-    @NestedConfigurationProperty
-    private SwaggerConfig swagger  = new SwaggerConfig();
+    FAILED("FAILED","容器终止"),
+    UNKNOWN("UNKNOWN","API Server无法正常获取到Pod对象的状态信息");
 
-    private String changeSrvType = "nacos";
+    private String desc;
+    private String code;
 
-
-    @Data
-    public static class SwaggerConfig{
-
-        private boolean enable = true;
-
+    ClusterStatus(String code, String desc) {
+        this.desc = desc;
+        this.code = code;
     }
+
+    @Override
+    public String getDesc() {
+        return this.desc;
+    }
+
+    @Override
+    public String getCode() {
+        return code;
+    }
+
+
 }

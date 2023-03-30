@@ -54,8 +54,6 @@ public class ClusterDomain extends BaseDomain {
 
     private String meno;
 
-    private Boolean deleted;
-
     private Date createTime;
 
     private Date updateTime;

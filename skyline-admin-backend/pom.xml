@@ -21,6 +21,11 @@
         <swagger.version>2.9.2</swagger.version>
         <reactor.version>3.4.18</reactor.version>
         <skyline.version>1.0.0-SNAPSHOT</skyline.version>
+        <nacos.config.starter.version>0.2.12</nacos.config.starter.version>
+        <nacos_spring_context_support_version>1.0.11</nacos_spring_context_support_version>
+        <mapstruct.version>1.5.3.Final</mapstruct.version>
+        <lombok-mapstruct.version>0.2.0</lombok-mapstruct.version>
+        <lombok.version>1.18.20</lombok.version>
     </properties>
 
     <modules>
@@ -39,7 +44,6 @@
                 <scope>import</scope>
             </dependency>
 
-
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
@@ -52,18 +56,29 @@
                 <version>${swagger.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.alibaba.spring</groupId>
+                <artifactId>spring-context-support</artifactId>
+                <version>${nacos_spring_context_support_version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-configuration-processor</artifactId>
+            </dependency>
         </dependencies>
-
-
-
-
     </dependencyManagement>
-
 
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
         </dependency>
     </dependencies>
 
@@ -118,8 +133,25 @@
                 <configuration>
                     <source>11</source>
                     <target>11</target>
-                    <encoding>UTF-8</encoding>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>${lombok-mapstruct.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
+
             </plugin>
 
             <plugin>
@@ -175,6 +207,8 @@
                     <skipTests>false</skipTests>
                 </configuration>
             </plugin>
+
+
         </plugins>
     </build>
 

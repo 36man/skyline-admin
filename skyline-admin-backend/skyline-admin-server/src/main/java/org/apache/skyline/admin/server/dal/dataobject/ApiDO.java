@@ -15,18 +15,24 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.server.domain.model;
+package org.apache.skyline.admin.server.dal.dataobject;
 
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 @Data
-public class ApiInstanceDomain {
+@TableName("admin_api")
+public class ApiDO extends BaseDO {
 
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
+
+    @TableField(fill = FieldFill.INSERT)
+    private Boolean deleted;
 
     private Long clusterId;
 
-    private String matchPath;
+    private String matchCondition;
 
     private String description;
 
@@ -34,5 +40,7 @@ public class ApiInstanceDomain {
 
     private String status;
 
-    private String pluginConfig;
+    private String plugins;
+
+    private Long ver;
 }

@@ -18,6 +18,7 @@
 package org.apache.skyline.admin.commons.model.request;
 
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Max;
@@ -63,4 +64,17 @@ public class ClusterRequest {
 
     @Length(max = 100)
     private String meno;
+
+    public boolean isEquals(String clusterDomain, String clusterName) {
+        if(StringUtils.isBlank(clusterDomain) && StringUtils.isBlank(clusterName)){
+            return false;
+        }
+
+        boolean isSame = this.getDomain().equals(clusterDomain)
+                && this.getClusterName().equals(clusterName);
+
+        return isSame;
+    }
+
+
 }

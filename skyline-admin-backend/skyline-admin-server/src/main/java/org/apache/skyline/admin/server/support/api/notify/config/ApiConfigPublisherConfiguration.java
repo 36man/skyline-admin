@@ -15,17 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.server.domain.repository;
+package org.apache.skyline.admin.server.support.api.notify.config;
 
-import org.apache.skyline.admin.server.domain.model.ApiInstanceDomain;
-import org.apache.skyline.admin.server.domain.query.ApiInstanceCombineQuery;
-import org.bravo.gaia.commons.base.PageBean;
+import org.apache.skyline.admin.server.support.api.notify.ApiConfigPublisher;
+import org.apache.skyline.admin.server.support.api.notify.impl.NacosApiConfigPublisher;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-public interface ApiInstanceRepository {
-    Long save(ApiInstanceDomain apiInstanceDomain);
+@Configuration(proxyBeanMethods = false)
+public class ApiConfigPublisherConfiguration {
 
-    boolean updateById(ApiInstanceDomain apiInstanceDomain);
 
-    PageBean<ApiInstanceDomain> pageQuery(ApiInstanceCombineQuery combineQuery, Integer pageNo, Integer pageSize);
-
+    @Bean
+    @ConditionalOnProperty(prefix = "admin", name = "configSrvType", havingValue = "nacos", matchIfMissing = true)
+    public ApiConfigPublisher nacosApiConfigPublisher(){
+        return new NacosApiConfigPublisher();
+    }
 }

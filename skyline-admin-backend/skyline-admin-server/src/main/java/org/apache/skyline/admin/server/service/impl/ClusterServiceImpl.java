@@ -23,14 +23,15 @@ import org.apache.skyline.admin.commons.model.request.PageRequest;
 import org.apache.skyline.admin.commons.model.vo.ClusterVO;
 import org.apache.skyline.admin.server.commons.utils.PageCommonUtils;
 import org.apache.skyline.admin.server.domain.model.ClusterDomain;
-import org.apache.skyline.admin.server.domain.repository.ClusterRepository;
 import org.apache.skyline.admin.server.domain.query.ClusterCombineQuery;
+import org.apache.skyline.admin.server.domain.repository.ClusterRepository;
 import org.apache.skyline.admin.server.service.ClusterService;
-import org.apache.skyline.admin.server.support.config.ConfigCenterEnvironmentLoader;
+import org.apache.skyline.admin.server.support.env.ConfigLoader;
+import org.apache.skyline.admin.server.support.mapper.ClusterAssembler;
 import org.bravo.gaia.commons.base.PageBean;
 import org.bravo.gaia.commons.util.AssertUtil;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.stereotype.Service;
 
@@ -42,17 +43,25 @@ import java.util.stream.Collectors;
 @Service
 public class ClusterServiceImpl implements ClusterService {
 
-    @Autowired
     private ClusterRepository clusterRepository;
-    @Autowired
-    private ConfigCenterEnvironmentLoader configCenterEnvironmentLoader;
+    private ObjectProvider<ConfigLoader> configLoaderProvider;
+    private ClusterAssembler clusterAssembler;
+
+    public ClusterServiceImpl(ClusterRepository clusterRepository,
+                              ObjectProvider<ConfigLoader> configLoaderObjectProvider,
+                              ClusterAssembler clusterAssembler) {
+        this.clusterAssembler = clusterAssembler;
+        this.configLoaderProvider = configLoaderObjectProvider;
+        this.clusterRepository = clusterRepository;
+
+    }
 
     public boolean create(ClusterRequest request){
+        this.setConfigItem(request);
+
         ClusterDomain clusterDomain = this.convert(request);
 
         throwIfDuplicate(request);
-
-        this.setConfigItem(request);
 
         return clusterRepository.save(clusterDomain);
     }
@@ -64,12 +73,14 @@ public class ClusterServiceImpl implements ClusterService {
 
         ClusterDomain item = clusterRepository.findOneIfExists(combineQuery);
         
-        return convert(item);
+        return clusterAssembler.convert(item);
     }
-
 
     @Override
     public boolean update(Long id, ClusterRequest request) {
+        AssertUtil.isNotBlank(request.getDomain(),"domain is blank");
+        AssertUtil.isNotBlank(request.getClusterName(),"clusterName is blank");
+
         ClusterCombineQuery queryCluster = ClusterCombineQuery.builder()
                 .id(id)
                 .build();
@@ -78,9 +89,7 @@ public class ClusterServiceImpl implements ClusterService {
 
         ClusterDomain clusterDomain = clusterRepository.findOneIfExists(queryCluster);
 
-        boolean isSame = request.getDomain().equals(clusterDomain.getDomain())
-                && request.getClusterName().equals(clusterDomain.getClusterName());
-        if (!isSame) {
+        if (!request.isEquals(clusterDomain.getDomain(),clusterDomain.getClusterName())) {
             throwIfDuplicate(request);
         }
 
@@ -88,8 +97,6 @@ public class ClusterServiceImpl implements ClusterService {
 
         return clusterRepository.update(queryCluster,clusterDomain);
     }
-
-
 
     @Override
     public boolean delete(Long id) {
@@ -128,16 +135,8 @@ public class ClusterServiceImpl implements ClusterService {
         return Optional.ofNullable(clusterList)
                 .orElseGet(ArrayList::new)
                 .stream()
-                .map(item->convert(item))
+                .map(clusterAssembler::convert)
                 .collect(Collectors.toList());
-    }
-
-    private ClusterVO convert(ClusterDomain clusterDomain) {
-        ClusterVO clusterVO = new ClusterVO();
-
-        BeanUtils.copyProperties(clusterDomain,clusterVO);
-
-        return clusterVO;
     }
 
     private ClusterCombineQuery toQuery(ClusterQuery clusterQuery) {
@@ -154,13 +153,18 @@ public class ClusterServiceImpl implements ClusterService {
 
         propertyMapper.from(request.getConfigShare())
                 .whenTrue()
-                .as(e-> configCenterEnvironmentLoader.load())
+                .as(e-> {
+                    ConfigLoader configLoader = configLoaderProvider.getIfAvailable(
+                            () -> ConfigLoader.DEFAULT);
+                    return configLoader.load();
+
+                })
                 .whenNonNull()
                 .to(item->{
                     request.setConfigUser(item.getSecret());
                     request.setConfigSecret(item.getSecret());
                     request.setConfigUrl(item.getUrl());
-                    request.setConfigItem(item.getItems());
+                    request.setConfigItem(item.getConfigs());
                 });
 
         propertyMapper.from(request.getConfigShare())

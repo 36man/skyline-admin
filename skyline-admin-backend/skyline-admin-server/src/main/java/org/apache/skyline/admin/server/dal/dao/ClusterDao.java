@@ -21,4 +21,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.skyline.admin.server.dal.dataobject.ClusterDO;
 
 public interface ClusterDao extends BaseMapper<ClusterDO> {
+
 }

@@ -15,28 +15,41 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.server.config.properties;
+package org.apache.skyline.admin.commons.enums;
 
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import org.springframework.context.annotation.Configuration;
+import lombok.Getter;
 
-@Data
-@Configuration(proxyBeanMethods = false)
-@ConfigurationProperties(prefix = "admin")
-public class AdminProperties{
+@Getter
+public enum ApiStatus implements IEnum{
 
-    @NestedConfigurationProperty
-    private SwaggerConfig swagger  = new SwaggerConfig();
+    ENABLE("enable", "启用"),
 
-    private String changeSrvType = "nacos";
+    DISABLE("disable", "禁用"),
 
+    IN_ENABLE("in_enable", "启用中"),
 
-    @Data
-    public static class SwaggerConfig{
+    NEW("new", "新增");
 
-        private boolean enable = true;
+    private String code;
+    private String desc;
 
+    ApiStatus(String code, String desc) {
+        this.code = code;
+        this.desc = desc;
     }
+
+    @Override
+    public String getCode() {
+        return code;
+    }
+
+    public static ApiStatus getApiStatus(String code) {
+        for (ApiStatus apiStatus : ApiStatus.values()) {
+            if (apiStatus.getCode().equals(code)) {
+                return apiStatus;
+            }
+        }
+        return null;
+    }
+
 }

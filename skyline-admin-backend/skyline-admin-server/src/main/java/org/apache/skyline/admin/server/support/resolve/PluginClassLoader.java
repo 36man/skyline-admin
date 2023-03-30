@@ -79,8 +79,6 @@ public class PluginClassLoader extends ClassLoader {
             for(Enumeration<JarEntry> enumeration =  jarFile.entries(); enumeration.hasMoreElements(); ) {
                 JarEntry jarEntry = enumeration.nextElement();
 
-                System.out.println("===>>> "+jarEntry.getName());
-
                 if (!jarEntry.isDirectory() && condition.test(jarEntry)) {
                     try {
                         InputStream is = jarFile.getInputStream(jarEntry);

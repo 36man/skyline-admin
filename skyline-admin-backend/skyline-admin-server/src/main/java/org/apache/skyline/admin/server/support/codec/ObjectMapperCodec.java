@@ -17,30 +17,35 @@
 
 package org.apache.skyline.admin.server.support.codec;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@AllArgsConstructor
 public class ObjectMapperCodec {
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     public <T> T deserialize(byte[] bytes, Class<T> clazz) {
-        try {
-
-            if (bytes == null || bytes.length == 0) {
-                return null;
+        return doDeserialize(bytes, new Action<T>() {
+            @Override
+            public <T> T get() throws Exception {
+                return (T)objectMapper.readValue(bytes, clazz);
             }
+        });
+    }
 
-            return objectMapper.readValue(bytes, clazz);
 
-        } catch (Exception exception) {
-            throw new RuntimeException(
-                    String.format("objectMapper! deserialize error %s", exception));
-        }
+    public <T> T deserialize(byte[] bytes, TypeReference<T> tTypeReference) {
+        return doDeserialize(bytes, new Action<T>() {
+            @Override
+            public <T> T get() throws Exception {
+                return (T)objectMapper.readValue(bytes, tTypeReference);
+            }
+        });
     }
 
     public <T> T deserialize(String content, Class<T> clazz) {
@@ -48,6 +53,18 @@ public class ObjectMapperCodec {
             return null;
         }
         return deserialize(content.getBytes(), clazz);
+    }
+
+    private <T> T doDeserialize(byte [] bytes, Action<T> action) {
+        try {
+            if (bytes == null || bytes.length == 0) {
+                return null;
+            }
+            return (T)action.get();
+        } catch (Exception exception) {
+            throw new RuntimeException(
+                    String.format("objectMapper! deserialize error %s", exception));
+        }
     }
 
     public String serialize(Object object) {
@@ -62,6 +79,25 @@ public class ObjectMapperCodec {
         } catch (Exception ex) {
             throw new RuntimeException(String.format("objectMapper! serialize error %s", ex));
         }
+    }
+
+    public <T> T serialize(Object object, Class<T> clazz){
+        try {
+
+            if (object == null) {
+                return null;
+            }
+            return (T)objectMapper.convertValue(object,clazz);
+
+        } catch (Exception ex) {
+            throw new RuntimeException(String.format("objectMapper! serialize error %s", ex));
+        }
+    }
+
+    public interface Action<T>{
+
+        <T> T get()throws Exception;
+
     }
 
 }

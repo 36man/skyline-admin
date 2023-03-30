@@ -15,23 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.server.service;
+package org.apache.skyline.admin.server.support.env;
 
-import org.apache.skyline.admin.commons.model.query.ApiInstanceQuery;
-import org.apache.skyline.admin.commons.model.request.ApiInstanceRequest;
-import org.apache.skyline.admin.commons.model.request.PageRequest;
-import org.apache.skyline.admin.commons.model.vo.ApiInstanceVO;
-import org.bravo.gaia.commons.base.PageBean;
-import org.springframework.validation.annotation.Validated;
+public interface ConfigLoader {
 
-import javax.validation.Valid;
+    ConfigCenterValue load();
 
-@Validated
-public interface ApiInstanceService {
-
-    Long create(@Valid ApiInstanceRequest apiInstanceRequest);
-
-    Boolean update(Long id, ApiInstanceRequest apiInstanceRequest);
-
-    PageBean<ApiInstanceVO> pageList(PageRequest<ApiInstanceQuery> pageRequest);
+    ConfigLoader DEFAULT = new ConfigLoader() {
+        @Override
+        public ConfigCenterValue load() {
+            return null;
+        }
+    };
 }

@@ -38,7 +38,7 @@ public class PluginVersionCombineQuery implements CombineQuery<PluginVersionDO>{
 
     private Boolean active;
 
-    private boolean lazyLoad = true;
+    private boolean isLoadPlugin = false;
 
 
     @Override

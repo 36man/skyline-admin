@@ -25,4 +25,6 @@ public class PluginVersionQuery {
     private Long pluginId;
 
     private String ver;
+
+    private Boolean isLoadPlugin;
 }

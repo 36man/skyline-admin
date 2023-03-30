@@ -10,6 +10,5 @@ public class WebBootstrap {
 
     public static void main(String[] args) {
         AppStarter.start(args);
-
     }
 }

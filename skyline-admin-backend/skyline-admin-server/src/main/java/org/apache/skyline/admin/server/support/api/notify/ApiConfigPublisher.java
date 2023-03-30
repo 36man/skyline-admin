@@ -15,30 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.commons.model.vo;
+package org.apache.skyline.admin.server.support.api.notify;
 
-import lombok.Data;
+import org.apache.skyline.admin.server.support.api.notify.model.API;
+import org.apache.skyline.admin.server.support.api.notify.model.ConfigOptions;
 
-import java.util.Date;
+import java.util.List;
 
-@Data
-public class ApiInstanceVO {
+public interface ApiConfigPublisher {
 
-    private Long id;
+    boolean delete(ConfigOptions option, List<Long> ids);
 
-    private Long clusterId;
-
-    private String matchPath;
-
-    private String description;
-
-    private String meno;
-
-    private String status;
-
-    private String pluginConfig;
-
-    private Date createTime;
-
-    private Date updateTime;
+    boolean change(ConfigOptions option, List<API> apis);
 }

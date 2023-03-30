@@ -15,10 +15,38 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.server.dal.dao;
+package org.apache.skyline.admin.server.domain.model;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.skyline.admin.server.dal.dataobject.ApiInstanceDO;
+import lombok.Data;
+import org.apache.skyline.admin.commons.enums.ApiStatus;
+import org.bravo.gaia.commons.base.BaseDomain;
 
-public interface ApiInstanceDao extends BaseMapper<ApiInstanceDO> {
+import java.util.Date;
+
+@Data
+public class ApiDomain extends BaseDomain {
+
+    private Long id;
+
+    private ClusterDomain clusterDomain;
+
+    private String matchCondition;
+
+    private String description;
+
+    private String meno;
+
+    private Long ver;
+
+    private ApiStatus status;
+
+    private String plugins;
+
+    private Date createTime;
+
+    private Date updateTime;
+
+    public boolean isNew() {
+        return status.equals(ApiStatus.NEW);
+    }
 }

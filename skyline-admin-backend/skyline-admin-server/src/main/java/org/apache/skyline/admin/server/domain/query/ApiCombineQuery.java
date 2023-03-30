@@ -21,28 +21,46 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.apache.skyline.admin.server.dal.dataobject.ApiInstanceDO;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.skyline.admin.server.dal.dataobject.ApiDO;
 import org.springframework.boot.context.properties.PropertyMapper;
+
+import java.util.List;
 
 @Data
 @Accessors(chain = true)
 @Builder
-public class ApiInstanceCombineQuery implements CombineQuery<ApiInstanceDO> {
+public class ApiCombineQuery implements CombineQuery<ApiDO> {
 
     private Long clusterId;
 
-    private String matchPath;
+    private String matchCondition;
+
+    private List<Long> ids;
+
+    private boolean isLoadCluster = false;
+
+    public boolean isLoadCluster(){
+        if(isLoadCluster && clusterId != null){
+            return true;
+        }
+        return false;
+    }
+
 
     @Override
-    public LambdaQueryWrapper<ApiInstanceDO> toQuery() {
-        LambdaQueryWrapper<ApiInstanceDO> condition = new LambdaQueryWrapper<>();
+    public LambdaQueryWrapper<ApiDO> toQuery() {
+        LambdaQueryWrapper<ApiDO> condition = new LambdaQueryWrapper<>();
         PropertyMapper propertyMapper = PropertyMapper.get();
         propertyMapper.from(this::getClusterId).whenNonNull()
-                .to(clusterId -> condition.eq(ApiInstanceDO::getClusterId, clusterId));
+                .to(clusterId -> condition.eq(ApiDO::getClusterId, clusterId));
+        propertyMapper.from(this::getIds).when(ids-> CollectionUtils.isNotEmpty(ids))
+                .to(ids -> condition.eq(ApiDO::getId, ids));
 
-        propertyMapper.from(this::getMatchPath).whenNonNull()
-                .to(matchPath -> condition.eq(ApiInstanceDO::getMatchPath, matchPath));
+        propertyMapper.from(this::getMatchCondition).whenNonNull()
+                .to(matchCondition -> condition.eq(ApiDO::getMatchCondition, matchCondition));
 
+        condition.eq(ApiDO::getDeleted, false);
 
         return condition;
     }

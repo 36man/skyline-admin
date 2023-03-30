@@ -64,12 +64,12 @@ public class ApiController {
     }
 
     @DeleteMapping("/{ids}")
-    public Boolean delete(@PathVariable("ids") List<Long> ids) {
+    public Boolean delete(@PathVariable("[]ids") List<Long> ids) {
         return apiService.deleteByIds(ids);
     }
 
     @PutMapping("/publish/{ids}")
-    public Boolean apply(@PathVariable("ids") List<Long> ids) {
+    public Boolean apply(@PathVariable("[]ids") List<Long> ids) {
         return apiService.publish(ids);
     }
 

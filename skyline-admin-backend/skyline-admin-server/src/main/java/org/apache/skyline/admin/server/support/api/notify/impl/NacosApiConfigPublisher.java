@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.skyline.admin.server.commons.utils.MapResolver;
 import org.apache.skyline.admin.server.support.api.notify.ApiConfigPublisher;
-import org.apache.skyline.admin.server.support.api.notify.model.API;
+import org.apache.skyline.admin.server.support.api.notify.model.ApiDefinition;
 import org.apache.skyline.admin.server.support.api.notify.model.ConfigOptions;
 import org.bravo.gaia.commons.exception.PlatformException;
 
@@ -45,11 +45,11 @@ public class NacosApiConfigPublisher implements ApiConfigPublisher {
 
     @Override
     public boolean delete(ConfigOptions option, List<Long> ids) {
-        List<API> apiList = nacosConfigService.getApiList(option);
+        List<ApiDefinition> apiList = nacosConfigService.getApiList(option);
         if(CollectionUtils.isEmpty(apiList)) {
             return true;
         }
-        List<API> items = apiList.stream().filter(api -> !ids.contains(api.getId()))
+        List<ApiDefinition> items = apiList.stream().filter(api -> !ids.contains(api.getId()))
                 .collect(Collectors.toList());
 
         if (items.size() == apiList.size()) {
@@ -61,16 +61,16 @@ public class NacosApiConfigPublisher implements ApiConfigPublisher {
     }
 
     @Override
-    public boolean change(ConfigOptions option, List<API> apis) {
+    public boolean change(ConfigOptions option, List<ApiDefinition> apis) {
 
 
 
-        List<API> apiList = nacosConfigService.getApiList(option);
+        List<ApiDefinition> apiList = nacosConfigService.getApiList(option);
 
-        List<API> items = new ArrayList<>(apiList);
+        List<ApiDefinition> items = new ArrayList<>(apiList);
 
         if (CollectionUtils.isNotEmpty(apiList)) {
-            for (API api : apis) {
+            for (ApiDefinition api : apis) {
                 if (!apiList.contains(api)) {
                     items.add(api);
                 }
@@ -146,16 +146,16 @@ public class NacosApiConfigPublisher implements ApiConfigPublisher {
             }
         }
 
-        public boolean publish(ConfigOptions option, List<API> apis) {
+        public boolean publish(ConfigOptions option, List<ApiDefinition> apis) {
             String content = JSON.toJSONString(apis);
             return execute(option, configService -> configService.publishConfig(String.valueOf(option.getId()), (String) option.getConfigItems().get(GROUP_KEY), content, ConfigType.JSON.getType()));
         }
 
-        public List<API> getApiList(ConfigOptions option) {
+        public List<ApiDefinition> getApiList(ConfigOptions option) {
             return execute(option, configService -> {
                     String content = configService.getConfig(String.valueOf(option.getId()), option.getConfigItems().get(GROUP_KEY).toString(),Long.valueOf(option.getConfigItems().get(TIME_OUT_KEY).toString()));
                     if (content != null) {
-                        return JSON.parseArray(content, API.class);
+                        return JSON.parseArray(content, ApiDefinition.class);
                     }
                     return null;
             });

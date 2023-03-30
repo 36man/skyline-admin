@@ -37,7 +37,7 @@ import org.apache.skyline.admin.server.domain.repository.ApiRepository;
 import org.apache.skyline.admin.server.service.ApiService;
 import org.apache.skyline.admin.server.service.ClusterService;
 import org.apache.skyline.admin.server.support.api.notify.ApiConfigPublisher;
-import org.apache.skyline.admin.server.support.api.notify.model.API;
+import org.apache.skyline.admin.server.support.api.notify.model.ApiDefinition;
 import org.apache.skyline.admin.server.support.api.notify.model.ConfigOptions;
 import org.apache.skyline.admin.server.support.codec.ObjectMapperCodec;
 import org.apache.skyline.admin.server.support.mapper.ApiAssembler;
@@ -162,7 +162,7 @@ public class ApiServiceImpl implements ApiService {
 
         ConfigOptions configOptions = getConfigOptions(clusterId);
 
-        List<API> apiList = this.assembleAPI(apiDomainList);
+        List<ApiDefinition> apiList = this.assembleAPI(apiDomainList);
 
         return apiPublisher.change(configOptions, apiList);
 
@@ -187,11 +187,11 @@ public class ApiServiceImpl implements ApiService {
         return vo;
     }
 
-    private List<API> assembleAPI(List<ApiDomain> apiItems) {
+    private List<ApiDefinition> assembleAPI(List<ApiDomain> apiItems) {
         ClusterDomain clusterDomain = apiItems.get(0).getClusterDomain();
 
         return  apiItems.stream().map(apiDomain -> {
-                    API api = new API();
+                    ApiDefinition api = new ApiDefinition();
                     api.setId(apiDomain.getId());
                     api.setClusterId(String.valueOf(apiDomain.getId()));
                     api.setApiVer(apiDomain.getVer());
@@ -203,11 +203,11 @@ public class ApiServiceImpl implements ApiService {
                     AssertUtil.isNotBlank(pluginString,"plugin is empty");
                     List<ConfigPluginInfo> configPluginInfoList = objectMapperCodec.deserialize(pluginString.getBytes(), new TypeReference<List<ConfigPluginInfo>>() {});
 
-                    List<API.Plugin> plugins = configPluginInfoList.stream().map(item -> {
+                    List<ApiDefinition.Plugin> plugins = configPluginInfoList.stream().map(item -> {
 
                         valid(item);
 
-                        API.Plugin plugin = new API.Plugin();
+                        ApiDefinition.Plugin plugin = new ApiDefinition.Plugin();
 
                         BeanUtils.copyProperties(item,plugin);
 

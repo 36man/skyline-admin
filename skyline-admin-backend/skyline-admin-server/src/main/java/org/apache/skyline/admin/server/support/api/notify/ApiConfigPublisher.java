@@ -17,7 +17,7 @@
 
 package org.apache.skyline.admin.server.support.api.notify;
 
-import org.apache.skyline.admin.server.support.api.notify.model.API;
+import org.apache.skyline.admin.server.support.api.notify.model.ApiDefinition;
 import org.apache.skyline.admin.server.support.api.notify.model.ConfigOptions;
 
 import java.util.List;
@@ -26,5 +26,5 @@ public interface ApiConfigPublisher {
 
     boolean delete(ConfigOptions option, List<Long> ids);
 
-    boolean change(ConfigOptions option, List<API> apis);
+    boolean change(ConfigOptions option, List<ApiDefinition> apis);
 }

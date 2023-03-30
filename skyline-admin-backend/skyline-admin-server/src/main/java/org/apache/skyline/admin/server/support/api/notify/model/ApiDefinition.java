@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Data
-public class API implements Serializable {
+public class ApiDefinition implements Serializable {
 
     private Long id;
 
@@ -43,9 +43,9 @@ public class API implements Serializable {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof API))
+        if (!(o instanceof ApiDefinition))
             return false;
-        API apiInfo = (API) o;
+        ApiDefinition apiInfo = (ApiDefinition) o;
         return Objects.equals(id, apiInfo.id) && Objects.equals(clusterId,
                 apiInfo.clusterId) && Objects.equals(clusterDomain,
                 apiInfo.clusterDomain) && Objects.equals(matchCondition,

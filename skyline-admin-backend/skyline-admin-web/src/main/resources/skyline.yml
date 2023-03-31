@@ -1,9 +1,9 @@
 skyline:
-    pluginDefine: org.apache.skyline.test.plugin.TestPlugin
+    classDefine: org.apache.skyline.test.plugin.TestPlugin
     pageDefine: skyline-plugin.vue
-    maintainer: jack
-    overview: test plugin
+    overview: xxx
     ver: 1.0.0-SNAPSHOT
+    maintainer: zs
     features:
-        - fix async task error
-        - fix timeout
+        - test
+        - xxx

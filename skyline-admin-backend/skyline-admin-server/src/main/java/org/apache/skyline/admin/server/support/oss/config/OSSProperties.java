@@ -15,12 +15,12 @@ import org.springframework.validation.annotation.Validated;
 public class OSSProperties {
     private String endpoint = "xxx";
 
-    /** lcloud:bucketName*/
     private String bucketName;
 
     private String local;
 
     private String accessKey;
+
     private String secretKey;
 
     private String group = "default";

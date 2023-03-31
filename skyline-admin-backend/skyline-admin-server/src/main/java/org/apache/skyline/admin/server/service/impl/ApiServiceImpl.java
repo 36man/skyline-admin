@@ -178,7 +178,7 @@ public class ApiServiceImpl implements ApiService {
 
         List<ApiGenerateDefinition> apiList = this.generateApiDefinition(apiDomainList);
 
-        apiPublisher.change(configOptions, apiList);
+        boolean changed = apiPublisher.change(configOptions, apiList);
 
         ApiDomain apiDomain = new ApiDomain();
         apiDomain.setStatus(ApiStatus.ENABLE);
@@ -189,7 +189,7 @@ public class ApiServiceImpl implements ApiService {
 
         apiRepository.update(apiDomain,apiCombineQuery);
 
-        return true;
+        return changed;
     }
 
     private List<ApiVO> convert(List<ApiDomain> items) {

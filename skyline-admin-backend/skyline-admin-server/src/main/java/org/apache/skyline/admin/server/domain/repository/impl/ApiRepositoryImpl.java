@@ -37,6 +37,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -153,7 +154,9 @@ public class ApiRepositoryImpl implements ApiRepository {
 
         BeanUtils.copyProperties(apiDomain, apiDO);
 
-        apiDO.setClusterId(apiDomain.getClusterDomain().getId());
+        Optional.ofNullable(apiDomain.getClusterDomain())
+                .filter(clusterDomain->Objects.nonNull(clusterDomain))
+                .ifPresent(clusterDomain->apiDO.setClusterId(clusterDomain.getId()));
 
         apiDO.setStatus(apiDomain.getStatus().getCode());
 

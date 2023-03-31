@@ -2,6 +2,7 @@ package org.apache.skyline.admin.server.domain.repository.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.AllArgsConstructor;
 import org.apache.skyline.admin.server.commons.utils.PageCommonUtils;
 import org.apache.skyline.admin.server.dal.dao.PluginDao;
 import org.apache.skyline.admin.server.dal.dataobject.PluginDO;
@@ -26,12 +27,11 @@ import java.util.stream.Collectors;
  * @version @Id: PluginRepositoryImpl.java, v 0.1 2022年12月23日 13:43 hejianbing Exp $
  */
 @Repository
+@AllArgsConstructor
 public class PluginRepositoryImpl implements PluginRepository {
 
-    @Autowired
     private PluginDao pluginDao;
 
-    @Autowired
     private IdGenerator<Long> idGenerator;
 
     @Override

@@ -18,6 +18,7 @@
 package org.apache.skyline.admin.server.domain.repository.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.AllArgsConstructor;
 import org.apache.skyline.admin.commons.enums.ApiStatus;
 import org.apache.skyline.admin.server.commons.utils.PageCommonUtils;
 import org.apache.skyline.admin.server.dal.dao.ApiDao;
@@ -42,15 +43,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
+@AllArgsConstructor
 public class ApiRepositoryImpl implements ApiRepository {
 
-    @Autowired
     private ApiDao apiDao;
 
-    @Autowired
     private ClusterRepository clusterRepository;
-
-
 
     @Override
     public Long save(ApiDomain apiDomain) {
@@ -95,7 +93,7 @@ public class ApiRepositoryImpl implements ApiRepository {
     public ApiDomain findOneIfExists(Long id) {
         ApiDO apiInstanceDO = apiDao.selectById(id);
 
-        AssertUtil.notNull(apiInstanceDO, "api instance not found by id: " + id);
+        AssertUtil.notNull(apiInstanceDO, "api not found by id: " + id);
 
         return convert(apiInstanceDO);
     }

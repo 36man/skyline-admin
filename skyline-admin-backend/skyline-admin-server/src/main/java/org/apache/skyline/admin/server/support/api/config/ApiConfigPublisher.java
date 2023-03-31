@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.server.support.api.notify;
+package org.apache.skyline.admin.server.support.api.config;
 
-import org.apache.skyline.admin.server.support.api.notify.model.ApiGenerateDefinition;
-import org.apache.skyline.admin.server.support.api.notify.model.ConfigOptions;
+import org.apache.skyline.admin.server.support.api.config.model.ApiGenerateDefinition;
+import org.apache.skyline.admin.server.support.api.config.model.ConfigOptions;
 
 import java.util.List;
 

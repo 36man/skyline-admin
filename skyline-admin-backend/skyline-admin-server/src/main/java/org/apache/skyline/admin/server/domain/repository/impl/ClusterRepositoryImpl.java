@@ -19,6 +19,7 @@ package org.apache.skyline.admin.server.domain.repository.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.AllArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -44,12 +45,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Repository
+@AllArgsConstructor
 public class ClusterRepositoryImpl implements ClusterRepository {
 
-    @Autowired
     private ClusterDao clusterDao;
 
-    @Autowired
     private ObjectMapperCodec objectMapperCodec;
 
 

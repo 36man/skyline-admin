@@ -39,9 +39,9 @@ import org.apache.skyline.admin.server.domain.repository.ApiRepository;
 import org.apache.skyline.admin.server.domain.repository.PluginVersionRepository;
 import org.apache.skyline.admin.server.service.ApiService;
 import org.apache.skyline.admin.server.service.ClusterService;
-import org.apache.skyline.admin.server.support.api.notify.ApiConfigPublisher;
-import org.apache.skyline.admin.server.support.api.notify.model.ApiGenerateDefinition;
-import org.apache.skyline.admin.server.support.api.notify.model.ConfigOptions;
+import org.apache.skyline.admin.server.support.api.config.ApiConfigPublisher;
+import org.apache.skyline.admin.server.support.api.config.model.ApiGenerateDefinition;
+import org.apache.skyline.admin.server.support.api.config.model.ConfigOptions;
 import org.apache.skyline.admin.server.support.codec.ObjectMapperCodec;
 import org.apache.skyline.admin.server.support.mapper.ApiAssembler;
 import org.apache.skyline.admin.server.support.mapper.ClusterAssembler;
@@ -76,7 +76,7 @@ public class ApiServiceImpl implements ApiService {
     private PluginVersionRepository pluginVersionRepository;
 
     public Long create(ApiRequest apiRequest) {
-        throwIsNotExistsCluster(apiRequest.getClusterId());
+        throwIfNotExistsCluster(apiRequest.getClusterId());
 
         throwIsDuplicate(apiRequest.getClusterId(),apiRequest.getMatchCondition());
 
@@ -91,21 +91,21 @@ public class ApiServiceImpl implements ApiService {
 
     @Override
     public Boolean update(Long id, ApiRequest apiRequest) {
-        throwIsNotExistsCluster(apiRequest.getClusterId());
+        throwIfNotExistsCluster(apiRequest.getClusterId());
 
         ApiDomain apiDomain = apiRepository.findOneIfExists(id);
 
-        if(apiRequest.getClusterId()==apiDomain.getClusterDomain().getId()
-            && !apiRequest.getMatchCondition().equals(apiDomain.getMatchCondition())) {
+        if (apiRequest.getClusterId() == apiDomain.getClusterDomain()
+                .getId() && !apiRequest.getMatchCondition().equals(apiDomain.getMatchCondition())) {
 
             throwIsDuplicate(apiRequest.getClusterId(),apiRequest.getMatchCondition());
         }
 
+        Optional.ofNullable(apiDomain.getStatus())
+                .filter(status -> status == ApiStatus.ENABLE)
+                .ifPresent(status -> apiDomain.setStatus(ApiStatus.IN_ENABLE));
+
         BeanUtils.copyProperties(apiRequest, apiDomain);
-
-        apiDomain.setId(id);
-
-
         apiDomain.setVer(apiDomain.getVer()+1);
 
         return apiRepository.updateById(apiDomain);
@@ -113,10 +113,13 @@ public class ApiServiceImpl implements ApiService {
 
     @Override
     public PageBean<ApiVO> pageList(PageRequest<ApiQuery> pageRequest) {
+        ApiQuery condition = pageRequest.getCondition();
+
         ApiCombineQuery combineQuery = ApiCombineQuery
                 .builder()
-                .clusterId(pageRequest.getCondition().getClusterId())
-                .matchCondition(pageRequest.getCondition().getMatchCondition())
+                .isLoadCluster(condition.isLoadCluster())
+                .clusterId(condition.getClusterId())
+                .matchCondition(condition.getMatchCondition())
                 .build();
 
         PageBean<ApiDomain> pageBean = apiRepository.pageQuery(combineQuery, pageRequest.getPageNo(), pageRequest.getPageSize());
@@ -178,13 +181,15 @@ public class ApiServiceImpl implements ApiService {
         apiPublisher.change(configOptions, apiList);
 
         ApiDomain apiDomain = new ApiDomain();
-        apiDomain.setStatus(ApiStatus.DISABLE);
+        apiDomain.setStatus(ApiStatus.ENABLE);
 
         ApiCombineQuery apiCombineQuery = ApiCombineQuery.builder()
                 .ids(ids)
                 .build();
 
-        return apiRepository.update(apiDomain,apiCombineQuery);
+        apiRepository.update(apiDomain,apiCombineQuery);
+
+        return true;
     }
 
     private List<ApiVO> convert(List<ApiDomain> items) {
@@ -227,14 +232,13 @@ public class ApiServiceImpl implements ApiService {
     }
 
     private ApiVO convert(ApiDomain apiDomain) {
-        ApiVO vo = new ApiVO();
-        BeanUtils.copyProperties(apiDomain,vo);
+        ApiVO apiVO = apiAssembler.convertVO(apiDomain);
 
         ClusterVO clusterVO = clusterAssembler.convert(apiDomain.getClusterDomain());
 
-        vo.setClusterVO(clusterVO);
+        apiVO.setClusterVO(clusterVO);
 
-        return vo;
+        return apiVO;
     }
 
     private List<ApiGenerateDefinition> generateApiDefinition(List<ApiDomain> apiItems) {
@@ -262,7 +266,7 @@ public class ApiServiceImpl implements ApiService {
     }
 
 
-    private void throwIsNotExistsCluster(Long clusterId) {
+    private void throwIfNotExistsCluster(Long clusterId) {
         ClusterQuery clusterQuery = new ClusterQuery();
         clusterQuery.setId(clusterId);
         ClusterVO clusterVO = clusterService.queryForOne(clusterQuery);

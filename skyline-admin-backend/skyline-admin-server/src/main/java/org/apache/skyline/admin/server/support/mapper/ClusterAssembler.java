@@ -20,6 +20,7 @@ package org.apache.skyline.admin.server.support.mapper;
 import org.apache.skyline.admin.commons.model.vo.ClusterVO;
 import org.apache.skyline.admin.server.domain.model.ClusterDomain;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)

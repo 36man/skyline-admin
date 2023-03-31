@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.server.support.api.notify.model;
+package org.apache.skyline.admin.server.support.api.config.model;
 
 import com.google.common.collect.ImmutableMultiset;
 import lombok.Data;

@@ -26,15 +26,15 @@ public class ApiVO {
 
     private Long id;
 
-    private Long clusterId;
-
-    private String matchPath;
+    private String matchCondition;
 
     private String description;
 
     private String meno;
 
     private String status;
+
+    private String statusName;
 
     private String plugins;
 

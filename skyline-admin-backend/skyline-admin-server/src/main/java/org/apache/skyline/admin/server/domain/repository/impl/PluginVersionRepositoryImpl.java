@@ -2,6 +2,7 @@ package org.apache.skyline.admin.server.domain.repository.impl;
 
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.skyline.admin.server.commons.constants.CopyIgnoreFields;
 import org.apache.skyline.admin.server.commons.utils.PageCommonUtils;
@@ -33,15 +34,13 @@ import java.util.stream.Collectors;
  * @version @Id: PluginVersionRepositoryImpl.java, v 0.1 2022年12月25日 00:16 hejianbing Exp $
  */
 @Repository
+@AllArgsConstructor
 public class PluginVersionRepositoryImpl implements PluginVersionRepository {
 
-    @Autowired
     private PluginVersionDao pluginVersionDao;
 
-    @Autowired
     private ObjectMapperCodec objectMapperCodec;
 
-    @Autowired
     private PluginRepository pluginRepository;
 
     @Override

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.server.support.api.notify.impl;
+package org.apache.skyline.admin.server.support.api.config.impl;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.nacos.api.PropertyKeyConst;
@@ -27,9 +27,9 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.skyline.admin.server.commons.utils.MapResolver;
-import org.apache.skyline.admin.server.support.api.notify.ApiConfigPublisher;
-import org.apache.skyline.admin.server.support.api.notify.model.ApiGenerateDefinition;
-import org.apache.skyline.admin.server.support.api.notify.model.ConfigOptions;
+import org.apache.skyline.admin.server.support.api.config.ApiConfigPublisher;
+import org.apache.skyline.admin.server.support.api.config.model.ApiGenerateDefinition;
+import org.apache.skyline.admin.server.support.api.config.model.ConfigOptions;
 import org.bravo.gaia.commons.exception.PlatformException;
 
 import java.util.*;
@@ -39,10 +39,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class NacosApiConfigPublisher implements ApiConfigPublisher {
 
-
     private final CacheableEventPublishingNacosServiceFactory nacosServiceFactory = CacheableEventPublishingNacosServiceFactory
             .getSingleton();
-
 
     private InternalNacosConfigService configService = new InternalNacosConfigService();
 
@@ -60,7 +58,7 @@ public class NacosApiConfigPublisher implements ApiConfigPublisher {
         }
         this.configService.publish(option, items);
 
-        return false;
+        return true;
     }
 
     @Override

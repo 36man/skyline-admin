@@ -18,6 +18,7 @@
 package org.apache.skyline.admin.server.support.mapper;
 
 import org.apache.skyline.admin.commons.model.request.ApiRequest;
+import org.apache.skyline.admin.commons.model.vo.ApiVO;
 import org.apache.skyline.admin.server.domain.model.ApiDomain;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -29,4 +30,8 @@ public interface ApiAssembler {
 
     @Mapping(source = "clusterId", target = "clusterDomain.id")
     ApiDomain convert(ApiRequest apiRequest);
+
+    @Mapping(source = "status.code", target = "status")
+    @Mapping(source = "status.desc", target = "statusName")
+    ApiVO convertVO(ApiDomain apiDomain);
 }

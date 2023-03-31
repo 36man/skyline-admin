@@ -39,14 +39,16 @@ public class ApiController {
     @GetMapping("/pageList")
     public PageBean<ApiVO> pageList(@RequestParam("pageNo") Integer pageNo,
                                     @RequestParam("pageSize") Integer pageSize,
+                                    @RequestParam(value = "isClusterLoad",required = false,defaultValue = "false") boolean isClusterLoad,
                                     @RequestParam(value = "clusterId") Long clusterId,
-                                    @RequestParam(value = "matchCondition") String matchCondition) {
+                                    @RequestParam(value = "matchCondition",required = false) String matchCondition) {
 
         PageRequest<ApiQuery> pageRequest = new PageRequest<>();
         pageRequest.setPageNo(pageNo);
         pageRequest.setPageSize(pageSize);
 
         ApiQuery condition = new ApiQuery();
+        condition.setLoadCluster(isClusterLoad);
         condition.setClusterId(clusterId);
         condition.setMatchCondition(matchCondition);
         pageRequest.setCondition(condition);
@@ -70,7 +72,7 @@ public class ApiController {
     }
 
     @DeleteMapping("/{ids}")
-    public Boolean delete(@PathVariable("[]ids") List<Long> ids) {
+    public Boolean delete(@PathVariable List<Long> ids) {
         return apiService.deleteByIds(ids);
     }
 

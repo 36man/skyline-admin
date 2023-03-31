@@ -25,4 +25,6 @@ public class ApiQuery {
     private Long clusterId;
 
     private String matchCondition;
+
+    private boolean isLoadCluster = false;
 }

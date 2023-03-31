@@ -11,11 +11,30 @@
  Target Server Version : 80011
  File Encoding         : 65001
 
- Date: 20/03/2023 16:25:45
+ Date: 31/03/2023 14:13:32
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for admin_api
+-- ----------------------------
+DROP TABLE IF EXISTS `admin_api`;
+CREATE TABLE `admin_api`  (
+  `id` bigint(20) NOT NULL,
+  `cluster_id` bigint(20) NULL DEFAULT NULL,
+  `match_condition` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `description` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `meno` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `status` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `plugins` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
+  `create_time` timestamp NULL DEFAULT NULL,
+  `update_time` timestamp NULL DEFAULT NULL,
+  `deleted` tinyint(1) NULL DEFAULT NULL,
+  `ver` bigint(20) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for admin_cluster

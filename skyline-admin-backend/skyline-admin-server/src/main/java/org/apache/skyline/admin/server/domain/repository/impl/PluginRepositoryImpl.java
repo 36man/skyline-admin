@@ -32,13 +32,10 @@ public class PluginRepositoryImpl implements PluginRepository {
 
     private PluginDao pluginDao;
 
-    private IdGenerator<Long> idGenerator;
 
     @Override
     public Long create(PluginDomain pluginDomain) {
         return doExecute(pluginDomain,item->{
-
-            item.setId(idGenerator.generate());
             item.setActive(true);
 
             pluginDao.insert(item);

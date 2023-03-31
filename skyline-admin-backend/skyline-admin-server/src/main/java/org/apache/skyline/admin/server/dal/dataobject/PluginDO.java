@@ -1,5 +1,7 @@
 package org.apache.skyline.admin.server.dal.dataobject;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -11,6 +13,7 @@ import lombok.Data;
 @TableName("admin_plugin")
 public class PluginDO extends BaseDO {
 
+    @TableId(type = IdType.ASSIGN_ID)
     private Long   id;
 
     private String maintainer;

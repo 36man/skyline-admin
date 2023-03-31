@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Data
-public class ApiDefinition implements Serializable {
+public class ApiGenerateDefinition implements Serializable {
 
     private Long id;
 
@@ -37,15 +37,15 @@ public class ApiDefinition implements Serializable {
 
     private String matchCondition;
 
-    private List<Plugin> plugins;
+    private List<ApiPlugin> plugins;
 
     @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof ApiDefinition))
+        if (!(o instanceof ApiGenerateDefinition))
             return false;
-        ApiDefinition apiInfo = (ApiDefinition) o;
+        ApiGenerateDefinition apiInfo = (ApiGenerateDefinition) o;
         return Objects.equals(id, apiInfo.id) && Objects.equals(clusterId,
                 apiInfo.clusterId) && Objects.equals(clusterDomain,
                 apiInfo.clusterDomain) && Objects.equals(matchCondition,
@@ -58,7 +58,7 @@ public class ApiDefinition implements Serializable {
     }
 
     @Data
-    public static class Plugin {
+    public static class ApiPlugin {
 
         private String stage;
 
@@ -80,9 +80,9 @@ public class ApiDefinition implements Serializable {
         public boolean equals(Object o) {
             if (this == o)
                 return true;
-            if (!(o instanceof Plugin))
+            if (!(o instanceof ApiPlugin))
                 return false;
-            Plugin plugin = (Plugin) o;
+            ApiPlugin plugin = (ApiPlugin) o;
             return Objects.equals(getStateSn(), plugin.getStateSn()) && Objects.equals(getJarUrl(),
                     plugin.getJarUrl()) && Objects.equals(getSn(),
                     plugin.getSn()) && Objects.equals(getConfig(),
@@ -96,7 +96,7 @@ public class ApiDefinition implements Serializable {
         }
     }
 
-    public static boolean isEqual(List<Plugin> source, List<Plugin> target) {
+    public static boolean isEqual(List<ApiPlugin> source, List<ApiPlugin> target) {
         return ImmutableMultiset.copyOf(source).equals(ImmutableMultiset.copyOf(target));
     }
 }

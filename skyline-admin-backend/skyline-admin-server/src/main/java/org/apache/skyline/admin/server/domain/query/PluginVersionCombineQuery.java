@@ -34,7 +34,7 @@ public class PluginVersionCombineQuery implements CombineQuery<PluginVersionDO>{
 
     private String ver;
 
-    private Long id;
+    private List<Long> ids;
 
     private Boolean active;
 
@@ -47,8 +47,8 @@ public class PluginVersionCombineQuery implements CombineQuery<PluginVersionDO>{
 
         PropertyMapper propertyMapper = PropertyMapper.get();
 
-        propertyMapper.from(this::getId).whenNonNull().to(id-> condition.eq(
-                PluginVersionDO::getId, id));
+        propertyMapper.from(this::getIds).when(ids-> CollectionUtils.isNotEmpty(ids))
+                .to(ids->condition.in(PluginVersionDO::getId, ids));
 
         propertyMapper.from(this::getActive).whenNonNull().to(id-> condition.eq(
                 PluginVersionDO::getActive, active));

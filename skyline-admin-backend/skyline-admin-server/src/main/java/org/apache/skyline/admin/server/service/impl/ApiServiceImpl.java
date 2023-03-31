@@ -32,12 +32,15 @@ import org.apache.skyline.admin.commons.model.vo.ClusterVO;
 import org.apache.skyline.admin.server.commons.utils.PageCommonUtils;
 import org.apache.skyline.admin.server.domain.model.ApiDomain;
 import org.apache.skyline.admin.server.domain.model.ClusterDomain;
+import org.apache.skyline.admin.server.domain.model.PluginVersionDomain;
 import org.apache.skyline.admin.server.domain.query.ApiCombineQuery;
+import org.apache.skyline.admin.server.domain.query.PluginVersionCombineQuery;
 import org.apache.skyline.admin.server.domain.repository.ApiRepository;
+import org.apache.skyline.admin.server.domain.repository.PluginVersionRepository;
 import org.apache.skyline.admin.server.service.ApiService;
 import org.apache.skyline.admin.server.service.ClusterService;
 import org.apache.skyline.admin.server.support.api.notify.ApiConfigPublisher;
-import org.apache.skyline.admin.server.support.api.notify.model.ApiDefinition;
+import org.apache.skyline.admin.server.support.api.notify.model.ApiGenerateDefinition;
 import org.apache.skyline.admin.server.support.api.notify.model.ConfigOptions;
 import org.apache.skyline.admin.server.support.codec.ObjectMapperCodec;
 import org.apache.skyline.admin.server.support.mapper.ApiAssembler;
@@ -50,6 +53,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -69,6 +73,8 @@ public class ApiServiceImpl implements ApiService {
 
     private ObjectMapperCodec objectMapperCodec;
 
+    private PluginVersionRepository pluginVersionRepository;
+
     public Long create(ApiRequest apiRequest) {
         throwIsNotExistsCluster(apiRequest.getClusterId());
 
@@ -87,7 +93,7 @@ public class ApiServiceImpl implements ApiService {
     public Boolean update(Long id, ApiRequest apiRequest) {
         throwIsNotExistsCluster(apiRequest.getClusterId());
 
-        ApiDomain apiDomain = apiRepository.findOneByIdIfExists(id);
+        ApiDomain apiDomain = apiRepository.findOneIfExists(id);
 
         if(apiRequest.getClusterId()==apiDomain.getClusterDomain().getId()
             && !apiRequest.getMatchCondition().equals(apiDomain.getMatchCondition())) {
@@ -123,7 +129,7 @@ public class ApiServiceImpl implements ApiService {
     @Transactional
     public boolean deleteByIds(List<Long> ids) {
         Long id = ids.get(0);
-        ApiDomain apiDomain = apiRepository.findOneByIdIfExists(id);
+        ApiDomain apiDomain = apiRepository.findOneIfExists(id);
 
         ConfigOptions configOptions = getConfigOptions(apiDomain.getClusterDomain().getId());
 
@@ -139,15 +145,20 @@ public class ApiServiceImpl implements ApiService {
     public boolean configPlugin(ApiConfigPluginRequest configPluginRequest) {
         Long id = configPluginRequest.getId();
 
-        ApiDomain apiDomain = apiRepository.findOneByIdIfExists(id);
+        ApiDomain apiDomain = apiRepository.findOneIfExists(id);
         apiDomain.setStatus(ApiStatus.IN_ENABLE);
 
-        apiDomain.setPlugins(JSON.toJSONString(configPluginRequest.getPluginList()));
+        List<ConfigPluginInfo> pluginList = configPluginRequest.getPluginList();
+
+        List<ApiGenerateDefinition.ApiPlugin> apiPluginList = this.mapPlugin(pluginList);
+
+        apiDomain.setPlugins(JSON.toJSONString(apiPluginList));
 
         return apiRepository.updateById(apiDomain);
     }
 
     @Override
+    @Transactional
     public boolean publish(List<Long> ids) {
         ApiCombineQuery combineQuery =
                 ApiCombineQuery.builder()
@@ -162,10 +173,18 @@ public class ApiServiceImpl implements ApiService {
 
         ConfigOptions configOptions = getConfigOptions(clusterId);
 
-        List<ApiDefinition> apiList = this.assembleAPI(apiDomainList);
+        List<ApiGenerateDefinition> apiList = this.generateApiDefinition(apiDomainList);
 
-        return apiPublisher.change(configOptions, apiList);
+        apiPublisher.change(configOptions, apiList);
 
+        ApiDomain apiDomain = new ApiDomain();
+        apiDomain.setStatus(ApiStatus.DISABLE);
+
+        ApiCombineQuery apiCombineQuery = ApiCombineQuery.builder()
+                .ids(ids)
+                .build();
+
+        return apiRepository.update(apiDomain,apiCombineQuery);
     }
 
     private List<ApiVO> convert(List<ApiDomain> items) {
@@ -174,6 +193,37 @@ public class ApiServiceImpl implements ApiService {
                 .stream()
                 .map(this::convert)
                 .collect(Collectors.toList());
+    }
+
+    private List<ApiGenerateDefinition.ApiPlugin> mapPlugin(List<ConfigPluginInfo> configPluginInfoList) {
+        Map<Long, ConfigPluginInfo> idConfig = configPluginInfoList.stream().collect(
+                Collectors.toMap(ConfigPluginInfo::getPluginVerId, v -> v, (v1, v2) -> v2));
+
+        PluginVersionCombineQuery combineQuery = PluginVersionCombineQuery.builder()
+                .ids(idConfig.keySet().stream().collect(Collectors.toList()))
+                .isLoadPlugin(true)
+                .build();
+        List<PluginVersionDomain> pluginVersionList = pluginVersionRepository.findList(combineQuery);
+
+        return pluginVersionList
+                .stream()
+                .map(e->{
+                    ConfigPluginInfo configPluginInfo = idConfig.get(e.getId());
+
+                    ApiGenerateDefinition.ApiPlugin apiPlugin = new ApiGenerateDefinition.ApiPlugin();
+                    apiPlugin.setStage(configPluginInfo.getStage());
+                    apiPlugin.setStageName(configPluginInfo.getStageName());
+                    apiPlugin.setStateSn(configPluginInfo.getStateSn());
+                    apiPlugin.setJarUrl(e.getJarUrl());
+                    apiPlugin.setSn(configPluginInfo.getSn());
+                    apiPlugin.setConfig(configPluginInfo.getConfigParams());
+                    apiPlugin.setClassDefine(e.getPluginDomain().getClassDefine());
+                    apiPlugin.setVer(e.getVer());
+
+                    return apiPlugin;
+
+                }).collect(Collectors.toList());
+
     }
 
     private ApiVO convert(ApiDomain apiDomain) {
@@ -187,11 +237,11 @@ public class ApiServiceImpl implements ApiService {
         return vo;
     }
 
-    private List<ApiDefinition> assembleAPI(List<ApiDomain> apiItems) {
+    private List<ApiGenerateDefinition> generateApiDefinition(List<ApiDomain> apiItems) {
         ClusterDomain clusterDomain = apiItems.get(0).getClusterDomain();
 
         return  apiItems.stream().map(apiDomain -> {
-                    ApiDefinition api = new ApiDefinition();
+                    ApiGenerateDefinition api = new ApiGenerateDefinition();
                     api.setId(apiDomain.getId());
                     api.setClusterId(String.valueOf(apiDomain.getId()));
                     api.setApiVer(apiDomain.getVer());
@@ -201,20 +251,11 @@ public class ApiServiceImpl implements ApiService {
                     String pluginString = apiDomain.getPlugins();
 
                     AssertUtil.isNotBlank(pluginString,"plugin is empty");
-                    List<ConfigPluginInfo> configPluginInfoList = objectMapperCodec.deserialize(pluginString.getBytes(), new TypeReference<List<ConfigPluginInfo>>() {});
+                    List<ApiGenerateDefinition.ApiPlugin> apiPlugins = objectMapperCodec.deserialize(pluginString.getBytes(), new TypeReference<List<ApiGenerateDefinition.ApiPlugin>>() {});
 
-                    List<ApiDefinition.Plugin> plugins = configPluginInfoList.stream().map(item -> {
+                    valid(apiPlugins);
 
-                        valid(item);
-
-                        ApiDefinition.Plugin plugin = new ApiDefinition.Plugin();
-
-                        BeanUtils.copyProperties(item,plugin);
-
-                        return plugin;
-                    }).collect(Collectors.toList());
-
-                    api.setPlugins(plugins);
+                    api.setPlugins(apiPlugins);
 
                     return api;
                 }).collect(Collectors.toList());
@@ -255,17 +296,21 @@ public class ApiServiceImpl implements ApiService {
         options.setConfigUrl(clusterVO.getConfigUrl());
         options.setId(clusterVO.getId());
         options.setClusterName(clusterVO.getClusterName());
+        options.setShareConfig(clusterVO.getConfigShare());
 
         return options;
     }
 
-    private void valid(ConfigPluginInfo item) {
-        AssertUtil.notNull(item,"plugin is null");
-        AssertUtil.isNotBlank(item.getStage(),"plugin stage is empty");
-        AssertUtil.isNotBlank(item.getStageName(),"plugin stageName is empty");
-        AssertUtil.isNotBlank(item.getJarUrl(),"plugin jarUrl is empty");
-        AssertUtil.isNotBlank(item.getClassDefine(),"plugin classDefine is empty");
-        AssertUtil.isNotBlank(item.getVer(),"plugin ver is null");
-        AssertUtil.notNull(item.getSn(),"plugin sn is null");
+    private void valid(List<ApiGenerateDefinition.ApiPlugin> apiPlugins) {
+        apiPlugins.stream()
+                .forEach(item->{
+                    AssertUtil.notNull(item,"plugin is null");
+                    AssertUtil.isNotBlank(item.getStage(),"plugin stage is empty");
+                    AssertUtil.isNotBlank(item.getStageName(),"plugin stageName is empty");
+                    AssertUtil.isNotBlank(item.getJarUrl(),"plugin jarUrl is empty");
+                    AssertUtil.isNotBlank(item.getClassDefine(),"plugin classDefine is empty");
+                    AssertUtil.isNotBlank(item.getVer(),"plugin ver is null");
+                    AssertUtil.notNull(item.getSn(),"plugin sn is null");
+                });
     }
 }

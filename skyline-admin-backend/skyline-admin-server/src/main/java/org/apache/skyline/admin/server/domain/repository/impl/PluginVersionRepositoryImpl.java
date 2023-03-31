@@ -64,7 +64,7 @@ public class PluginVersionRepositoryImpl implements PluginVersionRepository {
     @Override
     public boolean active(Long id,boolean active) {
         PluginVersionCombineQuery combineQuery = PluginVersionCombineQuery.builder()
-                .id(id)
+                .ids(List.of(id))
                 .build();
 
         PluginVersionDO versionDO = new PluginVersionDO();
@@ -107,6 +107,11 @@ public class PluginVersionRepositoryImpl implements PluginVersionRepository {
 
         return PageCommonUtils.convert(result, items -> convert(items,combineQuery));
 
+    }
+
+    @Override
+    public List<PluginVersionDomain> findList(PluginVersionCombineQuery combineQuery) {
+        return selectList(combineQuery);
     }
 
     private List<PluginVersionDomain> selectList(PluginVersionCombineQuery combineQuery) {

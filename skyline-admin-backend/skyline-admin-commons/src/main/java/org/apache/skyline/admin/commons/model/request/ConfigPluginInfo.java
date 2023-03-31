@@ -17,17 +17,11 @@ public class ConfigPluginInfo {
     @NotNull
     private Integer stateSn;
 
-    @NotBlank
-    private String jarUrl;
+    @NotNull
+    private Long pluginVerId;
 
     @NotNull
     private Integer sn;
 
-    private String config;
-
-    @NotBlank
-    private String classDefine;
-
-    @NotBlank
-    private String ver;
+    private String configParams;
 }

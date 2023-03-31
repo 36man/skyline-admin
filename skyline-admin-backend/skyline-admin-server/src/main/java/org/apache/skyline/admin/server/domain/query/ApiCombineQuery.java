@@ -55,12 +55,12 @@ public class ApiCombineQuery implements CombineQuery<ApiDO> {
         propertyMapper.from(this::getClusterId).whenNonNull()
                 .to(clusterId -> condition.eq(ApiDO::getClusterId, clusterId));
         propertyMapper.from(this::getIds).when(ids-> CollectionUtils.isNotEmpty(ids))
-                .to(ids -> condition.eq(ApiDO::getId, ids));
+                .to(ids ->condition.in(ApiDO::getId, ids));
 
         propertyMapper.from(this::getMatchCondition).whenNonNull()
                 .to(matchCondition -> condition.eq(ApiDO::getMatchCondition, matchCondition));
 
-        condition.eq(ApiDO::getDeleted, false);
+        condition.eq(ApiDO::getDeleted, 0);
 
         return condition;
     }

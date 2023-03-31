@@ -98,7 +98,7 @@ public class PluginVersionServiceImpl implements PluginVersionService {
     @Override
     public boolean deleted(Long id) {
         PluginVersionCombineQuery combineQuery = PluginVersionCombineQuery.builder()
-                .id(id)
+                .ids(List.of(id))
                 .build();
         return pluginVersionRepository.delete(combineQuery);
     }

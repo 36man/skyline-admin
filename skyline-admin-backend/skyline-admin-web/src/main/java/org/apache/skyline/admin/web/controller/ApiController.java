@@ -18,6 +18,7 @@
 package org.apache.skyline.admin.web.controller;
 
 import org.apache.skyline.admin.commons.model.query.ApiQuery;
+import org.apache.skyline.admin.commons.model.request.ApiConfigPluginRequest;
 import org.apache.skyline.admin.commons.model.request.ApiRequest;
 import org.apache.skyline.admin.commons.model.request.PageRequest;
 import org.apache.skyline.admin.commons.model.vo.ApiVO;
@@ -63,13 +64,18 @@ public class ApiController {
         return apiService.update(id,apiRequest);
     }
 
+    @PutMapping("/configPlugin")
+    public Boolean configPlugin(@RequestBody ApiConfigPluginRequest configPluginRequest) {
+        return apiService.configPlugin(configPluginRequest);
+    }
+
     @DeleteMapping("/{ids}")
     public Boolean delete(@PathVariable("[]ids") List<Long> ids) {
         return apiService.deleteByIds(ids);
     }
 
     @PutMapping("/publish/{ids}")
-    public Boolean apply(@PathVariable("[]ids") List<Long> ids) {
+    public Boolean apply(@PathVariable List<Long> ids) {
         return apiService.publish(ids);
     }
 

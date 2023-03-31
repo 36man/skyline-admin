@@ -28,12 +28,14 @@ public interface ApiRepository {
 
     boolean updateById(ApiDomain apiDomain);
 
+    boolean update(ApiDomain apiDomain, ApiCombineQuery combineQuery);
+
     PageBean<ApiDomain> pageQuery(ApiCombineQuery combineQuery, Integer pageNo, Integer pageSize);
 
 
     List<ApiDomain> findList(ApiCombineQuery combineQuery);
 
-    ApiDomain findOneByIdIfExists(Long id);
+    ApiDomain findOneIfExists(Long id);
 
     boolean deleteById(Long id);
 

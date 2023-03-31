@@ -66,10 +66,13 @@ public class ApiRepositoryImpl implements ApiRepository {
     }
 
     @Override
+    public boolean update(ApiDomain apiDomain, ApiCombineQuery combineQuery) {
+        return apiDao.update(convert(apiDomain), combineQuery.toQuery()) > 0;
+    }
+
+    @Override
     public PageBean<ApiDomain> pageQuery(ApiCombineQuery combineQuery,
                                          Integer pageNo, Integer pageSize) {
-
-
         Page<ApiDO> page = new Page<>();
         page.setCurrent(pageNo);
         page.setSize(pageSize);
@@ -88,7 +91,7 @@ public class ApiRepositoryImpl implements ApiRepository {
     }
 
     @Override
-    public ApiDomain findOneByIdIfExists(Long id) {
+    public ApiDomain findOneIfExists(Long id) {
         ApiDO apiInstanceDO = apiDao.selectById(id);
 
         AssertUtil.notNull(apiInstanceDO, "api instance not found by id: " + id);

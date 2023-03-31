@@ -36,6 +36,8 @@ public class ConfigOptions {
 
     private String configSecret;
 
+    private boolean shareConfig;
+
     private Map<String, Object> configItems;
 
 }

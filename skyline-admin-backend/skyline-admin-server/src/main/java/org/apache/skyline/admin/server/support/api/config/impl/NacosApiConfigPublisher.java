@@ -62,7 +62,7 @@ public class NacosApiConfigPublisher implements ApiConfigPublisher {
     }
 
     @Override
-    public boolean change(ConfigOptions option, List<ApiGenerateDefinition> apis) {
+    public boolean doPublish(ConfigOptions option, List<ApiGenerateDefinition> apis) {
         List<ApiGenerateDefinition> apiList = configService.getApiList(option);
 
         List<ApiGenerateDefinition> items = new ArrayList<>(apiList);

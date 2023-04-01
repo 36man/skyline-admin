@@ -26,5 +26,5 @@ public interface ApiConfigPublisher {
 
     boolean delete(ConfigOptions option, List<Long> ids);
 
-    boolean change(ConfigOptions option, List<ApiGenerateDefinition> apis);
+    boolean doPublish(ConfigOptions option, List<ApiGenerateDefinition> apis);
 }

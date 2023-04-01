@@ -178,7 +178,7 @@ public class ApiServiceImpl implements ApiService {
 
         List<ApiGenerateDefinition> apiList = this.generateApiDefinition(apiDomainList);
 
-        boolean changed = apiPublisher.change(configOptions, apiList);
+        boolean changed = apiPublisher.doPublish(configOptions, apiList);
 
         ApiDomain apiDomain = new ApiDomain();
         apiDomain.setStatus(ApiStatus.ENABLE);

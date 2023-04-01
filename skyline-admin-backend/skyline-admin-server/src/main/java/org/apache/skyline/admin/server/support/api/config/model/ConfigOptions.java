@@ -40,4 +40,8 @@ public class ConfigOptions {
 
     private Map<String, Object> configItems;
 
+
+    public <T> T getConfig(String key, Class<T> clazz) {
+        return (T) configItems.get(key);
+    }
 }

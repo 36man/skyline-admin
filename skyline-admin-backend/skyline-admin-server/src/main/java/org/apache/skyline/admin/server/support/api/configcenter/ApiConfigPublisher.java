@@ -15,33 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.server.support.api.config.model;
+package org.apache.skyline.admin.server.support.api.configcenter;
 
-import lombok.Data;
+import org.apache.skyline.admin.server.support.api.configcenter.model.ApiGenerateDefinition;
+import org.apache.skyline.admin.server.support.api.configcenter.model.ConfigOptions;
 
-import java.util.Map;
+import java.util.List;
 
-@Data
-public class ConfigOptions {
+public interface ApiConfigPublisher {
 
-    private Long id;
+    boolean delete(ConfigOptions option, List<Long> ids);
 
-    private String clusterName;
-
-    private String domain;
-
-    private String configUrl;
-
-    private String configUser;
-
-    private String configSecret;
-
-    private boolean shareConfig;
-
-    private Map<String, Object> configItems;
-
-
-    public <T> T getConfig(String key, Class<T> clazz) {
-        return (T) configItems.get(key);
-    }
+    boolean doPublish(ConfigOptions option, List<ApiGenerateDefinition> apis);
 }

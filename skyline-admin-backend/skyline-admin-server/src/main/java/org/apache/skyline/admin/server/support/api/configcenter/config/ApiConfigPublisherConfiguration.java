@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.server.support.api.config.config;
+package org.apache.skyline.admin.server.support.api.configcenter.config;
 
-import org.apache.skyline.admin.server.support.api.config.ApiConfigPublisher;
-import org.apache.skyline.admin.server.support.api.config.impl.NacosApiConfigPublisher;
+import org.apache.skyline.admin.server.support.api.configcenter.ApiConfigPublisher;
+import org.apache.skyline.admin.server.support.api.configcenter.impl.NacosConfigPublisher;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +29,7 @@ public class ApiConfigPublisherConfiguration {
 
     @Bean
     @ConditionalOnProperty(prefix = "admin", name = "configSrvType", havingValue = "nacos", matchIfMissing = true)
-    public ApiConfigPublisher nacosApiConfigPublisher(){
-        return new NacosApiConfigPublisher();
+    public ApiConfigPublisher nacosConfigPublisher(){
+        return new NacosConfigPublisher();
     }
 }

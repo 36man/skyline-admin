@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.skyline.admin.server.support.api.config.impl;
+package org.apache.skyline.admin.server.support.api.configcenter.impl;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.nacos.api.PropertyKeyConst;
@@ -30,9 +30,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.skyline.admin.server.commons.utils.MapResolver;
-import org.apache.skyline.admin.server.support.api.config.ApiConfigPublisher;
-import org.apache.skyline.admin.server.support.api.config.model.ApiGenerateDefinition;
-import org.apache.skyline.admin.server.support.api.config.model.ConfigOptions;
+import org.apache.skyline.admin.server.support.api.configcenter.ApiConfigPublisher;
+import org.apache.skyline.admin.server.support.api.configcenter.model.ApiGenerateDefinition;
+import org.apache.skyline.admin.server.support.api.configcenter.model.ConfigOptions;
 import org.bravo.gaia.commons.exception.PlatformException;
 import org.bravo.gaia.commons.util.AssertUtil;
 
@@ -43,7 +43,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class NacosApiConfigPublisher implements ApiConfigPublisher {
+public class NacosConfigPublisher implements ApiConfigPublisher {
 
     private final NacosConfigChangeService configService = new NacosConfigChangeService();
 
@@ -100,7 +100,7 @@ public class NacosApiConfigPublisher implements ApiConfigPublisher {
 
         List<ApiGenerateDefinition> result =  this.configService.getConfig(configOptions,ApiGenerateDefinition.class);
 
-        return callback.apply(result == null? Collections.emptyList():result);
+        return callback.apply(CollectionUtils.isEmpty(result) ? Collections.emptyList() : result);
 
     }
 

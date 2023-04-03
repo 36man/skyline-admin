@@ -65,18 +65,6 @@
             <artifactId>nacos-config-spring-boot-starter</artifactId>
             <version>${nacos.config.starter.version}</version>
         </dependency>
-        <dependency>
-            <groupId>io.vavr</groupId>
-            <artifactId>vavr</artifactId>
-            <version>0.10.4</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.vavr</groupId>
-            <artifactId>vavr</artifactId>
-            <version>0.10.4</version>
-            <scope>compile</scope>
-        </dependency>
 
     </dependencies>
 

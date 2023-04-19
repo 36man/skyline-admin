@@ -22,6 +22,8 @@ public class PluginVersionVO {
 
     private String pageContent;
 
+    private String typeMeta;
+
     private boolean active;
 
     private Long size;

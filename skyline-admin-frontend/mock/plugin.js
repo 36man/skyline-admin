@@ -2,51 +2,143 @@ const Mock = require('mockjs')
 
 const data = Mock.mock({
   'items|10': [{
-    id: '@id',
-    name: '@sentence(5, 15)',
-    'inUse|1': ['yes', 'no'],
-    author: 'name',
+    id: '1',
+    maintainer: '@sentence(5, 8)',
+    classDefine: 'Test.class',
+    pluginName: '测试插件',
+    overview: '插件描述',
+    createTime: '@datetime',
     updateTime: '@datetime',
-    useCount: '@integer(300, 5000)',
-    ver: 'v@integer(1, 9).@integer(1, 9).@integer(1, 9)',
   }]
 })
 
 const data2 = Mock.mock({
   'items|10': [{
-    id: '@id',
-    'status|1': ['on', 'off'],
+    id: '1',
+    ver: 'v@integer(1, 5).@integer(0, 3).@integer(1, 50)',
+    features: ["高效","高效","高效"],
+    pluginVO: data.items[0],
+    pageContent: '插件配置页内容',
+    typeMeta: '插件开关信息',
+    'active|1': [true, false],
+    size: '@integer(1000000,1000000000)',
+    jarUrl: 'file://xxx/xxx/xxx.jar',
+    fileKey: 'abc',
+    createTime: '@datetime',
     updateTime: '@datetime',
-    ver: 'v@integer(1, 9).@integer(1, 9).@integer(1, 9)',
   }]
 })
 
 module.exports = [
   {
-    url: '/plugin/list',
+    url: '/plugin/pageList',
     type: 'get',
     response: config => {
       const items = data.items
       return {
-        code: 20000,
+        code: 200,
         data: {
-          total: 21,
-          items: items
+          totalCount: 21,
+          data: items
         }
       }
     }
   },
   {
-    url: '/plugin/version/list',
+    url: '/plugin/upload',
+    type: 'post',
+    response: config => {
+      return {
+        code: 200,
+        data: {}
+      }
+    }
+  },
+  {
+    url: '/plugin/1',
+    type: 'delete',
+    response: config => {
+      return {
+        code: 200,
+        data: {}
+      }
+    }
+  },
+  {
+    url: '/plugin/enable/1',
+    type: 'post',
+    response: config => {
+      return {
+        code: 200,
+        data: {}
+      }
+    }
+  },
+  {
+    url: '/plugin/disable/1',
+    type: 'post',
+    response: config => {
+      return {
+        code: 200,
+        data: {}
+      }
+    }
+  },
+  {
+    url: '/plugin',
+    type: 'post',
+    response: config => {
+      return {
+        code: 200,
+        data: {}
+      }
+    }
+  },
+  {
+    url: '/plugin/ver/pageList',
     type: 'get',
     response: config => {
       const items = data2.items
       return {
-        code: 20000,
+        code: 200,
         data: {
-          total: 21,
-          items: items
+          totalCount: 21,
+          data: items
         }
+      }
+    }
+  },
+  {
+    url: '/plugin/ver/search',
+    type: 'get',
+    response: config => {
+      const items = data2.items
+      return {
+        code: 200,
+        data: {
+          totalCount: 21,
+          data: items
+        }
+      }
+    }
+  },
+  {
+    url: '/plugin/ver/enable/1',
+    type: 'post',
+    response: config => {
+      return {
+        code: 200,
+        data: {}
+      }
+    }
+  },
+  {
+    url: '/plugin/ver/disable/1',
+    type: 'post',
+    response: config => {
+      return {
+        code: 200,
+        data: {}
       }
     }
   },

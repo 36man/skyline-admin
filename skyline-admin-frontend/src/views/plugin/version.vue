@@ -55,7 +55,7 @@
 </template>
 
 <script>
-  import { getList } from '@/api/plugin-version'
+  import { verPageList, verSearch, verEnableById, verDisableById } from '@/api/plugin'
   export default {
     name: "PluginVersion",
     props: {

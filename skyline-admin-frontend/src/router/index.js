@@ -66,6 +66,16 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/cluster',
+    component: Layout,
+    children: [{
+      path: 'cluster',
+      name: '集群管理',
+      component: () => import('@/views/cluster/index'),
+      meta: { title: '集群管理', icon: 'example' }
+    }]
+  },
+  {
     path: '/plugin',
     component: Layout,
     children: [{

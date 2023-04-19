@@ -26,7 +26,7 @@ public enum ApiStatus implements IEnum{
 
     DISABLE("disable", "禁用"),
 
-    IN_ENABLE("in_enable", "启用中"),
+    PENDING("pending", "启用中"),
 
     NEW("new", "新增");
 

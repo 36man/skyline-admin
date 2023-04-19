@@ -103,7 +103,7 @@ public class ApiServiceImpl implements ApiService {
 
         Optional.ofNullable(apiDomain.getStatus())
                 .filter(status -> status == ApiStatus.ENABLE)
-                .ifPresent(status -> apiDomain.setStatus(ApiStatus.IN_ENABLE));
+                .ifPresent(status -> apiDomain.setStatus(ApiStatus.PENDING));
 
         BeanUtils.copyProperties(apiRequest, apiDomain);
         apiDomain.setVer(apiDomain.getVer()+1);
@@ -149,7 +149,7 @@ public class ApiServiceImpl implements ApiService {
         Long id = configPluginRequest.getId();
 
         ApiDomain apiDomain = apiRepository.findOneIfExists(id);
-        apiDomain.setStatus(ApiStatus.IN_ENABLE);
+        apiDomain.setStatus(ApiStatus.PENDING);
 
         List<ConfigPluginInfo> pluginList = configPluginRequest.getPluginList();
 

@@ -161,7 +161,7 @@ public class ClusterServiceImpl implements ClusterService {
                 })
                 .whenNonNull()
                 .to(item->{
-                    request.setConfigUser(item.getSecret());
+                    request.setConfigUser(item.getUser());
                     request.setConfigSecret(item.getSecret());
                     request.setConfigUrl(item.getUrl());
                     request.setConfigItem(item.getConfigs());

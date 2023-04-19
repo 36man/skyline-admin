@@ -23,7 +23,7 @@ public class OSSProperties {
 
     private String secretKey;
 
-    private String group = "default";
+    private String group = "public";
 
     private String region;
 

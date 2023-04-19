@@ -114,6 +114,10 @@ public class PluginDefineResolver {
     private List<Map<String,Object>> resolveMethodMeta(Object object, String methodName, Predicate<Object> filter) throws Exception {
         Method method = object.getClass().getMethod(methodName);
 
+        if (!method.isAccessible()) {
+            method.setAccessible(true);
+        }
+
         Object result = method.invoke(object, null);
 
         if (result == null) {
@@ -133,7 +137,11 @@ public class PluginDefineResolver {
 
             ReflectionUtils.doWithLocalFields(o.getClass(), field -> {
                 String name = field.getName();
-                field.setAccessible(true);
+
+                if (!field.isAccessible()) {
+                    field.setAccessible(true);
+                }
+
                 Object value = field.get(o);
                 item.put(name, value);
 

@@ -24,6 +24,7 @@ import org.apache.skyline.admin.server.service.PluginVersionService;
 import org.bravo.gaia.commons.base.PageBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -67,9 +68,13 @@ public class PluginVersionController {
         return pluginVersionService.search(pageRequest);
     }
 
-    @PostMapping("active")
-    public Boolean active(@RequestParam(name="id") Long id,
-                          @RequestParam(name="active") boolean active){
-        return pluginVersionService.active(id, active);
+    @PostMapping("/enable/{id}")
+    public Boolean enable(@PathVariable(name="id") Long id){
+        return pluginVersionService.active(id, true);
+    }
+
+    @PostMapping("/disable/{id}")
+    public Boolean disable(@PathVariable(name="id") Long id){
+        return pluginVersionService.active(id, false);
     }
 }

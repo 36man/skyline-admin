@@ -1,8 +1,8 @@
 package org.apache.skyline.admin.web.controller;
 
 import org.apache.skyline.admin.commons.model.query.PluginQuery;
-import org.apache.skyline.admin.commons.model.request.PageRequest;
 import org.apache.skyline.admin.commons.model.request.GeneratePluginRequest;
+import org.apache.skyline.admin.commons.model.request.PageRequest;
 import org.apache.skyline.admin.commons.model.request.UpdatePluginRequest;
 import org.apache.skyline.admin.commons.model.vo.PluginVO;
 import org.apache.skyline.admin.server.service.PluginService;
@@ -10,6 +10,7 @@ import org.bravo.gaia.commons.base.PageBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,15 +61,19 @@ public class PluginController {
         return pluginService.pageList(pageRequest);
     }
 
-    @DeleteMapping
-    public Boolean deleted(@RequestParam(name="id") Long id){
+    @DeleteMapping("/{id}")
+    public Boolean deleted(@PathVariable(name="id") Long id){
         return pluginService.deleted(id);
     }
 
-    @PostMapping("active")
-    public Boolean active(@RequestParam(name="id") Long id,
-                           @RequestParam(name="active") boolean active){
-        return pluginService.active(id, active);
+    @PostMapping("/enable/{id}")
+    public Boolean enable(@PathVariable(name="id") Long id){
+        return pluginService.active(id, true);
+    }
+
+    @PostMapping("/disable/{id}")
+    public Boolean disable(@PathVariable(name="id") Long id){
+        return pluginService.active(id, false);
     }
 
     @PostMapping

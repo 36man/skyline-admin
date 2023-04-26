@@ -14,14 +14,34 @@
             {{ scope.$index + 1 }}
           </template>
         </el-table-column>
-        <el-table-column label="版本号" align="center">
+        <el-table-column label="版本号" width="110"  align="center">
           <template slot-scope="scope">
             {{ scope.row.ver }}
           </template>
         </el-table-column>
+        <el-table-column label="特性" width="110"  align="center">
+          <template slot-scope="scope">
+            {{ scope.row.features }}
+          </template>
+        </el-table-column>
+        <el-table-column label="jar地址" width="110"  align="center">
+          <template slot-scope="scope">
+            {{ scope.row.jarUrl }}
+          </template>
+        </el-table-column>
+        <el-table-column label="jar大小" width="110"  align="center">
+          <template slot-scope="scope">
+            {{ scope.row.size }}
+          </template>
+        </el-table-column>
+        <el-table-column label="fileKey" width="110"  align="center">
+          <template slot-scope="scope">
+            {{ scope.row.fileKey }}
+          </template>
+        </el-table-column>
         <el-table-column class-name="status-col" label="状态" align="center">
           <template slot-scope="scope">
-            <el-tag effect="dark" :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
+            <el-tag effect="dark" :type="scope.row.active | statusFilter">{{ scope.row.active ? '启用' : '禁用' }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column align="center" prop="created_at" label="更新时间">
@@ -30,10 +50,20 @@
             <span>{{ scope.row.updateTime }}</span>
           </template>
         </el-table-column>
+        <el-table-column label="能力开关" width="110" align="center">
+          <template slot-scope="scope">
+            <el-button size="mini" type="success" @click="showTypeData(scope.row)">点击查看</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="UI预览" width="110" align="center" >
+          <<template slot-scope="scope">
+          <el-button size="mini" type="success" @click="showConfigPage(scope.row)">点击预览</el-button>
+        </template>
+        </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button size="mini" type="success" @click="changeStatus(scope.row)" v-if="scope.row.status === 'off'">启用</el-button>
-            <el-button size="mini" type="danger" @click="changeStatus(scope.row)" v-if="scope.row.status === 'on'">禁用</el-button>
+            <el-button size="mini" type="text" @click="enable(scope.row)" v-if="scope.row.active === false">启用</el-button>
+            <el-button size="mini" type="text" @click="disable(scope.row)" v-if="scope.row.active === true">禁用</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -48,7 +78,7 @@
         layout="total, sizes, prev, pager, next, jumper"
         background
         hide-on-single-page
-        :total="pager.total">
+        :total="pager.totalCount">
       </el-pagination>
     </el-row>
   </el-dialog>
@@ -74,7 +104,7 @@
           pageSizes: [10, 20, 50],
           pageSize: 10,
           currentPage: 1,
-          total: 0
+          totalCount: 0
         },
         listLoading: false,
         list: [],
@@ -84,8 +114,8 @@
     filters: {
       statusFilter(status) {
         const statusMap = {
-          on: 'success',
-          off: 'danger',
+          true: 'success',
+          false: 'info',
         }
         return statusMap[status]
       },
@@ -110,14 +140,23 @@
         this.listLoading = true;
         let params = {pageSize: this.pager.pageSize, currentPage: this.pager.currentPage, pluginId: this.pluginId};
         let context = this;
-        getList(params).then(response => {
-          context.list = response.data.items
-          context.pager.total = response.data.total;
+        verPageList(params).then(response => {
+          context.list = response.data.data
+          context.pager.totalCount = response.data.totalCount;
           context.listLoading = false
         })
       },
-      changeStatus(data) {
-        this.$message.info("修改状态为：" + !data.status);
+      enable(rowData){
+
+      },
+      disable(rowData){
+
+      },
+      showTypeData(rowData){
+        console.log(rowData.typeMeta)
+      },
+      showConfigPage(rowData){
+        console.log(rowData.pageContent)
       }
     }
   }

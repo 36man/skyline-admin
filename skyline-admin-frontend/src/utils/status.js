@@ -1,21 +1,30 @@
 let ClusterStatus = {
-  PENDING: "创建成功,未开始调度",
-  RUNNING: "已经被调度至节点,至少有一个启动成功",
-  SUCCEEDED: "启动成功",
-  FAILED: "容器终止",
-  UNKNOWN: "API Server无法正常获取到Pod对象的状态信息",
+  PENDING: {name: "等待调度", tagType: "info"},
+  RUNNING: {name: "启动中", tagType: ""},
+  SUCCEEDED: {name: "启动成功", tagType: "success"},
+  FAILED: {name: "容器终止", tagType: "danger"},
+  UNKNOWN: {name: "未知状态", tagType: "warning"},
 }
 let ApiStatus = {
-  enable: "启用",
-  disable: "禁用",
-  in_enable: "启用中",
-  new: "新增",
+  enable: {name: "启用", tagType: "success"},
+  disable: {name: "禁用", tagType: "danger"},
+  in_enable: {name: "启用中", tagType: "success"},
+  new: {name: "新增", tagType: "info"},
 }
 export function getClusterStatusName(statusCode) {
-  return ClusterStatus[statusCode];
+  let s = ClusterStatus[statusCode];
+  return s ? s.name : "";
 }
-
+export function getClusterStatusTagType(statusCode) {
+  let s = ClusterStatus[statusCode];
+  return s ? s.tagType : "";
+}
 export function getApiStatusName(statusCode) {
-  return ApiStatus[statusCode];
+  let s = ApiStatus[statusCode];
+  return s ? s.name : "";
+}
+export function getApiStatusTagType(statusCode) {
+  let s = ApiStatus[statusCode];
+  return s ? s.tagType : "";
 }
 

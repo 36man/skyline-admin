@@ -2,12 +2,11 @@
   <div class="app-container">
     <el-row>
       <el-col :span="8">
-        <el-input size="small" v-model="searchField" @change="fetchData" prefix-icon="el-icon-search" placeholder="插件 | 作者"></el-input>
+        <el-input size="small" v-model="searchField" @change="fetchData" prefix-icon="el-icon-search" placeholder="名称 | 作者"></el-input>
       </el-col>
       <el-col :span="16">
         <el-row class="float-right">
-          <el-button size="small" icon="el-icon-upload2">上传</el-button>
-          <el-button size="small" icon="el-icon-delete">删除</el-button>
+          <el-button size="small" icon="el-icon-upload2">上传插件</el-button>
         </el-row>
       </el-col>
     </el-row>
@@ -28,40 +27,43 @@
             {{ scope.$index + 1 }}
           </template>
         </el-table-column>
-        <el-table-column label="插件名称">
+        <el-table-column label="插件标识" width="110" align="center">
           <template slot-scope="scope">
-            {{ scope.row.name }}
+            {{ scope.row.classDefine }}
           </template>
         </el-table-column>
-        <el-table-column label="作者" width="110" align="center">
+        <el-table-column label="插件名称" width="110" align="center">
           <template slot-scope="scope">
-            <span>{{ scope.row.author }}</span>
+            {{ scope.row.pluginName }}
           </template>
         </el-table-column>
-        <el-table-column label="最新版本" width="110" align="center">
+        <el-table-column label="插件作者" width="110" align="center">
           <template slot-scope="scope">
-            {{ scope.row.ver }}
+            <span>{{ scope.row.maintainer }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="使用次数" width="110" align="center">
+        <el-table-column label="插件描述" width="110" align="center">
           <template slot-scope="scope">
-            {{ scope.row.useCount }}
+            {{ scope.row.overview }}
           </template>
         </el-table-column>
-        <el-table-column class-name="status-col" label="使用状态" width="110" align="center">
-          <template slot-scope="scope">
-            <el-tag effect="dark" :type="scope.row.inUse | statusFilter">{{ scope.row.inUse === 'yes' ? '使用中' : '未使用' }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" prop="created_at" label="更新时间" width="200">
+        <el-table-column align="center" prop="created_at" label="更新时间">
           <template slot-scope="scope">
             <i class="el-icon-time" />
             <span>{{ scope.row.updateTime }}</span>
           </template>
         </el-table-column>
+        <el-table-column label="版本" width="110" align="center">
+          <template slot-scope="scope">
+            <el-button size="mini" type="text" @click="showVersion(scope.row)">点击查看</el-button>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="110" align="center">
           <template slot-scope="scope">
-            <el-button size="mini" type="text" @click="showVersionList(scope.row)">版本管理</el-button>
+            <el-button size="mini" type="text" @click="showEdit(scope.row)">编辑</el-button>
+            <el-button size="mini" type="text" @click="del(scope.row)">删除</el-button>
+            <el-button size="mini" type="text" @click="enable(scope.row)" v-if="scope.row.status === 'off'">启用</el-button>
+            <el-button size="mini" type="text" @click="disable(scope.row)" v-if="scope.row.status === 'off'">禁用</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -76,7 +78,7 @@
         layout="total, sizes, prev, pager, next, jumper"
         background
         hide-on-single-page
-        :total="pager.total">
+        :total="pager.totalCount">
       </el-pagination>
     </el-row>
     <plugin-version v-model="pluginVersionEnable" :plugin-id="pluginId"></plugin-version>
@@ -84,7 +86,7 @@
 </template>
 
 <script>
-  import { getList } from '@/api/plugin'
+  import { pageList } from '@/api/plugin'
   import PluginVersion from "./version";
 	export default {
 		name: "PluginManage",
@@ -94,24 +96,15 @@
         searchField: null,
         multipleSelection: [],
         pager: {
-          pageSizes: [20, 50, 100, 200],
-          pageSize: 20,
+          pageSizes: [10, 20, 50, 100],
+          pageSize: 10,
           currentPage: 1,
-          total: 0
+          totalCount: 0
         },
         listLoading: false,
         list: [],
         pluginVersionEnable: false,
         pluginId: null,
-      }
-    },
-    filters: {
-      statusFilter(status) {
-        const statusMap = {
-          yes: 'danger',
-          no: 'success',
-        }
-        return statusMap[status]
       }
     },
     created() {
@@ -125,15 +118,27 @@
         this.listLoading = true;
         let params = {pageSize: this.pager.pageSize, currentPage: this.pager.currentPage};
         let context = this;
-        getList(params).then(response => {
-          context.list = response.data.items
-          context.pager.total = response.data.total;
+        pageList(params).then(response => {
+          context.list = response.data.data
+          context.pager.totalCount = response.data.totalCount;
           context.listLoading = false
         })
       },
-      showVersionList(rowData) {
+      showVersion(rowData) {
         this.pluginVersionEnable = true;
         this.pluginId = rowData.id;
+      },
+      showEdit(rowData){
+
+      },
+      del(rowData){
+
+      },
+      enable(rowData){
+
+      },
+      disable(rowData){
+
       }
     }
 	}

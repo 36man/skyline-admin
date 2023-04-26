@@ -4,11 +4,15 @@ const { param2Obj } = require('./utils')
 const user = require('./user')
 const plugin = require('./plugin')
 const demo = require('./demo')
+const api = require('./api')
+const cluster = require('./cluster')
 
 const mocks = [
   ...user,
   ...plugin,
   ...demo,
+  ...api,
+  ...cluster,
 ]
 
 // for front mock

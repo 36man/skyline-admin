@@ -65,7 +65,7 @@ export function update(id, params) {
       ]
     }
  */
-export function update(params) {
+export function configPlugin(params) {
   return request({
     url: '/api/configPlugin',
     method: 'put'
@@ -84,12 +84,22 @@ export function deleteByIds(ids) {
 }
 
 /**
- * API-发布
+ * API-启用
  * @param ids
  */
-export function applyCluster(ids) {
+export function enableById(ids) {
   return request({
-    url: '/api/publish/' + ids,
+    url: '/api/enable/' + ids,
+    method: 'put'
+  })
+}
+/**
+ * API-禁用
+ * @param ids
+ */
+export function disableById(ids) {
+  return request({
+    url: '/api/disable/' + ids,
     method: 'put'
   })
 }

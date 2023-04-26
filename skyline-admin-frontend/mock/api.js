@@ -3,27 +3,19 @@ const Mock = require('mockjs')
 const data = Mock.mock({
   'items|10': [{
     id: '1',
-    clusterName: '@sentence(5, 15)',
-    domain: 'www.baidu.com',
-    bizKey: 'test-cluster',
-    instanceCount: '@integer(1, 2)',
-    'configShare|1': [true, false],
-    configUrl: 'nacos://192.168.0.110:8080',
-    configUser: 'nacos',
-    configSecret: 'nacos123',
-    useQuota: '4c8g',
-    'status|1': ['PENDING', 'RUNNING', 'SUCCEEDED', 'FAILED', 'UNKNOWN'],
-    statusName: '创建成功,未开始调度',
+    matchCondition: '匹配规则',
+    description: '描述信息',
+    'status|1': ['enable', 'disable', 'in_enable', 'new'],
     meno: '备注',
-    configItem: {
-
-    },
+    plugins: '[{"stage": "", "stageName": "", "stateSn": 1, "jarUrl": "file://xxxx.jar", "sn": 1, "config": "插件页配置后的数据", "classDefine": "Test.class", "ver": "1.0.1"}]',
+    createTime: '@datetime',
+    updateTime: '@datetime',
   }]
 })
 
 module.exports = [
   {
-    url: '/cluster/pageList',
+    url: '/api/pageList',
     type: 'get',
     response: config => {
       const items = data.items
@@ -37,21 +29,9 @@ module.exports = [
     }
   },
   {
-    url: '/cluster/1',
-    type: 'get',
-    response: config => {
-      const items = data.items
-      return {
-        code: 200,
-        data: items[0]
-      }
-    }
-  },
-  {
-    url: '/cluster',
+    url: '/api',
     type: 'post',
     response: config => {
-      const items = data.items
       return {
         code: 200,
         data: {}
@@ -59,7 +39,7 @@ module.exports = [
     }
   },
   {
-    url: '/cluster/1',
+    url: '/api/1',
     type: 'put',
     response: config => {
       return {
@@ -69,7 +49,7 @@ module.exports = [
     }
   },
   {
-    url: '/cluster/1',
+    url: '/api/1',
     type: 'delete',
     response: config => {
       return {
@@ -79,7 +59,17 @@ module.exports = [
     }
   },
   {
-    url: '/cluster/applyCluster/1',
+    url: '/api/enable/1',
+    type: 'put',
+    response: config => {
+      return {
+        code: 200,
+        data: {}
+      }
+    }
+  },
+  {
+    url: '/api/disable/1',
     type: 'put',
     response: config => {
       return {

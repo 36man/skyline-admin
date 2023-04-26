@@ -15,7 +15,7 @@ const data = Mock.mock({
     'status|1': ['PENDING', 'RUNNING', 'SUCCEEDED', 'FAILED', 'UNKNOWN'],
     statusName: '创建成功,未开始调度',
     meno: '备注',
-    configItem: '{"databaseUrl": "jdbc:mysql://localhost:3306/xxxx", "databaseUser": "root", "databasePassword": "123", "databaseShare": false, }',
+    configItem: {databaseUrl: "jdbc:mysql://localhost:3306/xxxx", databaseUser: "root", databasePassword: "123", databaseShare: false},
   }]
 })
 

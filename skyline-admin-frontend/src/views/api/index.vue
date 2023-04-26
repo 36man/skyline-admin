@@ -119,7 +119,7 @@
       },
       fetchData() {
         this.listLoading = true;
-        let params = {pageSize: this.pager.pageSize, currentPage: this.pager.currentPage};
+        let params = {pageSize: this.pager.pageSize, pageNo: this.pager.currentPage};
         let context = this;
         pageList(params).then(response => {
           context.list = response.data.data

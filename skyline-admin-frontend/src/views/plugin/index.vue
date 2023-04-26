@@ -81,7 +81,7 @@
         :total="pager.totalCount">
       </el-pagination>
     </el-row>
-    <plugin-version v-model="pluginVersionEnable" :plugin-id="pluginId"></plugin-version>
+    <plugin-version v-model="pluginVersionVisible" :plugin-id="pluginId"></plugin-version>
   </div>
 </template>
 
@@ -103,7 +103,7 @@
         },
         listLoading: false,
         list: [],
-        pluginVersionEnable: false,
+        pluginVersionVisible: false,
         pluginId: null,
       }
     },
@@ -116,7 +116,7 @@
       },
       fetchData() {
         this.listLoading = true;
-        let params = {pageSize: this.pager.pageSize, currentPage: this.pager.currentPage};
+        let params = {pageSize: this.pager.pageSize, pageNo: this.pager.currentPage};
         let context = this;
         pageList(params).then(response => {
           context.list = response.data.data

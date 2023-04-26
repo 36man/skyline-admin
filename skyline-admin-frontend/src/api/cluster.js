@@ -43,12 +43,7 @@ export function findById(id) {
       configUser: "nacos",
       configSecret: "123",
       useQuota: "4c8g",
-      configItem: {
-        databaseUrl: "jdbc:mysql://localhost:3306/xxxx",
-        databaseUser: "root",
-        databasePassword: "123",
-        databaseShare: false,
-      },
+      configItem: configItem: {databaseUrl: "jdbc:mysql://localhost:3306/xxxx", databaseUser: root, databasePassword: "123", databaseShare: false},
       meno: "备注",
     }
  */

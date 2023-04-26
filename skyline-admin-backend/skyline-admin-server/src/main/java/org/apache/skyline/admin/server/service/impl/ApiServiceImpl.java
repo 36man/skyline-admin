@@ -162,7 +162,7 @@ public class ApiServiceImpl implements ApiService {
 
     @Override
     @Transactional
-    public boolean publish(List<Long> ids) {
+    public boolean enable(List<Long> ids) {
         ApiCombineQuery combineQuery =
                 ApiCombineQuery.builder()
                         .ids(ids)
@@ -178,7 +178,7 @@ public class ApiServiceImpl implements ApiService {
 
         List<ApiGenerateDefinition> apiList = this.generateApiDefinition(apiDomainList);
 
-        boolean changed = apiPublisher.doPublish(configOptions, apiList);
+        boolean successfully = apiPublisher.doPublish(configOptions, apiList);
 
         ApiDomain apiDomain = new ApiDomain();
         apiDomain.setStatus(ApiStatus.ENABLE);
@@ -189,7 +189,19 @@ public class ApiServiceImpl implements ApiService {
 
         apiRepository.update(apiDomain,apiCombineQuery);
 
-        return changed;
+        return successfully;
+    }
+
+    @Override
+    public boolean disable(List<Long> ids) {
+        boolean success = this.deleteByIds(ids);
+
+        if (!success) {
+            return false;
+        }
+        ApiDomain apiDomain = new ApiDomain();
+        apiDomain.setStatus(ApiStatus.DISABLE);
+        return  apiRepository.update(apiDomain, ApiCombineQuery.builder().ids(ids).build());
     }
 
     private List<ApiVO> convert(List<ApiDomain> items) {

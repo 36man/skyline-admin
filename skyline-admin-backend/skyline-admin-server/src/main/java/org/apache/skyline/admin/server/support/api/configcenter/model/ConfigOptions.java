@@ -19,6 +19,7 @@ package org.apache.skyline.admin.server.support.api.configcenter.model;
 
 import lombok.Data;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Data
@@ -42,6 +43,15 @@ public class ConfigOptions {
 
 
     public <T> T getConfig(String key, Class<T> clazz) {
-        return (T) configItems.get(key);
+        if (configItems == null) {
+            return null;
+        }
+        if (!configItems.containsKey(key)) {
+            return null;
+        }
+        if (clazz.isInstance(configItems.get(key))) {
+            return (T) configItems.get(key);
+        }
+        return null;
     }
 }

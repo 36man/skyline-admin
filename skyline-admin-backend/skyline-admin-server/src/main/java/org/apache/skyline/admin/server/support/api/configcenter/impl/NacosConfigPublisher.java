@@ -114,7 +114,7 @@ public class NacosConfigPublisher implements ApiConfigPublisher {
 
         private final Map<Long, ConfigService> clusterServiceCache = new ConcurrentHashMap<>();
 
-        private Function<ConfigOptions, ConfigService> configServiceFactory = option -> {
+        private final Function<ConfigOptions, ConfigService> configServiceFactory = option -> {
             setDefaultOptions(option);
 
             ConfigService configService = clusterServiceCache.get(option.getId());
@@ -125,13 +125,15 @@ public class NacosConfigPublisher implements ApiConfigPublisher {
 
             Properties properties = getNacosProperties(option);
 
-
             try{
+
                 EventPublishingConfigService nacosEventConfigService = (EventPublishingConfigService)nacosServiceFactory.createConfigService(properties);
 
                 Field configServiceField = nacosEventConfigService.getClass().getDeclaredField("configService");
 
-                configServiceField.setAccessible(true);
+                if (!configServiceField.isAccessible()) {
+                    configServiceField.setAccessible(true);
+                }
 
                 NacosConfigService nacosConfigService = (NacosConfigService)configServiceField.get(nacosEventConfigService);
 
@@ -178,9 +180,7 @@ public class NacosConfigPublisher implements ApiConfigPublisher {
                 option.setConfigItems(configItems);
             }
 
-            if (configItems.get(TIME_OUT_KEY) == null) {
-                configItems.put(TIME_OUT_KEY, 3000L);
-            }
+            configItems.putIfAbsent(TIME_OUT_KEY, 3000L);
 
             option.setConfigItems(configItems);
         }

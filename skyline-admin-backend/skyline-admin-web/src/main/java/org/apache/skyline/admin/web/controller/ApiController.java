@@ -76,9 +76,15 @@ public class ApiController {
         return apiService.deleteByIds(ids);
     }
 
-    @PutMapping("/publish/{ids}")
-    public Boolean apply(@PathVariable List<Long> ids) {
-        return apiService.publish(ids);
+    @PutMapping("/enable/{ids}")
+    public Boolean enable(@PathVariable List<Long> ids) {
+        return apiService.enable(ids);
+    }
+
+
+    @PutMapping("/disable/{ids}")
+    public Boolean disable(@PathVariable List<Long> ids) {
+        return apiService.disable(ids);
     }
 
 }

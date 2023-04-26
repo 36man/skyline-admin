@@ -42,6 +42,7 @@ public interface ApiService {
 
     boolean configPlugin(@Valid ApiConfigPluginRequest configPluginRequest);
 
-    boolean publish(@NotEmpty List<Long> id);
+    boolean enable(@NotEmpty List<Long> id);
 
+    boolean disable(List<Long> ids);
 }

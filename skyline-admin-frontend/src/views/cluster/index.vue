@@ -43,7 +43,7 @@
             {{ scope.row.domain }}
           </template>
         </el-table-column>
-        <el-table-column label="服务实例数" align="center">
+        <el-table-column label="服务实例数" align="center" width="65">
           <template slot-scope="scope">
             {{ scope.row.instanceCount }}
           </template>
@@ -53,7 +53,7 @@
             {{ scope.row.useQuota }}
           </template>
         </el-table-column>
-        <el-table-column label="是否共用配置中心" align="center">
+        <el-table-column label="共用配置中心" align="center" width="65">
           <template slot-scope="scope">
             {{ scope.row.configShare | configShareFilter}}
           </template>

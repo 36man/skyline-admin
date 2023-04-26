@@ -27,38 +27,38 @@
             {{ scope.$index + 1 }}
           </template>
         </el-table-column>
-        <el-table-column label="插件标识" width="110" align="center">
+        <el-table-column label="插件标识" align="center">
           <template slot-scope="scope">
             {{ scope.row.classDefine }}
           </template>
         </el-table-column>
-        <el-table-column label="插件名称" width="110" align="center">
+        <el-table-column label="插件名称" align="center">
           <template slot-scope="scope">
             {{ scope.row.pluginName }}
           </template>
         </el-table-column>
-        <el-table-column label="插件作者" width="110" align="center">
+        <el-table-column label="插件作者" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.maintainer }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="插件描述" width="110" align="center">
+        <el-table-column label="插件描述" align="center">
           <template slot-scope="scope">
             {{ scope.row.overview }}
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="created_at" label="更新时间">
+        <el-table-column align="center" prop="created_at" label="更新时间" width="180">
           <template slot-scope="scope">
             <i class="el-icon-time" />
             <span>{{ scope.row.updateTime }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="版本" width="110" align="center">
+        <el-table-column label="版本" align="center">
           <template slot-scope="scope">
             <el-button size="mini" type="text" @click="showVersion(scope.row)">点击查看</el-button>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="110" align="center">
+        <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <el-button size="mini" type="text" @click="showEdit(scope.row)">编辑</el-button>
             <el-button size="mini" type="text" @click="del(scope.row)">删除</el-button>

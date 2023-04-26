@@ -20,79 +20,77 @@
       highlight-current-row
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="50" align="center">
-      </el-table-column>
       <el-table-column align="center" label="序号" width="55">
         <template slot-scope="scope">
           {{ scope.$index + 1 }}
         </template>
       </el-table-column>
-      <el-table-column label="服务地址" width="110" align="center">
+      <el-table-column label="服务地址" align="center">
         <template slot-scope="scope">
           {{ scope.row.domain }}
         </template>
       </el-table-column>
-      <el-table-column label="集群名称" width="110" align="center">
+      <el-table-column label="集群名称" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.clusterName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="所属业务" width="110" align="center">
+      <el-table-column label="所属业务" align="center">
         <template slot-scope="scope">
           {{ scope.row.bizKey }}
         </template>
       </el-table-column>
-      <el-table-column label="服务实例数" width="110" align="center">
+      <el-table-column label="服务实例数" align="center">
         <template slot-scope="scope">
           {{ scope.row.instanceCount }}
         </template>
       </el-table-column>
-      <el-table-column label="服务规格" width="110" align="center">
+      <el-table-column label="服务规格" align="center">
         <template slot-scope="scope">
           {{ scope.row.useQuota }}
         </template>
       </el-table-column>
-      <el-table-column label="是否共用配置中心" width="110" align="center">
+      <el-table-column label="是否共用配置中心" align="center">
         <template slot-scope="scope">
           {{ scope.row.configShare | configShareFilter}}
         </template>
       </el-table-column>
-      <el-table-column label="是否共用数据库" width="110" align="center">
+      <el-table-column label="是否共用数据库" align="center">
         <template slot-scope="scope">
           {{ scope.row.configShare | configShareFilter}}
         </template>
       </el-table-column>
-      <el-table-column label="配置中心地址" width="110" align="center">
+      <el-table-column label="配置中心地址" align="center">
         <template slot-scope="scope">
           {{ scope.row.configUrl }}
         </template>
       </el-table-column>
-      <el-table-column label="配置中心账密" width="110" align="center">
+      <el-table-column label="配置中心账密" align="center">
         <template slot-scope="scope">
           {{ scope.row.configUser }}:{{ scope.row.configSecret }}
         </template>
       </el-table-column>
-      <el-table-column label="数据库地址" width="110" align="center">
+      <el-table-column label="数据库地址" align="center">
         <template slot-scope="scope">
           {{ scope.row.configUrl }}
         </template>
       </el-table-column>
-      <el-table-column label="数据库账密" width="110" align="center">
+      <el-table-column label="数据库账密" align="center">
         <template slot-scope="scope">
           {{ scope.row.configUser }}:{{ scope.row.configSecret }}
         </template>
       </el-table-column>
-      <el-table-column label="备注" width="110" align="center">
+      <el-table-column label="备注" align="center">
         <template slot-scope="scope">
           {{ scope.row.meno }}
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="集群状态" width="110" align="center">
+      <el-table-column class-name="status-col" label="集群状态" align="center">
         <template slot-scope="scope">
           <el-tag effect="dark" :type="scope.row.status | statusFilter">{{ scope.row.status | statusNameFilter}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="110" align="center">
+      <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="edit(scope.row)">编辑</el-button>
           <el-button size="mini" type="text" @click="del(scope.row)">删除</el-button>

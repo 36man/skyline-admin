@@ -6,7 +6,7 @@
       </el-col>
       <el-col :span="16">
         <el-row class="float-right">
-          <el-button size="small" icon="el-icon-plus">创建集群</el-button>
+          <el-button size="small" icon="el-icon-plus">创建api</el-button>
         </el-row>
       </el-col>
     </el-row>
@@ -42,12 +42,12 @@
             {{ scope.row.meno }}
           </template>
         </el-table-column>
-        <el-table-column class-name="status-col" label="状态" width="110" align="center">
+        <el-table-column class-name="status-col" label="状态" align="center">
           <template slot-scope="scope">
             <el-tag effect="dark" :type="scope.row.status | statusFilter">{{ scope.row.status | statusNameFilter}}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="220" align="center">
+        <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <el-button size="mini" type="text" @click="edit(scope.row)">编辑</el-button>
             <el-button size="mini" type="text" @click="del(scope.row)">删除</el-button>

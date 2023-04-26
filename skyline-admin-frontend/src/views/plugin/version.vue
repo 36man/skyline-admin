@@ -14,29 +14,24 @@
             {{ scope.$index + 1 }}
           </template>
         </el-table-column>
-        <el-table-column label="版本号" width="110"  align="center">
+        <el-table-column label="版本号"  align="center">
           <template slot-scope="scope">
             {{ scope.row.ver }}
           </template>
         </el-table-column>
-        <el-table-column label="特性" width="110"  align="center">
+        <el-table-column label="特性"  align="center">
           <template slot-scope="scope">
             {{ scope.row.features }}
           </template>
         </el-table-column>
-        <el-table-column label="jar地址" width="110"  align="center">
+        <el-table-column label="jar地址"  align="center">
           <template slot-scope="scope">
             {{ scope.row.jarUrl }}
           </template>
         </el-table-column>
-        <el-table-column label="jar大小" width="110"  align="center">
+        <el-table-column label="jar大小"  align="center">
           <template slot-scope="scope">
             {{ scope.row.size }}
-          </template>
-        </el-table-column>
-        <el-table-column label="fileKey" width="110"  align="center">
-          <template slot-scope="scope">
-            {{ scope.row.fileKey }}
           </template>
         </el-table-column>
         <el-table-column class-name="status-col" label="状态" align="center">
@@ -44,20 +39,20 @@
             <el-tag effect="dark" :type="scope.row.active | statusFilter">{{ scope.row.active ? '启用' : '禁用' }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="created_at" label="更新时间">
+        <el-table-column align="center" prop="created_at" label="更新时间" width="180">
           <template slot-scope="scope">
             <i class="el-icon-time" />
             <span>{{ scope.row.updateTime }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="能力开关" width="110" align="center">
+        <el-table-column label="能力开关" align="center">
           <template slot-scope="scope">
-            <el-button size="mini" type="success" @click="showTypeData(scope.row)">点击查看</el-button>
+            <el-button size="mini" type="text" @click="showTypeData(scope.row)">点击查看</el-button>
           </template>
         </el-table-column>
-        <el-table-column label="UI预览" width="110" align="center" >
+        <el-table-column label="UI预览" align="center" >
           <<template slot-scope="scope">
-          <el-button size="mini" type="success" @click="showConfigPage(scope.row)">点击预览</el-button>
+          <el-button size="mini" type="text" @click="showConfigPage(scope.row)">点击预览</el-button>
         </template>
         </el-table-column>
         <el-table-column label="操作" align="center">

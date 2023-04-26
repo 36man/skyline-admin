@@ -2,7 +2,7 @@
   <div class="app-container">
   <el-row>
     <el-col :span="8">
-      <el-input size="small" v-model="searchField" @change="fetchData" prefix-icon="el-icon-search" placeholder="地址 | 名称 | 标识"></el-input>
+      <el-input size="small" v-model="searchField" @change="fetchData" prefix-icon="el-icon-search" placeholder="地址 | 名称 | 业务标识"></el-input>
     </el-col>
     <el-col :span="16">
       <el-row class="float-right">
@@ -55,11 +55,6 @@
           {{ scope.row.configShare | configShareFilter}}
         </template>
       </el-table-column>
-      <el-table-column label="是否共用数据库" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.configShare | configShareFilter}}
-        </template>
-      </el-table-column>
       <el-table-column label="配置中心地址" align="center">
         <template slot-scope="scope">
           {{ scope.row.configUrl }}
@@ -70,14 +65,9 @@
           {{ scope.row.configUser }}:{{ scope.row.configSecret }}
         </template>
       </el-table-column>
-      <el-table-column label="数据库地址" align="center">
+      <el-table-column label="其他配置" align="center">
         <template slot-scope="scope">
-          {{ scope.row.configUrl }}
-        </template>
-      </el-table-column>
-      <el-table-column label="数据库账密" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.configUser }}:{{ scope.row.configSecret }}
+          <el-button size="mini" type="text" @click="showOtherConfig(scope.row)">点击查看</el-button>
         </template>
       </el-table-column>
       <el-table-column label="备注" align="center">
@@ -170,6 +160,9 @@
       },
       enable(rowData){
 
+      },
+      showOtherConfig(rowData){
+        console.log(configItem)
       }
     }
   }

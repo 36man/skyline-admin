@@ -2,10 +2,12 @@
   <div class="app-container">
     <el-row>
       <el-col :span="8">
-        <el-input size="small" v-model="searchField" @change="fetchData" prefix-icon="el-icon-search" placeholder="地址 | 名称 | 标识"></el-input>
+        <el-input size="small" v-model="searchField" @change="fetchData" prefix-icon="el-icon-search" placeholder="匹配规则"></el-input>
       </el-col>
       <el-col :span="16">
         <el-row class="float-right">
+          <el-tag type="success">当前集群：{{currentCluster.clusterName}}</el-tag>
+          <el-button size="small" icon="el-icon-s-help">选择集群</el-button>
           <el-button size="small" icon="el-icon-plus">创建api</el-button>
         </el-row>
       </el-col>
@@ -88,6 +90,13 @@
           pageSize: 10,
           currentPage: 1,
           totalCount: 0
+        },
+        currentCluster: {
+          id: '1',
+          clusterName: '集群名称',
+          domain: 'www.baidu.com',
+          bizKey: '@sentence(1, 3)',
+          instanceCount: '@integer(1, 2)',
         },
         listLoading: false,
         list: [],

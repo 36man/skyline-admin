@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row>
       <el-col :span="8">
-        <el-input size="small" v-model="searchField" @change="fetchData" prefix-icon="el-icon-search" placeholder="名称 | 作者"></el-input>
+        <el-input size="small" v-model="searchField" @change="fetchData" prefix-icon="el-icon-search" placeholder="名称 | 作者 | 标识"></el-input>
       </el-col>
       <el-col :span="16">
         <el-row class="float-right">

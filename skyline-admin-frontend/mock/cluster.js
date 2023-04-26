@@ -3,9 +3,9 @@ const Mock = require('mockjs')
 const data = Mock.mock({
   'items|10': [{
     id: '1',
-    clusterName: '@sentence(5, 15)',
+    clusterName: '集群名称',
     domain: 'www.baidu.com',
-    bizKey: 'test-cluster',
+    bizKey: '@sentence(1, 3)',
     instanceCount: '@integer(1, 2)',
     'configShare|1': [true, false],
     configUrl: 'nacos://192.168.0.110:8080',
@@ -15,9 +15,7 @@ const data = Mock.mock({
     'status|1': ['PENDING', 'RUNNING', 'SUCCEEDED', 'FAILED', 'UNKNOWN'],
     statusName: '创建成功,未开始调度',
     meno: '备注',
-    configItem: {
-
-    },
+    configItem: '{"databaseUrl": "jdbc:mysql://localhost:3306/xxxx", "databaseUser": "root", "databasePassword": "123", "databaseShare": false, }',
   }]
 })
 

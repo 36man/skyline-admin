@@ -39,11 +39,9 @@
         <el-input size="small" v-model="form.meno" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="其他配置" :label-width="formLabelWidth">
-        <div v-for="(configItem) in configItemList" style="display: flex">
-          <el-input size="small" v-model="configItem.key" autocomplete="off" placeholder="属性名"></el-input>
-          <el-input size="small" v-model="configItem.value" autocomplete="off" placeholder="属性值"></el-input>
-          <el-button size="mini" round icon="el-icon-plus" @click="addConfigItem"></el-button>
-        </div>
+        <el-row style="line-height: 20px;">
+          <b-code-editor v-model="configItemJson" theme="material" :lint="true" :show-number="true" :readonly="false" :indent-unit="4" :line-wrap="true" ref="editor"/>
+        </el-row>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -55,7 +53,6 @@
 
 <script>
   import { findById, create, update } from '@/api/cluster'
-  import { parseObj2KVArray, parseKVAarray2Obj } from '@/utils/jsons'
 	export default {
 		name: "ClusterForm",
     props: {
@@ -72,7 +69,7 @@
       return {
         dialogDisplay: false,
         form: {},
-        configItemList: [],
+        configItemJson: '{}',
         isEdit: false,
         formLabelWidth: '120px',
         checkQuota: (rule, value, callback) => {
@@ -106,13 +103,15 @@
           let context = this;
           findById(context.id).then(response => {
             context.form = response.data
-            context.configItemList = parseObj2KVArray(context.form.configItem);
+            context.configItemJson = JSON.stringify(context.form.configItem)
+            context.$nextTick(()=>{
+              context.$refs["editor"].formatCode()
+            })
           })
         } else {
           this.isEdit = false;
           this.form = {};
-          this.configItemList = []
-          this.addConfigItem()
+          this.configItemJson = "{}"
         }
       },
       submitForm(){
@@ -144,12 +143,8 @@
           })
         }
       },
-      addConfigItem(){
-        this.configItemList.push({key: '', value: ''})
-      },
       getFormData(){
-        this.form.configItem = parseKVAarray2Obj(this.configItemList);
-        console.log(this.form);
+        this.form.configItem = JSON.parse(this.configItemJson)
         return this.form;
       }
     }

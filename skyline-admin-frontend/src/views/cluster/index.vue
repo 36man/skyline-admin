@@ -65,19 +65,12 @@
         </el-table-column>
         <el-table-column label="配置中心账密" align="center" width="160">
           <template slot-scope="scope">
-            <el-row style="text-align: left;">
-              <el-tag type="success">账号</el-tag> : <el-tag>{{ scope.row.configUser }}</el-tag>
-            </el-row>
-            <el-row style="text-align: left;">
-              <el-tag type="success">密码</el-tag> : <el-tag>{{ scope.row.configSecret }}</el-tag>
-            </el-row>
+            {{ scope.row.configUser }}:{{ scope.row.configSecret }}
           </template>
         </el-table-column>
-        <el-table-column label="其他配置" align="center" width="250">
+        <el-table-column label="其他配置" align="center">
           <template slot-scope="scope">
-            <el-row v-for="(p) in parseConfig(scope.row.configItem)" style="text-align: left;">
-              <el-tag type="success">{{p.key}}</el-tag> : <el-tag>{{p.value}}</el-tag>
-            </el-row>
+            <el-button size="mini" type="text" @click="showConfigItems(scope.row)">点击查看</el-button>
           </template>
         </el-table-column>
         <el-table-column label="备注" align="center">
@@ -113,13 +106,15 @@
       </el-pagination>
     </el-row>
     <cluster-form :id="clusterId" v-model="clusterFormVisible" @submit="fetchData"></cluster-form>
+    <el-dialog title="其他配置" :visible.sync="configItemDialogVisible">
+      <b-code-editor v-model="configItemStr" theme="material" :lint="true" :show-number="true" :readonly="true" :indent-unit="4" :line-wrap="false" ref="editor"/>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import { pageList, deleteById, applyCluster } from '@/api/cluster'
   import { getClusterStatusTagType,getClusterStatusName } from '@/utils/status'
-  import { parseObj2KVArray } from '@/utils/jsons'
   import ClusterForm from "./clusterForm";
   export default {
     name: "CusterManage",
@@ -139,6 +134,8 @@
         list: [],
         clusterFormVisible: false,
         clusterId: null,
+        configItemDialogVisible: false,
+        configItemStr: '',
       }
     },
     filters: {
@@ -199,8 +196,12 @@
         this.clusterFormVisible = true;
         this.clusterId = rowData.id;
       },
-      parseConfig(config){
-        return parseObj2KVArray(config);
+      showConfigItems(rowData){
+        this.configItemDialogVisible  = true;
+        this.configItemStr = JSON.stringify(rowData.configItem);
+        this.$nextTick(()=>{
+          this.$refs["editor"].formatCode()
+        })
       }
     }
   }

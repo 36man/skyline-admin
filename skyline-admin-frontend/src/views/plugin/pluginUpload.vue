@@ -4,10 +4,15 @@
       class="upload-demo"
       drag
       action="https://jsonplaceholder.typicode.com/posts/"
-      multiple>
+      show-upload-list="false"
+      name="file"
+      :multiple="false"
+      :before-upload="beforeUpload"
+      :on-success="onSuccess"
+    >
       <i class="el-icon-upload"></i>
       <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-      <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+      <div class="el-upload__tip" slot="tip">只能上传jar文件，且不超过5M</div>
     </el-upload>
   </el-dialog>
 </template>
@@ -38,6 +43,19 @@
         }
       }
     },
+    methods: {
+      beforeUpload(file){
+        let fileSize = file.size;
+        if(fileSize > 1024 * 1024 * 5){
+          this.$message.error("文件不能超过5M");
+          return false;
+        }
+        return true;
+      },
+      onSuccess(response, file, fileList){
+        console.log(response, file, fileList)
+      }
+    }
 	}
 </script>
 

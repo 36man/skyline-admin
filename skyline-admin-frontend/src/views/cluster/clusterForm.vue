@@ -53,6 +53,7 @@
 
 <script>
   import { findById, create, update } from '@/api/cluster'
+  import {isJson} from '@/utils/jsons'
 	export default {
 		name: "ClusterForm",
     props: {
@@ -118,7 +119,11 @@
         let context = this;
         this.$refs['clusterForm'].validate((valid) => {
           if(valid){
-            context.doSubmitForm();
+            if(!isJson(this.configItemJson)){
+              context.$message.warning("json格式不正确")
+            } else {
+              context.doSubmitForm();
+            }
           }else{
             context.$message.warning("请先完成表单填写")
           }

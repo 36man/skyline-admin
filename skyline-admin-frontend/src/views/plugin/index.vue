@@ -1,12 +1,16 @@
 <template>
   <div class="app-container">
     <el-row>
-      <el-col :span="8">
-        <el-input size="small" v-model="searchField" @change="fetchData" prefix-icon="el-icon-search" placeholder="名称 | 作者 | 标识"></el-input>
-      </el-col>
       <el-col :span="16">
+        <div style="display: flex; padding-right: 5px;">
+          <el-input size="small" v-model="pluginName" @change="fetchData" placeholder="名称"></el-input>
+          <el-input size="small" v-model="maintainer" @change="fetchData" placeholder="作者"></el-input>
+          <el-input size="small" v-model="classDefine" @change="fetchData" placeholder="标识"></el-input>
+        </div>
+      </el-col>
+      <el-col :span="8">
         <el-row class="float-right">
-          <el-button size="small" icon="el-icon-upload2">上传插件</el-button>
+          <el-button size="small" icon="el-icon-upload2" @click="showUpload">上传插件</el-button>
         </el-row>
       </el-col>
     </el-row>
@@ -81,19 +85,28 @@
         :total="pager.totalCount">
       </el-pagination>
     </el-row>
+    <!-- version list -->
     <plugin-version v-model="pluginVersionVisible" :plugin-id="pluginId"></plugin-version>
+    <!-- form -->
+    <plugin-info-form v-model="pluginInfoFormVisible" :row-data="pluginInfoFormData" @submit="fetchData"/>
+    <!-- upload -->
+    <plugin-upload v-model="pluginUploadVisible" />
   </div>
 </template>
 
 <script>
-  import { pageList } from '@/api/plugin'
-  import PluginVersion from "./version";
+  import { pageList, deleteById, enableById, disableById, update} from '@/api/plugin'
+  import PluginVersion from "./pluginVersion";
+  import PluginUpload from "./pluginUpload";
+  import PluginInfoForm from "./pluginInfoForm";
 	export default {
 		name: "PluginManage",
-    components: {PluginVersion},
+    components: {PluginVersion, PluginUpload, PluginInfoForm},
     data(){
 		  return {
-        searchField: null,
+        pluginName: null,
+        maintainer: null,
+        classDefine: null,
         multipleSelection: [],
         pager: {
           pageSizes: [10, 20, 50, 100],
@@ -105,6 +118,9 @@
         list: [],
         pluginVersionVisible: false,
         pluginId: null,
+        pluginInfoFormVisible: false,
+        pluginInfoFormData: {},
+        pluginUploadVisible: false,
       }
     },
     created() {
@@ -116,7 +132,13 @@
       },
       fetchData() {
         this.listLoading = true;
-        let params = {pageSize: this.pager.pageSize, pageNo: this.pager.currentPage};
+        let params = {
+          pageSize: this.pager.pageSize,
+          pageNo: this.pager.currentPage,
+          pluginName: this.pluginName,
+          classDefine: this.classDefine,
+          maintainer: this.maintainer,
+        };
         let context = this;
         pageList(params).then(response => {
           context.list = response.data.data
@@ -125,20 +147,42 @@
         })
       },
       showVersion(rowData) {
-        this.pluginVersionEnable = true;
+        this.pluginVersionVisible = true;
         this.pluginId = rowData.id;
       },
-      showEdit(rowData){
-
-      },
       del(rowData){
-
+        let context = this;
+        this.$confirm("删除后不可恢复，确定要删除吗？").then(() => {
+          deleteById(rowData.id).then(() => {
+            context.$message.success("操作成功")
+            context.fetchData()
+          })
+        }).catch(() => {})
       },
       enable(rowData){
-
+        let context = this;
+        this.$confirm("启用后插件可被选择，确定要启用吗？").then(() => {
+          enableById(rowData.id).then(() => {
+            context.$message.success("操作成功")
+            context.fetchData()
+          })
+        }).catch(() => {})
       },
       disable(rowData){
-
+        let context = this;
+        this.$confirm("禁用后插件不可被选择，确定要禁用吗？").then(() => {
+          disableById(rowData.id).then(() => {
+            context.$message.success("操作成功")
+            context.fetchData()
+          })
+        }).catch(() => {})
+      },
+      showEdit(rowData){
+        this.pluginInfoFormVisible = true;
+        this.pluginInfoFormData = rowData;
+      },
+      showUpload(){
+        this.pluginUploadVisible = true;
       }
     }
 	}

@@ -105,7 +105,9 @@
         :total="pager.totalCount">
       </el-pagination>
     </el-row>
+    <!-- form -->
     <cluster-form :id="clusterId" v-model="clusterFormVisible" @submit="fetchData"></cluster-form>
+    <!-- configItem dialog -->
     <el-dialog title="其他配置" :visible.sync="configItemDialogVisible">
       <b-code-editor v-model="configItemStr" theme="material" :lint="true" :show-number="true" :readonly="true" :indent-unit="4" :line-wrap="false" ref="editor"/>
     </el-dialog>

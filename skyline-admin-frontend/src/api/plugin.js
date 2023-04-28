@@ -45,7 +45,7 @@ export function deleteById(id) {
 export function enableById(id) {
   return request({
     url: '/plugin/enable/' + id,
-    method: 'psot',
+    method: 'post',
   })
 }
 /**
@@ -55,7 +55,7 @@ export function enableById(id) {
 export function disableById(id) {
   return request({
     url: '/plugin/disable/' + id,
-    method: 'psot',
+    method: 'post',
   })
 }
 /**
@@ -70,7 +70,7 @@ export function disableById(id) {
 export function update(params) {
   return request({
     url: '/plugin',
-    method: 'psot',
+    method: 'post',
     params
   })
 }
@@ -117,7 +117,7 @@ export function verSearch(params) {
 export function verEnableById(id) {
   return request({
     url: '/plugin/ver/enable/' + id,
-    method: 'psot',
+    method: 'post',
   })
 }
 /**
@@ -127,6 +127,6 @@ export function verEnableById(id) {
 export function verDisableById(id) {
   return request({
     url: '/plugin/ver/disable/' + id,
-    method: 'psot',
+    method: 'post',
   })
 }

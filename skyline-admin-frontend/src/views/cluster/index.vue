@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <div class="app-container">
     <el-row>
@@ -109,18 +110,18 @@
     <cluster-form :id="clusterId" v-model="clusterFormVisible" @submit="fetchData"></cluster-form>
     <!-- configItem dialog -->
     <el-dialog title="其他配置" :visible.sync="configItemDialogVisible">
-      <b-code-editor v-model="configItemStr" theme="material" :lint="true" :show-number="true" :readonly="true" :indent-unit="4" :line-wrap="false" ref="editor"/>
+      <b-code-editor v-model="configItemStr" theme="material" :lint="true" :show-number="true" :readonly="true" :indent-unit="4" :line-wrap="false" ref="editor" />
     </el-dialog>
   </div>
 </template>
 
 <script>
   import { pageList, deleteById, applyCluster } from '@/api/cluster'
-  import { getClusterStatusTagType,getClusterStatusName } from '@/utils/status'
+  import { getClusterStatusTagType, getClusterStatusName } from '@/utils/status'
   import ClusterForm from "./clusterForm";
   export default {
     name: "CusterManage",
-    components: {ClusterForm},
+    components: { ClusterForm },
     data(){
       return {
         domain: '',

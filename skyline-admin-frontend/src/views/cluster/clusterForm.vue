@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <el-dialog title="集群配置" :visible.sync="dialogDisplay">
     <el-form :model="form" ref="clusterForm">
@@ -40,7 +41,7 @@
       </el-form-item>
       <el-form-item label="其他配置" :label-width="formLabelWidth">
         <el-row style="line-height: 20px;">
-          <b-code-editor v-model="configItemJson" theme="material" :lint="true" :show-number="true" :readonly="false" :indent-unit="4" :line-wrap="true" ref="editor"/>
+          <b-code-editor v-model="configItemJson" theme="material" :lint="true" :show-number="true" :readonly="false" :indent-unit="4" :line-wrap="true" ref="editor" />
         </el-row>
       </el-form-item>
     </el-form>
@@ -53,7 +54,7 @@
 
 <script>
   import { findById, create, update } from '@/api/cluster'
-  import {isJson} from '@/utils/jsons'
+  import { isJson } from '@/utils/jsons'
 	export default {
 		name: "ClusterForm",
     props: {

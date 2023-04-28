@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <el-dialog title="插件信息修改" :visible.sync="dialogDisplay">
     <el-form :model="form" ref="clusterForm">
@@ -18,7 +19,7 @@
 </template>
 
 <script>
-  import {update} from '@/api/plugin'
+  import { update } from '@/api/plugin'
 	export default {
 		name: "PluginInfoForm",
     props: {

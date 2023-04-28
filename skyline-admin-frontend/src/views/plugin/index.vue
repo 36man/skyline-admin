@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <div class="app-container">
     <el-row>
@@ -24,8 +25,6 @@
         highlight-current-row
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="50" align="center">
-        </el-table-column>
         <el-table-column align="center" label="序号" width="55">
           <template slot-scope="scope">
             {{ scope.$index + 1 }}
@@ -88,14 +87,14 @@
     <!-- version list -->
     <plugin-version v-model="pluginVersionVisible" :plugin-id="pluginId"></plugin-version>
     <!-- form -->
-    <plugin-info-form v-model="pluginInfoFormVisible" :row-data="pluginInfoFormData" @submit="fetchData"/>
+    <plugin-info-form v-model="pluginInfoFormVisible" :row-data="pluginInfoFormData" @submit="fetchData" />
     <!-- upload -->
     <plugin-upload v-model="pluginUploadVisible" />
   </div>
 </template>
 
 <script>
-  import { pageList, deleteById, enableById, disableById, update} from '@/api/plugin'
+  import { pageList, deleteById, enableById, disableById} from '@/api/plugin'
   import PluginVersion from "./pluginVersion";
   import PluginUpload from "./pluginUpload";
   import PluginInfoForm from "./pluginInfoForm";

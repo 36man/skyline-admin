@@ -61,7 +61,7 @@ export const constantRoutes = [
         path: 'index.vue',
         name: 'Form',
         component: () => import('@/views/demo/index'),
-        meta: { title: '自定义表单', icon: 'example' }
+        meta: { title: '插件表单测试', icon: 'eye-open' }
       }
     ]
   },

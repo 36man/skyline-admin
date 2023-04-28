@@ -1,8 +1,11 @@
+/* eslint-disable */
 <template>
   <div class="app-container">
     <el-row>
       <el-col :span="8">
-        <el-input size="small" v-model="searchField" @change="fetchData" prefix-icon="el-icon-search" placeholder="匹配规则"></el-input>
+        <div style="display: flex;">
+          <el-input size="small" v-model="matchCondition" @change="fetchData" prefix-icon="el-icon-search" placeholder="匹配规则"></el-input>
+        </div>
       </el-col>
       <el-col :span="16">
         <el-row class="float-right">
@@ -22,8 +25,6 @@
         highlight-current-row
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="50" align="center">
-        </el-table-column>
         <el-table-column align="center" label="序号" width="55">
           <template slot-scope="scope">
             {{ scope.$index + 1 }}
@@ -83,7 +84,10 @@
     name: "ApiManage",
     data() {
       return {
-        searchField: null,
+        clusterId: null,
+        //是否查询集群信息
+        isClusterLoad: false,
+        matchCondition: null,
         multipleSelection: [],
         pager: {
           pageSizes: [10, 20, 50, 100],
@@ -119,7 +123,7 @@
       },
       fetchData() {
         this.listLoading = true;
-        let params = {pageSize: this.pager.pageSize, pageNo: this.pager.currentPage};
+        let params = {pageSize: this.pager.pageSize, pageNo: this.pager.currentPage, matchCondition: this.matchCondition, clusterId: this.clusterId, isClusterLoad: this.isClusterLoad};
         let context = this;
         pageList(params).then(response => {
           context.list = response.data.data

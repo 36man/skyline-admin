@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <el-dialog width="65%" title="版本列表" :visible.sync="dialogDisplay">
     <el-row>
@@ -9,27 +10,27 @@
         fit
         highlight-current-row
       >
-        <el-table-column align="center" label="序号" >
+        <el-table-column align="center" label="序号">
           <template slot-scope="scope">
             {{ scope.$index + 1 }}
           </template>
         </el-table-column>
-        <el-table-column label="版本号"  align="center">
+        <el-table-column label="版本号" align="center">
           <template slot-scope="scope">
             {{ scope.row.ver }}
           </template>
         </el-table-column>
-        <el-table-column label="特性"  align="center">
+        <el-table-column label="特性" align="center">
           <template slot-scope="scope">
             {{ scope.row.features }}
           </template>
         </el-table-column>
-        <el-table-column label="jar地址"  align="center">
+        <el-table-column label="jar地址" align="center">
           <template slot-scope="scope">
             {{ scope.row.jarUrl }}
           </template>
         </el-table-column>
-        <el-table-column label="jar大小"  align="center">
+        <el-table-column label="jar大小" align="center">
           <template slot-scope="scope">
             {{ scope.row.size }}
           </template>
@@ -50,49 +51,49 @@
             <el-button size="mini" type="text" @click="showTypeData(scope.row)">点击查看</el-button>
           </template>
         </el-table-column>
-        <el-table-column label="UI预览" align="center" >
-          <<template slot-scope="scope">
-          <el-button size="mini" type="text" @click="showConfigPage(scope.row)">点击预览</el-button>
-        </template>
+        <el-table-column label="UI预览" align="center">
+          <template slot-scope="scope">
+            <el-button size="mini" type="text" @click="showConfigPage(scope.row)">点击预览</el-button>
+          </template>
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button size="mini" type="text" @click="enable(scope.row)" v-if="scope.row.active === false">启用</el-button>
-            <el-button size="mini" type="text" @click="disable(scope.row)" v-if="scope.row.active === true">禁用</el-button>
+            <el-button v-if="scope.row.active === false" size="mini" type="text" @click="enable(scope.row)">启用</el-button>
+            <el-button v-if="scope.row.active === true" size="mini" type="text" @click="disable(scope.row)">禁用</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-row>
     <el-row class="margin-top-10px">
       <el-pagination
-        @size-change="fetchData"
-        @current-change="fetchData"
         :current-page="pager.currentPage"
         :page-sizes="pager.pageSizes"
         :page-size="pager.pageSize"
+        :total="pager.totalCount"
         layout="total, sizes, prev, pager, next, jumper"
         background
         hide-on-single-page
-        :total="pager.totalCount">
+        @size-change="fetchData"
+        @current-change="fetchData">
       </el-pagination>
     </el-row>
     <!-- configItem dialog -->
     <el-dialog width="35%" append-to-body title="能力开关" :visible.sync="typeMetaDialogVisible">
-      <b-code-editor v-model="typeMetaStr" theme="material" :lint="true" :show-number="true" :readonly="true" :indent-unit="4" :line-wrap="false" ref="editor"/>
+      <b-code-editor ref="editor" v-model="typeMetaStr" theme="material" :lint="true" :show-number="true" :readonly="true" :indent-unit="4" :line-wrap="false" />
     </el-dialog>
     <!-- pageContent dialog -->
     <el-dialog width="45%" append-to-body title="UI预览" :visible.sync="pageContentDialogVisible">
-      <display :code="pageContentStr" ref="display"></display>
+      <display ref="display" :code="pageContentStr" />
     </el-dialog>
-</el-dialog>
+  </el-dialog>
 </template>
 
 <script>
-  import { verPageList, verSearch, verEnableById, verDisableById } from '@/api/plugin'
+  import { verPageList, verEnableById, verDisableById } from '@/api/plugin'
   import Display from '@/components/DynamicDisplay/display';
   export default {
     name: "PluginVersion",
-    components: {Display},
+    components: { Display },
     props: {
       value: {
         type: Boolean,
@@ -131,12 +132,12 @@
     },
     watch: {
       dialogDisplay(newValue){
-        if(!newValue){
+        if (!newValue){
           this.$emit('input', newValue)
         }
       },
       value(newValue){
-        if(newValue) {
+        if (newValue) {
           this.dialogDisplay = true;
         }
       },
@@ -176,7 +177,7 @@
       showTypeData(rowData){
         this.typeMetaDialogVisible = true;
         this.typeMetaStr = rowData.typeMeta;
-        this.$nextTick(()=>{
+        this.$nextTick(() => {
           this.$refs["editor"].formatCode()
         })
       },

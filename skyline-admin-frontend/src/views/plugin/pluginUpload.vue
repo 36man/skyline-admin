@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <el-dialog title="插件上传" :visible.sync="dialogDisplay">
     <el-upload

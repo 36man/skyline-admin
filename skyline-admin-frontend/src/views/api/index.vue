@@ -10,8 +10,8 @@
       <el-col :span="16">
         <el-row class="float-right">
           <el-tag type="success">当前集群：{{currentCluster.clusterName}}</el-tag>
-          <el-button size="small" icon="el-icon-s-help">选择集群</el-button>
-          <el-button size="small" icon="el-icon-plus">创建api</el-button>
+          <el-button size="small" icon="el-icon-s-help" @click="clusterSelectVisible = true">选择集群</el-button>
+          <el-button size="small" icon="el-icon-plus" @click="showCreateApi">创建api</el-button>
         </el-row>
       </el-col>
     </el-row>
@@ -52,11 +52,11 @@
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button size="mini" type="text" @click="edit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="text" @click="del(scope.row)">删除</el-button>
-            <el-button size="mini" type="text" @click="showConfigPluginChain(scope.row)">配置插件链</el-button>
-            <el-button size="mini" type="text" @click="enable(scope.row)" v-if="scope.row.status === 'disable' || scope.row.status === 'new'">启用</el-button>
-            <el-button size="mini" type="text" @click="disable(scope.row)" v-if="scope.row.status === 'enable'">禁用</el-button>
+            <el-button size="mini" type="text" v-if="scope.row.status === 'disable' || scope.row.status === 'new'" @click="edit(scope.row)">编辑</el-button>
+            <el-button size="mini" type="text" v-if="scope.row.status === 'disable' || scope.row.status === 'new'" @click="del(scope.row)">删除</el-button>
+            <el-button size="mini" type="text" v-if="scope.row.status === 'disable' || scope.row.status === 'new'" @click="showConfigPluginChain(scope.row)">配置插件链</el-button>
+            <el-button size="mini" type="text" v-if="scope.row.status === 'disable' || scope.row.status === 'new'" @click="enable(scope.row)">启用</el-button>
+            <el-button size="mini" type="text" v-if="scope.row.status === 'in_enable' || scope.row.status === 'enable'" @click="disable(scope.row)">禁用</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -74,19 +74,27 @@
         :total="pager.totalCount">
       </el-pagination>
     </el-row>
+
+    <!-- cluster select -->
+    <cluster-select v-model="clusterSelectVisible" @select="onSelectRow"/>
+    <!-- api form -->
+    <api-form v-model="apiFormVisible" :api-data="apiFormData" @submit="fetchData"></api-form>
   </div>
 </template>
 
 <script>
-  import { pageList } from '@/api/api'
+  import { pageList, deleteById, enableById, disableById } from '@/api/api'
   import { getApiStatusName,getApiStatusTagType } from '@/utils/status'
+  import ClusterSelect from './clusterSelect'
+  import ApiForm from './apiForm'
   export default {
     name: "ApiManage",
+    components: { ClusterSelect, ApiForm },
     data() {
       return {
         clusterId: null,
-        //是否查询集群信息
-        isClusterLoad: false,
+        //是否查询集群信息，此处需要查，否则没有clusterId
+        isClusterLoad: true,
         matchCondition: null,
         multipleSelection: [],
         pager: {
@@ -95,15 +103,12 @@
           currentPage: 1,
           totalCount: 0
         },
-        currentCluster: {
-          id: '1',
-          clusterName: '集群名称',
-          domain: 'www.baidu.com',
-          bizKey: '@sentence(1, 3)',
-          instanceCount: '@integer(1, 2)',
-        },
+        clusterSelectVisible: false,
+        currentCluster: {},
         listLoading: false,
         list: [],
+        apiFormVisible: false,
+        apiFormData: {}
       }
     },
     filters: {
@@ -131,20 +136,63 @@
           context.listLoading = false
         })
       },
-      edit(rowData) {
-        console.log(rowData)
-      },
-      del(rowData) {
-        console.log(rowData)
-      },
       enable(rowData){
-
+        let context = this;
+        this.$confirm("启用后api可被访问，确定要启用吗？").then(() => {
+          enableById(rowData.id).then(() => {
+            context.$message.success("操作成功")
+            context.fetchData()
+          })
+        }).catch(() => {})
       },
       disable(rowData){
-
+        let context = this;
+        this.$confirm("禁用后api不可被访问，确定要禁用吗？").then(() => {
+          disableById(rowData.id).then(() => {
+            context.$message.success("操作成功")
+            context.fetchData()
+          })
+        }).catch(() => {})
+      },
+      del(rowData) {
+        let context = this;
+        this.$confirm("删除后不可恢复，确定要删除吗？").then(() => {
+          deleteById(rowData.id).then(() => {
+            context.$message.success("操作成功")
+            context.fetchData()
+          })
+        }).catch(() => {})
+      },
+      showCreateApi(){
+        if(!this.clusterId){
+          this.$message.warning("请先选择集群")
+        } else {
+          this.apiFormVisible = true;
+          this.apiFormData = {
+            clusterId: this.clusterId,
+            matchCondition: '',
+            description: '',
+            meno: '',
+          }
+        }
+      },
+      edit(rowData) {
+        this.apiFormVisible = true;
+        this.apiFormData = {
+          id: rowData.id,
+          clusterId: rowData.clusterVO.clusterId,
+          matchCondition: rowData.matchCondition,
+          description: rowData.description,
+          meno: rowData.meno,
+        }
+      },
+      onSelectRow(row){
+        this.currentCluster = row;
+        this.clusterId = row.id;
+        this.fetchData()
       },
       showConfigPluginChain(rowData){
-        console.log(rowData.plugins)
+        console.log("待开发：", rowData.plugins)
       }
     }
   }

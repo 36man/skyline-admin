@@ -76,7 +76,7 @@ export function configPlugin(params) {
  * API-删除
  * @param ids
  */
-export function deleteByIds(ids) {
+export function deleteById(ids) {
   return request({
     url: '/api/' + ids,
     method: 'delete'

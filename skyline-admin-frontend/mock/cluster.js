@@ -3,7 +3,7 @@ const Mock = require('mockjs')
 const data = Mock.mock({
   'items|10': [{
     id: '1',
-    clusterName: '集群名称',
+    clusterName: '集群名称@integer(1,100)',
     domain: 'www.baidu.com',
     bizKey: '@sentence(1, 3)',
     instanceCount: '@integer(1, 2)',

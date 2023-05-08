@@ -10,6 +10,7 @@ const data = Mock.mock({
     plugins: '[{"stage": "", "stageName": "", "stateSn": 1, "jarUrl": "file://xxxx.jar", "sn": 1, "config": "插件页配置后的数据", "classDefine": "Test.class", "ver": "1.0.1"}]',
     createTime: '@datetime',
     updateTime: '@datetime',
+    clusterVO: {id: 'cluster-id1', clusterName: '测试集群1'}
   }]
 })
 

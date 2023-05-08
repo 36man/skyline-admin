@@ -79,6 +79,8 @@
     <cluster-select v-model="clusterSelectVisible" @select="onSelectRow"/>
     <!-- api form -->
     <api-form v-model="apiFormVisible" :api-data="apiFormData" @submit="fetchData"></api-form>
+    <!-- plugin chain form -->
+    <plugin-chain-form v-model="pluginChainFormVisible" :api-data="pluginChainFormData" @submit="fetchData"></plugin-chain-form>
   </div>
 </template>
 
@@ -87,9 +89,10 @@
   import { getApiStatusName,getApiStatusTagType } from '@/utils/status'
   import ClusterSelect from './clusterSelect'
   import ApiForm from './apiForm'
+  import PluginChainForm from './pluginChainForm'
   export default {
     name: "ApiManage",
-    components: { ClusterSelect, ApiForm },
+    components: { ClusterSelect, ApiForm, PluginChainForm },
     data() {
       return {
         clusterId: null,
@@ -108,7 +111,9 @@
         listLoading: false,
         list: [],
         apiFormVisible: false,
-        apiFormData: {}
+        apiFormData: {},
+        pluginChainFormVisible: false,
+        pluginChainFormData: {}
       }
     },
     filters: {
@@ -192,7 +197,11 @@
         this.fetchData()
       },
       showConfigPluginChain(rowData){
-        console.log("待开发：", rowData.plugins)
+        this.pluginChainFormVisible = true;
+        this.pluginChainFormData = {
+          id: rowData.id,
+          pluginList: rowData.plugins
+        }
       }
     }
   }

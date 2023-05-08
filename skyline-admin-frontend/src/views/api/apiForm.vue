@@ -39,7 +39,6 @@
     data(){
 		  return {
         dialogDisplay: false,
-        isEdit: false,
         form: {},
         formLabelWidth: '120px',
       }

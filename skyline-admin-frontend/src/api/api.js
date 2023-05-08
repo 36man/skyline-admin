@@ -55,11 +55,11 @@ export function update(id, params) {
       id: "1",
       pluginList: [
         {
-          stage: 1,
+          stage: "stage1",
           stageName: "步骤一",
-          stateSn: "步骤一",
-          pluginVerId: "1",
-          sn: "1",
+          stateSn: 1,
+          pluginVerId: 3,
+          sn: 1,
           configParams: '{"name": "张三", "age": 12}',
         }
       ]

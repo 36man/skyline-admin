@@ -1,9 +1,8 @@
 import request from '@/utils/request'
 
-export function getConfig(params) {
+export function getPageContent() {
   return request({
     url: '/demo/vueFile',
     method: 'get',
-    params
   })
 }

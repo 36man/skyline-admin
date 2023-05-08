@@ -9,7 +9,7 @@
 </template>
 <script>
   import Display from '@/components/DynamicDisplay/display';
-  import {getConfig} from "@/api/demo";
+  import { getPageContent } from "@/api/demo";
 
   export default {
     name: 'Demo',
@@ -28,9 +28,10 @@
       },
       add(){
         let context = this;
-        getConfig().then(response => {
-          context.code = response.data.templateContent;
+        getPageContent({}).then((response) => {
+          context.code = response.data.pageContent
         })
+
       }
     }
   }

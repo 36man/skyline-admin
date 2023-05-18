@@ -27,12 +27,20 @@ import org.apache.skyline.admin.server.domain.query.ClusterCombineQuery;
 import org.apache.skyline.admin.server.domain.repository.ClusterRepository;
 import org.apache.skyline.admin.server.service.ClusterService;
 import org.apache.skyline.admin.server.support.env.ConfigLoader;
+import org.apache.skyline.admin.server.support.k8s.K8sClient;
+import org.apache.skyline.admin.server.support.k8s.K8sTemplateLoader;
 import org.apache.skyline.admin.server.support.mapper.ClusterAssembler;
 import org.bravo.gaia.commons.base.PageBean;
 import org.bravo.gaia.commons.util.AssertUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.PropertyMapper;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.common.TemplateParserContext;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -47,13 +55,23 @@ public class ClusterServiceImpl implements ClusterService {
     private ObjectProvider<ConfigLoader> configLoaderProvider;
     private ClusterAssembler clusterAssembler;
 
+    private K8sTemplateLoader k8sTemplateLoader;
+
+    private K8sClient k8sClient;
+
+
+
+
     public ClusterServiceImpl(ClusterRepository clusterRepository,
                               ObjectProvider<ConfigLoader> configLoaderObjectProvider,
-                              ClusterAssembler clusterAssembler) {
+                              ClusterAssembler clusterAssembler,
+                              K8sTemplateLoader k8sTemplateLoader,
+                              K8sClient k8sClient) {
         this.clusterAssembler = clusterAssembler;
         this.configLoaderProvider = configLoaderObjectProvider;
         this.clusterRepository = clusterRepository;
-
+        this.k8sTemplateLoader = k8sTemplateLoader;
+        this.k8sClient = k8sClient;
     }
 
     public boolean create(ClusterRequest request){
@@ -120,6 +138,13 @@ public class ClusterServiceImpl implements ClusterService {
 
     @Override
     public boolean applyCluster(Long id) {
+        String clusterTemplate = k8sTemplateLoader.getClusterTemplate();
+
+        ClusterDomain clusterDomain = null;
+        String deployContent = getClusterTemplate(clusterDomain, clusterTemplate);
+
+        k8sClient.apply(deployContent);
+
         return false;
     }
 
@@ -182,5 +207,15 @@ public class ClusterServiceImpl implements ClusterService {
 
         boolean isExists = clusterRepository.isExists(build);
         AssertUtil.isTrue(!isExists, "domain is exists");
+    }
+
+
+    public String getClusterTemplate(ClusterDomain clusterDomain,String content) {
+        ExpressionParser parser= new SpelExpressionParser();
+        EvaluationContext ctx = new StandardEvaluationContext();
+        ctx.setVariable("", "");
+
+        return parser.parseExpression(content, new TemplateParserContext()).getValue(ctx, String.class);
+
     }
 }

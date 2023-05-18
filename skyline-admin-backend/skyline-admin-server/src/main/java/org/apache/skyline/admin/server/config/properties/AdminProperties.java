@@ -32,11 +32,47 @@ public class AdminProperties{
 
     private String changeSrvType = "nacos";
 
+    private K8sProperties k8s = new K8sProperties();
+
+    private boolean enableK8s = false;
+
 
     @Data
     public static class SwaggerConfig{
 
         private boolean enable = true;
+
+    }
+
+    @Data
+    public static class K8sProperties{
+        private String masterUrl;
+        private String apiVersion;
+        private String namespace;
+        private String username;
+        private String password;
+        private String oauthToken;
+        private String caCertFile;
+        private String caCertData;
+        private String clientKeyFile;
+        private String clientKeyData;
+        private String clientCertFile;
+        private String clientCertData;
+        private String clientKeyAlgo;
+        private String clientKeyPassphrase;
+        private int connectionTimeout;
+        private int requestTimeout;
+        private long rollingTimeout;
+        private int watchReconnectInterval;
+        private int watchReconnectLimit;
+        private int loggingInterval;
+        private Boolean trustCerts;
+        private Boolean http2Disable;
+        private String httpProxy;
+        private String httpsProxy;
+        private String proxyUsername;
+        private String proxyPassword;
+        private String [] noProxy;
 
     }
 }

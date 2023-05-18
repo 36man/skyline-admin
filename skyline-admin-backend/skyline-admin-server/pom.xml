@@ -23,6 +23,12 @@
         <dependency>
             <groupId>org.bravo</groupId>
             <artifactId>gaia-log</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-slf4j-impl</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -59,11 +65,17 @@
             <artifactId>reactor-core</artifactId>
             <version>${reactor.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.alibaba.nacos/nacos-client -->
+
         <dependency>
             <groupId>com.alibaba.boot</groupId>
             <artifactId>nacos-config-spring-boot-starter</artifactId>
             <version>${nacos.config.starter.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>kubernetes-client</artifactId>
+            <version>${fabric8.kubernetes.version}</version>
         </dependency>
 
     </dependencies>

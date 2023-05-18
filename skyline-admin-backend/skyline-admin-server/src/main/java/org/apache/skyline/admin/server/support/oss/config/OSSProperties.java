@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties(prefix = "admin.oss")
 @Validated
 public class OSSProperties {
-    private String endpoint = "xxx";
+    private String endpoint = "";
 
     private String bucketName;
 

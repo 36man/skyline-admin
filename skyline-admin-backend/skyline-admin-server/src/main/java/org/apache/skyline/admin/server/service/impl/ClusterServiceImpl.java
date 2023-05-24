@@ -16,7 +16,12 @@
  */
 
 package org.apache.skyline.admin.server.service.impl;
-
+import io.fabric8.kubernetes.api.model.Pod;
+import io.fabric8.kubernetes.client.Watcher;
+import io.fabric8.kubernetes.client.WatcherException;
+import io.fabric8.kubernetes.client.utils.PodStatusUtil;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.skyline.admin.commons.enums.ClusterStatus;
 import org.apache.skyline.admin.commons.model.query.ClusterQuery;
 import org.apache.skyline.admin.commons.model.request.ClusterRequest;
 import org.apache.skyline.admin.commons.model.request.PageRequest;
@@ -34,22 +39,13 @@ import org.bravo.gaia.commons.base.PageBean;
 import org.bravo.gaia.commons.util.AssertUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.PropertyMapper;
-import org.springframework.expression.EvaluationContext;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.common.TemplateParserContext;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class ClusterServiceImpl implements ClusterService {
+public class ClusterServiceImpl implements Watcher<Pod>, ClusterService {
 
     private ClusterRepository clusterRepository;
     private ObjectProvider<ConfigLoader> configLoaderProvider;
@@ -57,9 +53,7 @@ public class ClusterServiceImpl implements ClusterService {
 
     private K8sTemplateLoader k8sTemplateLoader;
 
-    private K8sClient k8sClient;
-
-
+    private final K8sClient k8sClient;
 
 
     public ClusterServiceImpl(ClusterRepository clusterRepository,
@@ -72,6 +66,7 @@ public class ClusterServiceImpl implements ClusterService {
         this.clusterRepository = clusterRepository;
         this.k8sTemplateLoader = k8sTemplateLoader;
         this.k8sClient = k8sClient;
+
     }
 
     public boolean create(ClusterRequest request){
@@ -118,6 +113,10 @@ public class ClusterServiceImpl implements ClusterService {
 
     @Override
     public boolean delete(Long id) {
+        Pair<String, ClusterDomain> context = getDeployContext(id);
+
+        k8sClient.delete(context.getLeft());
+
         return clusterRepository.deleteById(id);
     }
 
@@ -138,15 +137,16 @@ public class ClusterServiceImpl implements ClusterService {
 
     @Override
     public boolean applyCluster(Long id) {
-        String clusterTemplate = k8sTemplateLoader.getClusterTemplate();
+        Pair<String,ClusterDomain> deployContext = this.getDeployContext(id);
 
-        ClusterDomain clusterDomain = null;
-        String deployContent = getClusterTemplate(clusterDomain, clusterTemplate);
+        this.registerWatcher(deployContext.getRight());
 
-        k8sClient.apply(deployContent);
+        boolean deploySuccessfully = k8sClient.deploy(deployContext.getLeft());
 
-        return false;
+        return deploySuccessfully;
+
     }
+
 
     private ClusterDomain convert(ClusterRequest request) {
         ClusterDomain clusterDomain = new ClusterDomain();
@@ -162,6 +162,7 @@ public class ClusterServiceImpl implements ClusterService {
                 .stream()
                 .map(clusterAssembler::convert)
                 .collect(Collectors.toList());
+
     }
 
     private ClusterCombineQuery toQuery(ClusterQuery clusterQuery) {
@@ -210,12 +211,59 @@ public class ClusterServiceImpl implements ClusterService {
     }
 
 
-    public String getClusterTemplate(ClusterDomain clusterDomain,String content) {
-        ExpressionParser parser= new SpelExpressionParser();
-        EvaluationContext ctx = new StandardEvaluationContext();
-        ctx.setVariable("", "");
+    @Override
+    public void eventReceived(Action action, Pod pod) {
+        if (action == Action.DELETED) {
+            return;
+        }
+        String id = pod.getMetadata().getLabels().get("id");
 
-        return parser.parseExpression(content, new TemplateParserContext()).getValue(ctx, String.class);
+        ClusterStatus status = ClusterStatus.getEnumByCode(pod.getStatus().getPhase());
 
+        if (PodStatusUtil.isRunning(pod)) {
+            status = ClusterStatus.RUNNING;
+        }
+
+        this.notifyClusterChanged(id,status);
+
+    }
+
+    private void notifyClusterChanged(String id, ClusterStatus status) {
+        ClusterDomain clusterDomain = new ClusterDomain();
+        clusterDomain.setStatus(status);
+
+        this.clusterRepository.update(ClusterCombineQuery.builder().id(Long.valueOf(id)).build(), clusterDomain);
+    }
+
+    @Override
+    public void onClose(WatcherException e) {
+
+    }
+
+    private void registerWatcher(ClusterDomain clusterDomain) {
+        k8sClient.getKubernetesClient().pods()
+                .inNamespace("default")
+                .withLabel("domain", clusterDomain.getDomain())
+                .watch(this);
+    }
+
+    private Pair<String,ClusterDomain> getDeployContext(Long id) {
+        String clusterTemplate = k8sTemplateLoader.getClusterTemplate();
+
+        ClusterDomain clusterDomain = clusterRepository.findOneIfExists(ClusterCombineQuery.builder().id(id).build());
+
+//        Map<String, Object> values = new HashMap<>();
+//        values.put("domain", clusterDomain.getDomain());
+//        values.put("replicas", clusterDomain.getInstanceCount());
+//        String useQuota = clusterDomain.getUseQuota();
+//        Pattern pattern = Pattern.compile("(\\d+\\w)(\\d+\\w)");
+//        Matcher matcher = pattern.matcher(useQuota);
+//        if (matcher.find()) {
+//            values.put("limit.cpu", matcher.group(1));
+//            values.put("limit.memory", matcher.group(2));
+//        }
+//        return StringTemplateParser.ofMap(values)
+//                .apply(templateContent);
+        return Pair.of(clusterTemplate,clusterDomain);
     }
 }

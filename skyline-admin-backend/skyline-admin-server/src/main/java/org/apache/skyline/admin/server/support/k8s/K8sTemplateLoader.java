@@ -16,12 +16,10 @@
  */
 package org.apache.skyline.admin.server.support.k8s;
 import com.alibaba.boot.nacos.config.properties.NacosConfigProperties;
-import com.alibaba.nacos.api.config.ConfigService;
-import com.alibaba.nacos.api.config.listener.AbstractListener;
-import com.alibaba.nacos.spring.factory.CacheableEventPublishingNacosServiceFactory;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.skyline.admin.server.support.nacos.NacosConfigListener;
+import org.apache.skyline.admin.server.support.nacos.NacosConfigServiceCustomizer;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -38,15 +36,15 @@ public class K8sTemplateLoader implements  SmartInitializingSingleton, Applicati
     @Autowired
     private NacosConfigProperties nacosConfigProperties;
 
-
-    private static final CacheableEventPublishingNacosServiceFactory singleton = CacheableEventPublishingNacosServiceFactory.getSingleton();
+    @Autowired
+    private NacosConfigServiceCustomizer nacosCustomizer;
 
 
     private ClusterTemplateLoader clusterTemplateLoader = new ClusterTemplateLoader( "cluster-template",this);
 
     @Override
     public void afterSingletonsInstantiated() {
-        addListener(clusterTemplateLoader);
+        nacosCustomizer.addListener(clusterTemplateLoader);
     }
 
     @Override
@@ -54,50 +52,25 @@ public class K8sTemplateLoader implements  SmartInitializingSingleton, Applicati
         setClusterTemplate(clusterTemplateLoader.getContent());
     }
 
-    public void addListener(NacosConfigListener nacosConfigListener){
-        singleton.getConfigServices().stream()
-                .forEach(configService -> {
-                    try {
-                        configService.addListener(nacosConfigListener.getConfigId(), nacosConfigProperties.getGroup(), nacosConfigListener);
-                    } catch (Exception exception) {
-                        log.warn("nacos addListener error {} ", exception.getMessage());
-                    }
-                });
-    }
 
-    public String getContent(String dataId) {
-        for (ConfigService configService : singleton.getConfigServices()) {
-            try {
-                String config = configService.getConfig(dataId, nacosConfigProperties.getGroup(), 3000);
+    public class ClusterTemplateLoader extends NacosConfigListener<String> {
 
-                if (StringUtils.isNoneBlank(config)) {
-                    return config;
-                }
-            } catch (Exception exception) {
-                log.warn("nacos dataId get config error {} ", exception.getMessage());
-            }
-        }
-        return null;
-    }
-
-    public class ClusterTemplateLoader extends NacosConfigListener<String>{
-
-        private String configId;
+        private String dataId;
         private final K8sTemplateLoader k8sTemplateLoader;
 
         public ClusterTemplateLoader(String configId, K8sTemplateLoader k8sTemplateLoader) {
-            this.configId = configId;
+            this.dataId = configId;
             this.k8sTemplateLoader = k8sTemplateLoader;
         }
 
         @Override
-        public String getConfigId() {
-            return this.configId;
+        public String getDataId() {
+            return this.dataId;
         }
 
         @Override
         public String getContent() {
-            return k8sTemplateLoader.getContent(this.configId);
+            return nacosCustomizer.getContent(this.dataId);
         }
 
         @Override
@@ -105,14 +78,4 @@ public class K8sTemplateLoader implements  SmartInitializingSingleton, Applicati
             k8sTemplateLoader.setClusterTemplate(configInfo);
         }
     }
-
-
-    public abstract class NacosConfigListener<T> extends AbstractListener{
-
-        abstract String getConfigId();
-
-        abstract T getContent();
-
-    }
-
 }

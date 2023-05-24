@@ -17,31 +17,32 @@
 
 package org.apache.skyline.admin.server.config.k8s;
 
-import io.fabric8.kubernetes.client.Config;
-import io.fabric8.kubernetes.client.ConfigBuilder;
-import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.KubernetesClientBuilder;
+import io.fabric8.kubernetes.client.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.skyline.admin.server.config.properties.AdminProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Base64;
 
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(prefix = "admin", name = "enableK8s", havingValue = "true")
+@EnableConfigurationProperties({AdminProperties.class})
+@ConditionalOnProperty(prefix = "admin", name = "k8s.enabled", havingValue = "true")
 public class K8sConfiguration {
+
+    @Autowired
+    private AdminProperties adminProperties;
 
     public static final String DEFAULT_MASTER_URL = "https://kubernetes.default.svc";
     public static final String DEFAULT_MASTER_PLACEHOLDER = "DEFAULT_MASTER_HOST";
 
 
     @Bean
-    public KubernetesClient kubernetesClient(AdminProperties adminProperties) {
-        return new KubernetesClientBuilder()
-                .withConfig(buildConfig(adminProperties.getK8s()))
-                .build();
+    public KubernetesClient kubernetesClient() {
+        return new DefaultKubernetesClient(buildConfig(adminProperties.getK8s()));
     }
 
     private Config buildConfig(AdminProperties.K8sProperties k8sProperties) {

@@ -22,7 +22,6 @@ public enum ClusterStatus implements IEnum{
     PENDING("PENDING","创建成功,未开始调度"),
     RUNNING("RUNNING","已经被调度至节点,至少有一个启动成功"),
     SUCCEEDED("SUCCEEDED","启动成功"),
-
     FAILED("FAILED","容器终止"),
     UNKNOWN("UNKNOWN","API Server无法正常获取到Pod对象的状态信息");
 
@@ -44,5 +43,13 @@ public enum ClusterStatus implements IEnum{
         return code;
     }
 
+    public static ClusterStatus getEnumByCode(String code) {
+        for (ClusterStatus clusterStatus : ClusterStatus.values()) {
+            if (clusterStatus.getCode().equalsIgnoreCase(code)) {
+                return clusterStatus;
+            }
+        }
+        return null;
+    }
 
 }

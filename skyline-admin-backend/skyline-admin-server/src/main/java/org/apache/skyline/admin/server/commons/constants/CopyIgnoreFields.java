@@ -23,4 +23,6 @@ final public class CopyIgnoreFields {
 
     public static final String FEATURES = "features";
 
+    public static final String STATUS = "status";
+
 }

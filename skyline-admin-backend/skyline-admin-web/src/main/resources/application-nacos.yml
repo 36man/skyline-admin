@@ -5,8 +5,9 @@ nacos:
     group: DEFAULT_GROUP
     data-id: admin
     bootstrap:
-      enable: true
+      enable: false
       log-enable: true
     enable-remote-sync-config: true
     namespace: admin
+    autoRefresh: true
     type: yaml

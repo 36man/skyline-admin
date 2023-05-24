@@ -18,23 +18,22 @@
 package org.apache.skyline.admin.server.config.properties;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.context.annotation.Configuration;
 
-@Data
-@Configuration(proxyBeanMethods = false)
+@Setter
+@Getter
+@Configuration
 @ConfigurationProperties(prefix = "admin")
 public class AdminProperties{
 
-    @NestedConfigurationProperty
     private SwaggerConfig swagger  = new SwaggerConfig();
 
     private String changeSrvType = "nacos";
 
     private K8sProperties k8s = new K8sProperties();
-
-    private boolean enableK8s = false;
 
 
     @Data
@@ -44,7 +43,8 @@ public class AdminProperties{
 
     }
 
-    @Data
+    @Setter
+    @Getter
     public static class K8sProperties{
         private String masterUrl;
         private String apiVersion;
@@ -66,13 +66,13 @@ public class AdminProperties{
         private int watchReconnectInterval;
         private int watchReconnectLimit;
         private int loggingInterval;
-        private Boolean trustCerts;
+        private Boolean trustCerts = true;
         private Boolean http2Disable;
         private String httpProxy;
         private String httpsProxy;
         private String proxyUsername;
         private String proxyPassword;
         private String [] noProxy;
-
+        private boolean enabled = false;
     }
 }

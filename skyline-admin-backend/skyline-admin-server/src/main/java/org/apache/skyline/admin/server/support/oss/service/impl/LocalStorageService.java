@@ -23,7 +23,6 @@ import java.io.File;
  * @author hejianbing
  * @version @Id: LocalStorageService.java, v 0.1 2022年12月22日 20:53 hejianbing Exp $
  */
-@Component
 public class LocalStorageService extends BaseOSSService implements InitializingBean {
 
     private OSSProperties ossProperties;

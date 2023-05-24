@@ -23,6 +23,7 @@ import lombok.AllArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.skyline.admin.commons.enums.ClusterStatus;
 import org.apache.skyline.admin.server.commons.constants.CopyIgnoreFields;
 import org.apache.skyline.admin.server.dal.dao.ClusterDao;
 import org.apache.skyline.admin.server.dal.dataobject.ClusterDO;
@@ -34,13 +35,9 @@ import org.apache.skyline.admin.server.commons.utils.PageCommonUtils;
 import org.bravo.gaia.commons.base.PageBean;
 import org.bravo.gaia.commons.util.AssertUtil;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -122,11 +119,20 @@ public class ClusterRepositoryImpl implements ClusterRepository {
         }
         ClusterDomain clusterDomain = new ClusterDomain();
 
-        BeanUtils.copyProperties(clusterDO, clusterDomain, CopyIgnoreFields.CONFIG_ITEM);
+        BeanUtils.copyProperties(clusterDO, clusterDomain,
+                CopyIgnoreFields.CONFIG_ITEM,
+                CopyIgnoreFields.STATUS);
 
         Optional.ofNullable(clusterDO.getConfigItem())
                 .filter(StringUtils::isNoneBlank)
                 .ifPresent(item -> clusterDomain.setConfigItem(objectMapperCodec.deserialize(item, Map.class)));
+
+        Optional.ofNullable(clusterDO.getStatus())
+                .filter(Objects::nonNull)
+                .ifPresent(code -> {
+                    ClusterStatus status = ClusterStatus.getEnumByCode(code);
+                    clusterDomain.setStatus(status);
+                });
 
         return clusterDomain;
     }
@@ -137,13 +143,16 @@ public class ClusterRepositoryImpl implements ClusterRepository {
         }
         ClusterDO clusterDO = new ClusterDO();
 
-        BeanUtils.copyProperties(clusterDomain, clusterDO,CopyIgnoreFields.CONFIG_ITEM);
+        BeanUtils.copyProperties(clusterDomain, clusterDO,CopyIgnoreFields.CONFIG_ITEM,
+                CopyIgnoreFields.STATUS);
 
         Optional.ofNullable(clusterDomain.getConfigItem())
                 .filter(MapUtils::isNotEmpty)
-                .ifPresent(item->{
-                    clusterDO.setConfigItem(objectMapperCodec.serialize(item));
-                });
+                .ifPresent(item-> clusterDO.setConfigItem(objectMapperCodec.serialize(item)));
+
+        Optional.ofNullable(clusterDomain.getStatus())
+                .filter(Objects::nonNull)
+                .ifPresent(status-> clusterDO.setStatus(status.getCode()));
 
         return clusterDO;
     }

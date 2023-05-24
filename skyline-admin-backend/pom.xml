@@ -27,6 +27,8 @@
         <lombok-mapstruct.version>0.2.0</lombok-mapstruct.version>
         <lombok.version>1.18.20</lombok.version>
         <fabric8.kubernetes.version>6.4.1</fabric8.kubernetes.version>
+        <jodd.util.version>6.2.1</jodd.util.version>
+        <commons.io.version>2.11.0</commons.io.version>
     </properties>
 
     <modules>

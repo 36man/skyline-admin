@@ -76,7 +76,9 @@
             <groupId>io.fabric8</groupId>
             <artifactId>kubernetes-client</artifactId>
             <version>${fabric8.kubernetes.version}</version>
+            <classifier>bundle</classifier>
         </dependency>
+
 
     </dependencies>
 

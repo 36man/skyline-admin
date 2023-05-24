@@ -37,4 +37,4 @@ admin:
   oss:
     storeType: LOCAL
     local: E:/nginx-1.23.2/data/statics
-    endpoint: http://localhost:9898
+    endpoint: http://localhost:9899

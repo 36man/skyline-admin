@@ -18,6 +18,8 @@
 package org.apache.skyline.admin.server.domain.model;
 
 import lombok.Data;
+import lombok.Getter;
+import org.apache.skyline.admin.commons.enums.ClusterStatus;
 import org.bravo.gaia.commons.base.BaseDomain;
 
 import java.util.Date;
@@ -58,4 +60,5 @@ public class ClusterDomain extends BaseDomain {
 
     private Date updateTime;
 
+    private ClusterStatus status;
 }

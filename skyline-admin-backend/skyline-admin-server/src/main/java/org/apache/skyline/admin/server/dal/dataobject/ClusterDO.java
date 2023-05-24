@@ -42,4 +42,6 @@ public class ClusterDO extends BaseDO {
 
     private String meno;
 
+    private String status;
+
 }

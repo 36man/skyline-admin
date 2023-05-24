@@ -1,5 +1,7 @@
 package org.apache.skyline.admin.server.support.oss.config;
 
+import org.apache.skyline.admin.server.config.properties.AdminProperties;
+import org.apache.skyline.admin.server.support.oss.service.OSSService;
 import org.apache.skyline.admin.server.support.oss.service.impl.AmazonS3Service;
 import org.apache.skyline.admin.server.support.oss.service.impl.LocalStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
  */
 
 @Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties(OSSProperties.class)
+@EnableConfigurationProperties({OSSProperties.class})
 public class OssConfiguration {
 
     @Autowired
@@ -32,7 +34,7 @@ public class OssConfiguration {
 
     @Bean
     @ConditionalOnProperty(value = "admin.oss.storeType", havingValue = "S3", matchIfMissing = false)
-    public AmazonS3Service s3client() {
+    public OSSService s3client() {
         ClientConfiguration clientConfiguration = new ClientConfiguration();
 
         AwsClientBuilder.EndpointConfiguration endpointConfiguration = new AwsClientBuilder.EndpointConfiguration(
@@ -56,8 +58,8 @@ public class OssConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
-    public LocalStorageService localService() {
+    @ConditionalOnProperty(value = "admin.oss.storeType", havingValue = "LOCAL", matchIfMissing = false)
+    public OSSService localService() {
         return new LocalStorageService(ossProperties);
     }
 }

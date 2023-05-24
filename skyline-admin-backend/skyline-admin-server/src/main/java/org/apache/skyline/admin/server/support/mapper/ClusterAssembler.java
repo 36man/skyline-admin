@@ -26,5 +26,7 @@ import org.mapstruct.MappingConstants;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ClusterAssembler {
 
+    @Mapping(source = "status.code", target = "status")
+    @Mapping(source = "status.desc", target = "statusName")
     ClusterVO convert(ClusterDomain clusterDomain);
 }

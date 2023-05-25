@@ -39,27 +39,48 @@ CREATE TABLE `admin_api`  (
 -- ----------------------------
 -- Table structure for admin_cluster
 -- ----------------------------
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : localhost
+Source Server Version : 80011
+Source Host           : localhost:3306
+Source Database       : skyline-admin
+
+Target Server Type    : MYSQL
+Target Server Version : 80011
+File Encoding         : 65001
+
+Date: 2023-05-25 16:15:31
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for admin_cluster
+-- ----------------------------
 DROP TABLE IF EXISTS `admin_cluster`;
-CREATE TABLE `admin_cluster`  (
+CREATE TABLE `admin_cluster` (
+  `status` varchar(10) DEFAULT NULL,
   `id` bigint(20) NOT NULL,
-  `domain` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `cluster_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `biz_key` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `instance_count` int(11) NULL DEFAULT NULL,
-  `config_share` tinyint(4) NULL DEFAULT NULL,
-  `config_url` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `config_user` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `config_secret` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `config_item` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `use_quota` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `meno` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `domain` varchar(50) DEFAULT NULL,
+  `cluster_name` varchar(50) DEFAULT NULL,
+  `biz_key` varchar(50) DEFAULT NULL,
+  `instance_count` int(11) DEFAULT NULL,
+  `config_share` tinyint(4) DEFAULT NULL,
+  `config_url` varchar(100) DEFAULT NULL,
+  `config_user` varchar(50) DEFAULT NULL,
+  `config_secret` varchar(50) DEFAULT NULL,
+  `config_item` varchar(255) DEFAULT NULL,
+  `use_quota` varchar(50) DEFAULT NULL,
+  `meno` varchar(100) DEFAULT NULL,
   `create_time` timestamp NULL DEFAULT NULL,
   `update_time` timestamp NULL DEFAULT NULL,
-  `deleted` tinyint(1) NULL DEFAULT NULL,
-  `user_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `user_no` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+  `deleted` tinyint(1) DEFAULT NULL,
+  `user_name` varchar(50) DEFAULT NULL,
+  `user_no` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for admin_plugin

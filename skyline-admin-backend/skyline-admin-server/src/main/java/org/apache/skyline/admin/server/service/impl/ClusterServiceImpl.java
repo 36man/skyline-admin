@@ -20,6 +20,7 @@ import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.client.Watcher;
 import io.fabric8.kubernetes.client.WatcherException;
 import io.fabric8.kubernetes.client.utils.PodStatusUtil;
+import jodd.util.StringTemplateParser;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.skyline.admin.commons.enums.ClusterStatus;
 import org.apache.skyline.admin.commons.model.query.ClusterQuery;
@@ -34,6 +35,7 @@ import org.apache.skyline.admin.server.service.ClusterService;
 import org.apache.skyline.admin.server.support.env.ConfigLoader;
 import org.apache.skyline.admin.server.support.k8s.K8sClient;
 import org.apache.skyline.admin.server.support.k8s.K8sTemplateLoader;
+import org.apache.skyline.admin.server.support.k8s.WatcherWrapper;
 import org.apache.skyline.admin.server.support.mapper.ClusterAssembler;
 import org.bravo.gaia.commons.base.PageBean;
 import org.bravo.gaia.commons.util.AssertUtil;
@@ -42,6 +44,8 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.stereotype.Service;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -115,9 +119,19 @@ public class ClusterServiceImpl implements Watcher<Pod>, ClusterService {
     public boolean delete(Long id) {
         Pair<String, ClusterDomain> context = getDeployContext(id);
 
+        WatcherWrapper<Pod,Boolean> watcherWrapper = new WatcherWrapper<>((action, pod) -> {
+            if (action.equals(Action.DELETED)) {
+                return clusterRepository.deleteById(id);
+            }
+            return null;
+        });
+
+        registerWatcher(context.getRight(), watcherWrapper);
+
         k8sClient.delete(context.getLeft());
 
-        return clusterRepository.deleteById(id);
+        return watcherWrapper.get() == null ? false : watcherWrapper.get();
+
     }
 
     @Override
@@ -213,26 +227,24 @@ public class ClusterServiceImpl implements Watcher<Pod>, ClusterService {
 
     @Override
     public void eventReceived(Action action, Pod pod) {
+        String domain = pod.getMetadata().getLabels().get("domain");
         if (action == Action.DELETED) {
+            this.notifyClusterChanged(domain,ClusterStatus.FAILED);
             return;
         }
-        String id = pod.getMetadata().getLabels().get("id");
-
         ClusterStatus status = ClusterStatus.getEnumByCode(pod.getStatus().getPhase());
 
         if (PodStatusUtil.isRunning(pod)) {
             status = ClusterStatus.RUNNING;
         }
-
-        this.notifyClusterChanged(id,status);
-
+        this.notifyClusterChanged(domain,status);
     }
 
-    private void notifyClusterChanged(String id, ClusterStatus status) {
+    private void notifyClusterChanged(String domain, ClusterStatus status) {
         ClusterDomain clusterDomain = new ClusterDomain();
         clusterDomain.setStatus(status);
 
-        this.clusterRepository.update(ClusterCombineQuery.builder().id(Long.valueOf(id)).build(), clusterDomain);
+        this.clusterRepository.update(ClusterCombineQuery.builder().domain(domain).build(), clusterDomain);
     }
 
     @Override
@@ -240,30 +252,37 @@ public class ClusterServiceImpl implements Watcher<Pod>, ClusterService {
 
     }
 
-    private void registerWatcher(ClusterDomain clusterDomain) {
-        k8sClient.getKubernetesClient().pods()
-                .inNamespace("default")
-                .withLabel("domain", clusterDomain.getDomain())
-                .watch(this);
-    }
-
     private Pair<String,ClusterDomain> getDeployContext(Long id) {
-        String clusterTemplate = k8sTemplateLoader.getClusterTemplate();
-
         ClusterDomain clusterDomain = clusterRepository.findOneIfExists(ClusterCombineQuery.builder().id(id).build());
 
-//        Map<String, Object> values = new HashMap<>();
-//        values.put("domain", clusterDomain.getDomain());
-//        values.put("replicas", clusterDomain.getInstanceCount());
-//        String useQuota = clusterDomain.getUseQuota();
-//        Pattern pattern = Pattern.compile("(\\d+\\w)(\\d+\\w)");
-//        Matcher matcher = pattern.matcher(useQuota);
-//        if (matcher.find()) {
-//            values.put("limit.cpu", matcher.group(1));
-//            values.put("limit.memory", matcher.group(2));
-//        }
-//        return StringTemplateParser.ofMap(values)
-//                .apply(templateContent);
-        return Pair.of(clusterTemplate,clusterDomain);
+        Map<String, Object> values = new HashMap<>();
+        values.put("domain", clusterDomain.getDomain());
+        values.put("replicas", clusterDomain.getInstanceCount());
+        String useQuota = clusterDomain.getUseQuota();
+        Pattern pattern = Pattern.compile("(\\d+[a-zA-Z]+)(\\d+[a-zA-Z]+)");
+        Matcher matcher = pattern.matcher(useQuota);
+        if (matcher.find()) {
+            values.put("limits.cpu", matcher.group(1));
+            values.put("limits.memory", matcher.group(2));
+        }else{
+            values.put("limits.cpu", "1000m");
+            values.put("limits.memory", "800Mi");
+        }
+        String content = StringTemplateParser.ofMap(values)
+                .apply(k8sTemplateLoader.getClusterTemplate());
+
+        return Pair.of(content,clusterDomain);
+    }
+
+    private void registerWatcher(ClusterDomain clusterDomain) {
+        this.registerWatcher(clusterDomain, this);
+    }
+
+    private void registerWatcher(ClusterDomain clusterDomain,Watcher<Pod> watcher) {
+        k8sClient.getKubernetesClient()
+                .pods()
+                .inNamespace("default")
+                .withLabel("domain", clusterDomain.getDomain())
+                .watch(watcher);
     }
 }

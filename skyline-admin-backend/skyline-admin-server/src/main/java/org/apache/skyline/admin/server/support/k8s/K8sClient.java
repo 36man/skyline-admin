@@ -16,21 +16,15 @@
  */
 
 package org.apache.skyline.admin.server.support.k8s;
-import io.fabric8.kubernetes.api.model.HasMetadata;
-import io.fabric8.kubernetes.api.model.Pod;
-import io.fabric8.kubernetes.api.model.StatusDetails;
-import io.fabric8.kubernetes.client.*;
+
+import io.fabric8.kubernetes.client.KubernetesClient;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.bravo.gaia.commons.util.AssertUtil;
-import org.bravo.gaia.commons.util.CollectionUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
+import java.nio.charset.StandardCharsets;
 
 @Component
 @Slf4j
@@ -48,10 +42,11 @@ public class K8sClient {
 
             KubernetesClient k8sClient = this.getKubernetesClient();
 
-            k8sClient.resource(content).createOrReplace();
+            k8sClient.load(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))).createOrReplace();
 
             return true;
         }catch(Exception ex){
+            log.error("k8s deploy error {}", ex);
             return false;
         }
     }
@@ -61,20 +56,11 @@ public class K8sClient {
 
             KubernetesClient k8sClient = this.getKubernetesClient();
 
-            List<StatusDetails> statusDetailsList = k8sClient.resource(content)
-                    .withTimeout(5000, TimeUnit.MICROSECONDS)
+            k8sClient.load(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)))
                     .delete();
-
-            for (StatusDetails statusDetails : statusDetailsList) {
-                if (statusDetails != null && statusDetails.getKind() != null
-                        && CollectionUtils.isNotEmpty(statusDetails.getCauses())) {
-                    log.info("delete {} {} {}", statusDetails.getKind(), statusDetails.getName(), statusDetails.getCauses());
-                    return false;
-                }
-            }
             return true;
         }catch(Exception ex){
-            log.error("delete error {}", ex);
+            log.error("k8s delete error {}", ex);
             return false;
         }
     }

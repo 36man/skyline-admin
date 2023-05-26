@@ -1,0 +1,9 @@
+skyline:
+    classDefine: org.apache.skyline.test.plugin.TestPlugin
+    pageDefine: skyline-plugin.vue
+    overview: xxx
+    ver: 1.0.0-SNAPSHOT
+    maintainer: zs
+    features:
+        - test
+        - xxx

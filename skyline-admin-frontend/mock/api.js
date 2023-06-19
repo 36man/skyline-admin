@@ -1,11 +1,10 @@
 const Mock = require('mockjs')
-const constants = require('./mock-constants.js')
 const plugins = '[' +
-  '{"stage": "stage_1", "stageName": "阶段一", "stateSn": 1, "jarUrl": "file://xxxx.jar", "sn": 1, "config": "' + constants.templateContent + '", "classDefine": "Test1.class", "ver": "1.0.1"},' +
-  '{"stage": "stage_1", "stageName": "阶段一", "stateSn": 1, "jarUrl": "file://xxxx.jar", "sn": 2, "config": "' + constants.templateContent + '", "classDefine": "Test1.class", "ver": "1.0.2"},' +
-  '{"stage": "stage_2", "stageName": "阶段二", "stateSn": 4, "jarUrl": "file://xxxx.jar", "sn": 2, "config": "' + constants.templateContent + '", "classDefine": "Test2.class", "ver": "2.0.1"},' +
-  '{"stage": "stage_2", "stageName": "阶段二", "stateSn": 4, "jarUrl": "file://xxxx.jar", "sn": 1, "config": "' + constants.templateContent + '", "classDefine": "Test2.class", "ver": "2.0.2"},' +
-  '{"stage": "stage_3", "stageName": "阶段三", "stateSn": 3, "jarUrl": "file://xxxx.jar", "sn": 1, "config": "' + constants.templateContent + '", "classDefine": "Test3.class", "ver": "3.0.1"}' +
+  '{"stage": "stage_1", "stageName": "阶段一", "stateSn": 1, "sn": 1, "configParams": {"name": "张三", "age": 1}, "pluginVerId": "1"},' +
+  '{"stage": "stage_1", "stageName": "阶段一", "stateSn": 1, "sn": 2, "configParams": {"aaa": "李四", "bbb": 1}, "pluginVerId": "2"},' +
+  '{"stage": "stage_2", "stageName": "阶段二", "stateSn": 4, "sn": 2, "configParams": {"ccc": "王五", "ddd": 1}, "pluginVerId": "1"},' +
+  '{"stage": "stage_2", "stageName": "阶段二", "stateSn": 4, "sn": 1, "configParams": {"eee": "赵六", "fff": 1}, "pluginVerId": "2"},' +
+  '{"stage": "stage_3", "stageName": "阶段三", "stateSn": 3, "sn": 1, "configParams": {"ggg": "黄芪", "hhh": 1}, "pluginVerId": "3"}' +
   ']'
 
 const data = Mock.mock({
